@@ -1,4 +1,10 @@
-:root {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DEFULAT CSS LEAVE FOR REFERENCE */
+
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +71,34 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+
+/* GLOBAL CSS */
+:root {
+  font-family: 'Inter Tight';
+  /* line-height: 1.5; */
+  /* font-weight: 400; */
+
+  /* color-scheme: light dark; */
+  /* color: rgba(27, 0, 48, 1); */
+  /* background-color: #ebebed; */
+
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: inherit;
+}
+
+
+/* .inter-tight-<uniquifier> {
+  font-family: "Inter Tight", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+} */
