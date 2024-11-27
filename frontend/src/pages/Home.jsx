@@ -1,17 +1,40 @@
+import React from 'react';
 import NavBar from "../components/NavBar";
+import SideBar from "../components/SideBar";
 import { Button } from '@mui/material'; // Import Material UI Button
 
 function Home() {
   return (
-    <div className="  h-screen w-screen bg-gray-100">
-        <NavBar />
-      {/* Tailwind styled heading */}
-      <h1 className="text-xl text-blue-600 mb-8">Home</h1>
-      
-      {/* Material UI Button */}
-      <Button variant="contained" color="primary">
-        Test Material UI Button
-      </Button>
+    <div className="h-screen flex bg-gray-100">
+      {/* Sidebar on the left */}
+      <SideBar />
+
+      {/* Main content area */}
+      <div className="flex flex-col flex-grow ml-64">
+        {/* TODO NO NAVBAR HERE */}
+        <NavBar /> {/* Navbar on top   */}
+
+        {/* Horizontal layout for three vertical sections */}
+        <div className="flex flex-row h-full p-8 space-x-8">
+          {/* Section 1 */}
+          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
+            <h1 className="text-2xl font-bold mb-4">Header 1</h1>
+            <p>Content for Section 1</p>
+          </section>
+
+          {/* Section 2 */}
+          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
+            <h1 className="text-2xl font-bold mb-4">Header 2</h1>
+            <p>Content for Section 2</p>
+          </section>
+
+          {/* Section 3 */}
+          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
+            <h1 className="text-2xl font-bold mb-4">Header 3</h1>
+            <p>Content for Section 3</p>
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function NavBar() {
   }
 
   return (
-    <nav className='flex items-center justify-between p-4 bg-white shadow-lg sticky top-0 z-50'>
+    <nav className='flex items-center justify-between py-2 px-3 bg-white shadow-lg sticky top-0 z-50'>
       {/* Left Section: Logo and Navigation Links */}
       <div className='flex items-center space-x-4'>
         <Logo className="w-20 lg:w-24" /> {/* Fixed width for Logo */}
