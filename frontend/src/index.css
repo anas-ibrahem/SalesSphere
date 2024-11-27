@@ -77,6 +77,8 @@ button:focus-visible {
 /* GLOBAL CSS */
 :root {
   font-family: 'Inter Tight';
+  --primary-accent: #1976d2;
+  --secondary-accent: #0F0147;
   /* line-height: 1.5; */
   /* font-weight: 400; */
 
@@ -95,6 +97,17 @@ body {
   font-family: inherit;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
 
 /* .inter-tight-<uniquifier> {
   font-family: "Inter Tight", sans-serif;
