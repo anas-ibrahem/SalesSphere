@@ -1,25 +1,36 @@
 import React, { useState } from 'react';
 import SideBar from '../components/SideBar';
-import {BusinessSection , LogsSection , RecordsSection , DefaultSection} from '../components/SectionComponents';
+import { BusinessSection, LogsSection, DefaultSection } from '../components/SectionComponents';
+import RecordsSection from '../components/LayoutSections/RecordsSection';
 
 function Home() {
-  // State to manage the active section
   const [activeSection, setActiveSection] = useState('default');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Function to handle section changes
   const handleSectionChange = (section) => {
     setActiveSection(section);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
   return (
-    <div className="h-screen flex " style={{ backgroundColor: 'var(--tertiary-accent)' }}>
+    <div className="h-screen flex" style={{ backgroundColor: 'var(--tertiary-accent)' }}>
       {/* Sidebar on the left */}
-      <SideBar onSectionChange={handleSectionChange} />
+      <SideBar 
+        onSectionChange={handleSectionChange} 
+        isCollapsed={isSidebarCollapsed} 
+        toggleSidebar={toggleSidebar} // Pass toggle function to Sidebar
+      />
 
       {/* Main content area */}
-      <div className="flex h-screen flex-col flex-grow ml-64">
+      <div className={`
+        flex h-screen flex-col flex-grow 
+        transition-all duration-300 
+        ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}
+      `}>
         <div className="h-full">
-          {/* Dynamically render the active section */}
           {activeSection === 'business' && <BusinessSection />}
           {activeSection === 'logs' && <LogsSection />}
           {activeSection === 'records' && <RecordsSection />}

@@ -1,4 +1,7 @@
-import React from "react";
+import React from 'react';
+import { useState } from 'react';
+// TODO delete this file 
+
 
 export const BusinessSection = () => (
   <section className="bg-white p-6 shadow-md h-screen">
@@ -8,13 +11,6 @@ export const BusinessSection = () => (
   </section>
 );
 
-export const RecordsSection = () => (
-  <section className="bg-white p-6 shadow-md h-screen">
-    <h1 className="text-2xl font-bold mb-4">Our Services</h1>
-    <p>Explore the range of services we offer.</p>
-    {/* Add service details */}
-  </section>
-);
 
 export const LogsSection = () => {
   const logs = [
