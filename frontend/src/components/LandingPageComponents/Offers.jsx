@@ -1,4 +1,3 @@
-import "../index.css";
 import RevealOnScroll from "./RevealOnScroll.jsx";
 const Offers = function Offers() {
   return (
