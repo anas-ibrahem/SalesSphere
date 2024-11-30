@@ -27,7 +27,6 @@ import {
       .email('Invalid email address')
       .required('Email is required'),
     password: Yup.string()
-      .min(8, 'Password must be at least 8 characters')
       .required('Password is required')
   });
   
@@ -40,6 +39,10 @@ import {
         alert(JSON.stringify(values, null, 2));
         setSubmitting(false);
       }, 400);
+    };
+    const handleRegisterBtn = (e) => {
+      e.preventDefault();
+      alert('Register a new business');
     };
   
     return (
@@ -144,6 +147,7 @@ import {
                     variant="contained"
                     sx={{ mt: 3, mb: 1, backgroundColor: 'var(--secondary-accent)' }}
                     disabled={isSubmitting}
+                    
                   >
                     Sign In
                   </Button>
@@ -153,6 +157,7 @@ import {
                     variant="outlined"
                     sx={{ mb: 2 }}
                     disabled={isSubmitting}
+                    onClick={handleRegisterBtn}
                   >
                     Register a new Business!
                   </Button>

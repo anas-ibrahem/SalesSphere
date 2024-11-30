@@ -63,7 +63,8 @@ const BusinessRegistration = () => {
 
   };
 
-  const handleNext = (formik) => {
+  const handleNext = (e, formik) => {
+    e.preventDefault();
     formik.validateForm().then(errors => {
       if (Object.keys(errors).length === 0) {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -219,7 +220,7 @@ const BusinessRegistration = () => {
                   <Button 
                     variant="contained" 
                     color="primary" 
-                    onClick={() => handleNext(formik)}
+                    onClick={(e) => handleNext(e, formik)}
                   >
                     Next
                   </Button>
