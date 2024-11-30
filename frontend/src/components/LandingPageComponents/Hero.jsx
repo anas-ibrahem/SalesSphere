@@ -1,6 +1,5 @@
-import "../index.css";
 import RevealOnScroll from "./RevealOnScroll.jsx";
-import HeroImg from "../assets/Hero.jpg";
+import HeroImg from "../../assets/Hero.jpg";
 const Hero = function () {
   return (
     <RevealOnScroll>

@@ -1,5 +1,4 @@
 import RevealOnScroll from "./RevealOnScroll";
-import "../index.css";
 
 const SubHero = function (props) {
   return (
