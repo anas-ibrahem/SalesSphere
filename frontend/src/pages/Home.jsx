@@ -1,38 +1,29 @@
-import React from 'react';
-import NavBar from "../components/NavBar";
-import SideBar from "../components/SideBar";
-import { Button } from '@mui/material'; // Import Material UI Button
+import React, { useState } from 'react';
+import SideBar from '../components/SideBar';
+import {BusinessSection , LogsSection , RecordsSection , DefaultSection} from '../components/SectionComponents';
 
 function Home() {
+  // State to manage the active section
+  const [activeSection, setActiveSection] = useState('default');
+
+  // Function to handle section changes
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+  };
+
   return (
-    <div className="h-screen flex bg-gray-100">
+    <div className="h-screen flex " style={{ backgroundColor: 'var(--tertiary-accent)' }}>
       {/* Sidebar on the left */}
-      <SideBar />
+      <SideBar onSectionChange={handleSectionChange} />
 
       {/* Main content area */}
-      <div className="flex flex-col flex-grow ml-64">
-        {/* TODO NO NAVBAR HERE */}
-        <NavBar /> {/* Navbar on top   */}
-
-        {/* Horizontal layout for three vertical sections */}
-        <div className="flex flex-row h-full p-8 space-x-8">
-          {/* Section 1 */}
-          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
-            <h1 className="text-2xl font-bold mb-4">Header 1</h1>
-            <p>Content for Section 1</p>
-          </section>
-
-          {/* Section 2 */}
-          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
-            <h1 className="text-2xl font-bold mb-4">Header 2</h1>
-            <p>Content for Section 2</p>
-          </section>
-
-          {/* Section 3 */}
-          <section className="bg-white p-6 shadow-md rounded-lg flex-grow">
-            <h1 className="text-2xl font-bold mb-4">Header 3</h1>
-            <p>Content for Section 3</p>
-          </section>
+      <div className="flex h-screen flex-col flex-grow ml-64">
+        <div className="h-full">
+          {/* Dynamically render the active section */}
+          {activeSection === 'business' && <BusinessSection />}
+          {activeSection === 'logs' && <LogsSection />}
+          {activeSection === 'records' && <RecordsSection />}
+          {activeSection === 'default' && <DefaultSection />}
         </div>
       </div>
     </div>

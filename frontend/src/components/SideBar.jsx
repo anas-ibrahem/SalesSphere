@@ -1,37 +1,45 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import Logo from './Logo';  // Assuming you have a Logo component or image
 
-export default function Sidebar() {
+export default function SideBar({ onSectionChange }) {
   return (
-    <div className="h-screen w-64 bg-gray-800 text-white fixed top-0 left-0 flex flex-col">
+    <div
+      className="h-screen w-64 text-white fixed top-0 left-0 flex flex-col"
+      style={{ backgroundColor: '#111827' }}
+    >
       {/* Logo Section */}
       <div className="flex items-center justify-center h-20 border-b border-gray-700">
-        <NavLink to="/">
-          <img src="https://i.ibb.co/6s0gPZj/Logo-No-Text.png" alt="logo" className="h-16 w-16" />
-        </NavLink>
+        <Logo className="w-20 lg:w-24" /> {/* Assuming Logo component, adjust width as needed */}
+        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white ml-2">
+          SalesSphere
+        </span>
       </div>
 
       {/* Navigation Links */}
       <ul className="flex-grow mt-8 space-y-4 px-4">
         <li>
-          <NavLink to="/about" className="block py-2 px-4 rounded hover:bg-gray-700">
-            About
-          </NavLink>
+          <button
+            onClick={() => onSectionChange('business')}
+            className="block py-2 px-4 rounded hover:bg-gray-700"
+          >
+            Business
+          </button>
         </li>
         <li>
-          <NavLink to="/contact" className="block py-2 px-4 rounded hover:bg-gray-700">
-            Contact Us
-          </NavLink>
+          <button
+            onClick={() => onSectionChange('logs')}
+            className="block py-2 px-4 rounded hover:bg-gray-700"
+          >
+            Logs
+          </button>
         </li>
         <li>
-          <NavLink to="/services" className="block py-2 px-4 rounded hover:bg-gray-700">
-            Services
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/help" className="block py-2 px-4 rounded hover:bg-gray-700">
-            Help
-          </NavLink>
+          <button
+            onClick={() => onSectionChange('records')}
+            className="block py-2 px-4 rounded hover:bg-gray-700"
+          >
+            Financial Records
+          </button>
         </li>
       </ul>
     </div>

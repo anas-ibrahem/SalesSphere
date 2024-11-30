@@ -6,7 +6,8 @@ const Footer = function () {
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <a
-            href="https://flowbite.com/"
+            href="https://flowbite.com/" 
+            // TODO update link
             className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
           >
             <Logo className="w-20 lg:w-24" /> {/* Fixed width for Logo */}
