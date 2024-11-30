@@ -1,44 +1,80 @@
 import React from 'react';
-import Logo from './Logo';  // Assuming you have a Logo component or image
+import { Home, FileText, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react';
+import Logo from './Logo';
 
-export default function SideBar({ onSectionChange }) {
+export default function SideBar({ onSectionChange, isCollapsed, toggleSidebar }) {
   return (
     <div
-      className="h-screen w-64 text-white fixed top-0 left-0 flex flex-col"
+      className={`
+        h-screen fixed top-0 left-0 flex flex-col 
+        transition-all duration-300 
+        ${isCollapsed ? 'w-16' : 'w-64'}
+        text-white
+      `}
       style={{ backgroundColor: '#111827' }}
     >
       {/* Logo Section */}
       <div className="flex items-center justify-center h-20 border-b border-gray-700">
-        <Logo className="w-20 lg:w-24" /> {/* Assuming Logo component, adjust width as needed */}
-        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white ml-2">
-          SalesSphere
-        </span>
+        <Logo logoChoice={2} size="h-[48px] w-[48px]" />
+        {!isCollapsed && (
+          <button 
+            onClick={() => onSectionChange('default')} // Or any other action you want
+            className="self-center text-xl font-semibold whitespace-nowrap ml-2 text-white hover:text-gray-400 transition-all duration-300"
+          >
+            SalesSphere
+          </button>
+        )}
+      </div>
+
+      {/* Toggle Button Below the Logo */}
+      <div className="flex justify-center my-4">
+        <button 
+          onClick={toggleSidebar}
+          className="text-white hover:bg-gray-700 p-2 rounded transition-all duration-300 focus:outline-none"
+        >
+          {isCollapsed ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
+        </button>
       </div>
 
       {/* Navigation Links */}
-      <ul className="flex-grow mt-8 space-y-4 px-4">
+      <ul className="flex-grow space-y-2 px-2">
         <li>
           <button
             onClick={() => onSectionChange('business')}
-            className="block py-2 px-4 rounded hover:bg-gray-700"
+            className={`
+              flex items-center py-2 
+              ${isCollapsed ? 'justify-center' : 'px-4'}
+              rounded hover:bg-gray-700 w-full text-left
+            `}
           >
-            Business
+            <Home className="h-5 w-5 mr-3" />
+            {!isCollapsed && <span>Business</span>}
           </button>
         </li>
         <li>
           <button
             onClick={() => onSectionChange('logs')}
-            className="block py-2 px-4 rounded hover:bg-gray-700"
+            className={`
+              flex items-center py-2 
+              ${isCollapsed ? 'justify-center' : 'px-4'}
+              rounded hover:bg-gray-700 w-full text-left
+            `}
           >
-            Logs
+            <FileText className="h-5 w-5 mr-3" />
+            {!isCollapsed && <span>Logs</span>}
           </button>
         </li>
         <li>
           <button
             onClick={() => onSectionChange('records')}
-            className="block py-2 px-4 rounded hover:bg-gray-700"
+            className={`
+              flex items-center py-2 
+              ${isCollapsed ? 'justify-center' : 'px-4'}
+              rounded hover:bg-gray-700 w-full text-left
+            `}
           >
-            Financial Records
+            <DollarSign className="h-5 w-5 mr-3" />
+            {!isCollapsed && <span>Financial Records</span>}
           </button>
         </li>
       </ul>
