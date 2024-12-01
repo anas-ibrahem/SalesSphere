@@ -14,10 +14,10 @@
             android:id="@+id/cvUserImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="35dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="35dp"
+            app:cardElevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -31,17 +31,17 @@
         </androidx.cardview.widget.CardView>
 
 
-            <ImageView
-                android:id="@+id/ivNotification"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="15dp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_notifications"
-                app:tint="@color/primaryColor" />
+        <ImageView
+            android:id="@+id/ivNotification"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="15dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_notifications"
+            app:tint="@color/primaryColor" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="18dp"
@@ -59,10 +59,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
+                    android:gravity="center_vertical"
                     android:text="1"
                     android:textColor="@color/white"
                     android:textSize="12sp"
-                    android:gravity="center_vertical"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
 
@@ -77,109 +77,102 @@
 
         <TextView
             android:id="@+id/tvHello"
+            style="@style/FragmentTitleStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_horizontal"
             android:layout_marginTop="45dp"
             android:text="@string/welcome_back"
-            style="@style/FragmentTitleStyle"
             app:layout_constraintStart_toEndOf="@id/cvUserImage"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCrntTarget"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:text="Current Target"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:layout_marginTop="35dp"
-            android:layout_marginStart="@dimen/margin_horizontal"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHello" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cvDailyInspiration"
-            android:layout_width="0dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_vertical"
-            app:cardBackgroundColor="@color/primaryColor"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="35dp"
-
+            android:background="@color/cardBackgroundColor"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvCrntTarget">
+            app:layout_constraintTop_toBottomOf="@+id/tvHello">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/padding_fragment"
-                android:background="?attr/selectableItemBackground">
+                android:padding="@dimen/card_padding">
 
+                <!-- Target Title -->
                 <TextView
-                    android:id="@+id/tvCrntTargetTitle"
+                    android:id="@+id/targetTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal"
-                    android:layout_marginTop="@dimen/margin_vertical"
                     android:fontFamily="@font/poppins"
-                    android:text="Close 5 deals this month"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
+                    android:text="Finish 5 Deals this month"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/size_h1"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal"
-                    android:layout_marginTop="@dimen/margin_vertical"
-                    android:fontFamily="@font/poppins"
-                    android:text="Progress (2/5)"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvCrntTargetTitle" />
-
-
+                <!-- Target Progress Bar -->
                 <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyleHorizontal"
-
+                    android:id="@+id/targetProgress"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_horizontal"
                     android:layout_marginTop="@dimen/margin_vertical"
-                    android:layout_marginEnd="@dimen/margin_horizontal"
+                    android:height="4dp"
                     android:max="100"
-                    android:progress="40"
+                    android:progress="75"
+                    android:progressTint="@color/primaryColor"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvProgress" />
+                    app:layout_constraintTop_toBottomOf="@id/targetTitle" />
 
+                <!-- Progress Text -->
                 <TextView
+                    android:id="@+id/progressText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="@dimen/margin_horizontal"
                     android:fontFamily="@font/poppins"
-                    android:textSize="15sp"
-                    android:text="40%"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/progressBar" />
+                    android:text="75% Completed"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/size_h2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/targetProgress" />
 
+                <!-- Deadline Text -->
+                <TextView
+                    android:id="@+id/deadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:text="Deadline: Dec 10, 2024"
+                    android:textColor="@color/deadlineColor"
+                    android:textSize="@dimen/size_h3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/progressText" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/employeeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,111 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardElevation="6dp"
-    app:cardCornerRadius="16dp"
-    android:background="@android:color/white">
+    android:layout_marginVertical="@dimen/margin_vertical"
+    android:background="@color/cardBackgroundColor"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/card_padding">
 
-        <!-- Top Section: Deal Title -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dealTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingBottom="8dp">
+            android:fontFamily="@font/poppins"
+            android:text="Software License"
+            android:textColor="@color/primaryColor"
+            android:textSize="@dimen/size_h1"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Deal Title and Customer Name -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp">
+        <TextView
+            android:id="@+id/customerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="Customer: John Doe"
+            android:textColor="@color/primaryColor"
+            android:textSize="@dimen/size_h2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dealTitle" />
 
-                <TextView
-                    android:id="@+id/dealTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Software License Sale"
-                    android:fontFamily="@font/poppins"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primaryColor" />
-
-                <TextView
-                    android:id="@+id/customerName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Customer: John Doe"
-                    android:fontFamily="@font/poppins"
-                    android:textSize="14sp"
-                    android:textColor="@color/primaryColor"
-                    android:paddingTop="2dp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Divider -->
         <View
-            android:layout_width="match_parent"
+            android:id="@+id/separator"
+            android:layout_width="0dp"
             android:layout_height="1dp"
+            android:layout_marginTop="@dimen/margin_vertical"
             android:background="@color/dividerColor"
-            android:layout_marginVertical="8dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/customerName" />
 
-        <!-- Bottom Section: Details -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/expectedRevenue"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:fontFamily="@font/poppins"
+            android:text="Revenue: $10,000"
+            android:textColor="@color/moneyColor"
+            android:textSize="@dimen/size_h3"
+            app:drawableStartCompat="@drawable/ic_money"
+            android:gravity="center_vertical"
+            android:drawablePadding="5dp"
+            app:drawableTint="@color/moneyColor"
+            app:layout_constraintEnd_toStartOf="@+id/deadline"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/separator" />
 
-            <!-- Revenue -->
-            <TextView
-                android:id="@+id/expectedRevenue"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Revenue: $10,000"
-                android:textSize="14sp"
-                android:textColor="@color/secondary"
-                android:drawableLeft="@drawable/ic_money"
-                android:fontFamily="@font/poppins"
-                android:drawableTint="@color/secondary"
-                android:drawablePadding="4dp"
-                android:layout_weight="1" />
+        <!-- Deadline -->
+        <TextView
+            android:id="@+id/deadline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vertical"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/poppins"
+            android:text="Deadline: Dec 5, 2024"
+            android:textColor="@color/deadlineColor"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/size_h3"
+            app:drawableStartCompat="@drawable/ic_deadline"
+            app:drawableTint="@color/deadlineColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/expectedRevenue"
+            app:layout_constraintTop_toBottomOf="@id/separator" />
 
-            <!-- Deadline -->
-            <TextView
-                android:id="@+id/deadline"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Due Date: Dec 5, 2024"
-                android:textSize="14sp"
-                android:textColor="@color/error"
-                android:drawableLeft="@drawable/ic_deadline"
-                android:drawableTint="@color/error"
-                android:fontFamily="@font/poppins"
-                android:drawablePadding="4dp"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <!-- Claim Button -->
         <Button
             android:id="@+id/claimDealButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Claim Deal"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="12dp"
-            android:layout_gravity="center" />
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/customerName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/dealTitle"
+            app:layout_constraintTop_toTopOf="@+id/dealTitle" />
 
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
