@@ -6,6 +6,8 @@ import {
 } from "../components/SectionComponents";
 import RecordsSection from "../components/LayoutSections/RecordsSection";
 import LogsSection from "../components/LayoutSections/LogsSection";
+import DealsSection from "../components/LayoutSections/DealsSection";
+
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -28,7 +30,7 @@ function Home() {
       <SideBar
         onSectionChange={handleSectionChange}
         isCollapsed={isSidebarCollapsed}
-        toggleSidebar={toggleSidebar} // Pass toggle function to Sidebar
+        toggleSidebar={toggleSidebar}
       />
 
       {/* Main content area */}
@@ -43,6 +45,7 @@ function Home() {
           {activeSection === "business" && <BusinessSection />}
           {activeSection === "logs" && <LogsSection />}
           {activeSection === "records" && <RecordsSection />}
+          {activeSection === "deals" && <DealsSection />}
           {activeSection === "default" && <DefaultSection />}
         </div>
       </div>
