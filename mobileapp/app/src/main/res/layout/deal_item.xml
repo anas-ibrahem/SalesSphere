@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="6dp"
+    app:cardCornerRadius="16dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Section: Deal Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <!-- Deal Title and Customer Name -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:id="@+id/dealTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Software License Sale"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primaryColor" />
+
+                <TextView
+                    android:id="@+id/customerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer: John Doe"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColor="@color/primaryColor"
+                    android:paddingTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dividerColor"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Bottom Section: Details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Revenue -->
+            <TextView
+                android:id="@+id/expectedRevenue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Revenue: $10,000"
+                android:textSize="14sp"
+                android:textColor="@color/secondary"
+                android:drawableLeft="@drawable/ic_money"
+                android:fontFamily="@font/poppins"
+                android:drawableTint="@color/secondary"
+                android:drawablePadding="4dp"
+                android:layout_weight="1" />
+
+            <!-- Deadline -->
+            <TextView
+                android:id="@+id/deadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Due Date: Dec 5, 2024"
+                android:textSize="14sp"
+                android:textColor="@color/error"
+                android:drawableLeft="@drawable/ic_deadline"
+                android:drawableTint="@color/error"
+                android:fontFamily="@font/poppins"
+                android:drawablePadding="4dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <!-- Claim Button -->
+        <Button
+            android:id="@+id/claimDealButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Claim Deal"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
