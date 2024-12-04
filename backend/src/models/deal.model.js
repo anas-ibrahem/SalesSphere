@@ -39,4 +39,4 @@ class DealModel {
 }
 
 
-export default new DealModel();
+export default DealModel;

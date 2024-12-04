@@ -2,16 +2,19 @@ import DealModel from "../models/deal.model.js";
 
 
 class DealController {
-    async getAll(req, res) {
-        const emps = await DealModel.getAll(req.pool);
+    constructor() {
+        this.dealModel = new DealModel();
+    }
+    getAll = async (req, res) => {
+        const emps = await this.dealModel.getAll(req.pool);
         res.json(emps);
     }
-    async getAllClaimedDeals(req, res) {
-        const emps = await DealModel.getAllClaimedDeals(req.pool);
+    getAllClaimedDeals = async (req, res) => {
+        const emps = await this.dealModel.getAllClaimedDeals(req.pool);
         res.json(emps);
     }
-    async getAllOpenDeals(req, res) {
-        const emps = await DealModel.getAllOpenDeals(req.pool);
+    getAllOpenDeals = async (req, res) => {
+        const emps = await this.dealModel.getAllOpenDeals(req.pool);
         res.json(emps);
     }
 }
