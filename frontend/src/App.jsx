@@ -5,7 +5,7 @@ import BusinessRegistration from "./pages/BusinessRegistration";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./pages/LoadingScreen";
 import LandingPage from "./pages/LandingPage";
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 import UserContext from './context/UserContext';
 
@@ -41,6 +41,7 @@ function App() {
         }
         else if(data.error && data.session_end) {
           setTokenExpired(true);
+          toast.error('Session expired. Please login again.', {icon: '🔒'});
         }
         setIsLoading(false);
       });
