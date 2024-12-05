@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import { Button } from '@mui/material'; // Import Material UI Button
+import UserContext from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const { isAuthenticated, employeeId } = useContext(UserContext);
+  const Navigate = useNavigate();
+
+  console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (!isAuthenticated) {
+        Navigate('/login'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (!isAuthenticated) return null;
+
   return (
     <div className="h-screen flex bg-gray-100">
       {/* Sidebar on the left */}
