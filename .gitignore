@@ -9,3 +9,5 @@
 *.sln
 *.sw?
 TODO
+backend/.env
+backend/.env
