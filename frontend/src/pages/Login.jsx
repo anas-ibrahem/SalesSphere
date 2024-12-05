@@ -18,6 +18,8 @@ import {
   import * as Yup from 'yup';
 
   import FullLogo from '../components/FullLogo';
+import { useContext } from 'react';
+import UserContext from '../context/UserContext';
   
 
   
@@ -31,9 +33,39 @@ import {
   });
   
   const Login = () => {
+    const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(UserContext);
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const handleSubmit = (values, { setSubmitting }) => {
+      // fetch http://localhost:5000/api/auth/login
+
+      fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Authorization': token,
+        },
+        body: JSON.stringify(values)
+      }).then(res => {
+        if(res.status === 200) {
+          return res.json();
+        }
+        else {
+          alert('Invalid email or password');
+          setSubmitting(false);
+        }
+      }).then(data => {
+        if(data.token) {
+          setToken(data.token);
+          setIsAuthenticated(true);
+          setTokenExpired(false);
+        }
+        else {
+          alert('Invalid email or password');
+          setSubmitting(false);
+        }
+      });
+
       // Simulate login process
       setTimeout(() => {
         alert(JSON.stringify(values, null, 2));

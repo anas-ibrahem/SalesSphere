@@ -16,14 +16,16 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [employeeId, setEmployeeId] = useState(null);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if(token) {
+    const _token = localStorage.getItem('token');
+    setToken(_token);
+    if(_token) {
       fetch('http://localhost:3000/api/auth/', {
         method: 'POST',
         headers: {
-          'Authorization': token
+          'Authorization': _token
         }
       }).then(res => {
         if(res.status === 200) {
@@ -56,7 +58,7 @@ function App() {
   }
   return (
     <div>
-      <UserContext.Provider value={{isAuthenticated, setIsAuthenticated, employeeId, setEmployeeId, tokenExpired, setTokenExpired}}>
+      <UserContext.Provider value={{isAuthenticated, setIsAuthenticated, employeeId, setEmployeeId, tokenExpired, setTokenExpired, token, setToken}}>
         <Toaster
           position="top-center"
           reverseOrder={false}
