@@ -75,6 +75,44 @@ class EmployeeModel {
             return {};
         }
     }
+    async getByEmailForAuth(pool, email) {
+        try {
+            const result = await pool.query(`
+                SELECT *
+                FROM employee e
+                LEFT JOIN employee_profile ep
+                ON e.id = ep.employee_id
+                WHERE ep.email = $1;
+            `, [email]);
+
+            if(result.rows.length === 0) {
+                return {};
+            }
+
+            const results = result.rows[0];
+            // clean up the result object
+
+            if(results['employee_id']) {
+                delete results['employee_id'];
+            }
+
+            return results;
+
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {};
+        }
+    }
+    async getByEmail(pool, email) {
+        const emp = await this.getByEmailForAuth(pool, email);
+        if(emp) {
+            if(emp['hashed_password']) {
+                delete emp['hashed_password'];
+            }
+        }
+        return emp;
+    }
 
     async register(pool) {
         try {
