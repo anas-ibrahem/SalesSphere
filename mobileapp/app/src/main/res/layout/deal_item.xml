@@ -1,103 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/margin_vertical"
-    android:background="@color/cardBackgroundColor"
+    android:layout_marginVertical="@dimen/margin_small"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/card_corner_radius"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/md_theme_outlineVariant"
     app:cardElevation="@dimen/card_elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackground"
+        android:layout_height="wrap_content"
         android:padding="@dimen/card_padding">
 
+
+        <!-- Deal Title -->
         <TextView
-            android:id="@+id/dealTitle"
-            android:layout_width="wrap_content"
+            android:id="@+id/dealTitleTextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
-            android:text="Software License"
             android:textColor="@color/primaryColor"
             android:textSize="@dimen/size_h1"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Software License" />
 
-        <TextView
-            android:id="@+id/customerName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/customerInfoContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dealTitleTextView">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/primaryColor" />
+
+            <TextView
+                android:id="@+id/customerNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/primaryColor"
+                android:textSize="@dimen/size_h2"
+                tools:text="John Doe" />
+        </LinearLayout>
+
+
+        <!-- Deal Value and Timeline Container -->
+        <LinearLayout
+            android:id="@+id/dealMetricsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/customerInfoContainer">
+
+            <!-- Deal Value -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Revenue"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                    android:textColor="@color/md_theme_onSurfaceVariant"
+                    android:textSize="@dimen/size_h3" />
+
+                <TextView
+                    android:id="@+id/revenueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_h2"
+                    android:textStyle="bold"
+                    tools:text="$50,000" />
+            </LinearLayout>
+
+            <!-- Timeline -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deadline"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                    android:textColor="@color/md_theme_onSurfaceVariant"
+                    android:textSize="@dimen/size_h3" />
+
+                <TextView
+                    android:id="@+id/deadlineTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_h2"
+                    android:textStyle="bold"
+                    tools:text="Dec 31, 2024" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- View Details Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/viewDetailsButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:backgroundTint="@color/md_theme_surfaceVariant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="4dp"
             android:fontFamily="@font/poppins"
-            android:text="Customer: John Doe"
-            android:textColor="@color/primaryColor"
+            android:text="View Details"
             android:textSize="@dimen/size_h2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dealTitle" />
-
-        <View
-            android:id="@+id/separator"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:background="@color/dividerColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/customerName" />
-
-        <TextView
-            android:id="@+id/expectedRevenue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:fontFamily="@font/poppins"
-            android:text="Revenue: $10,000"
-            android:textColor="@color/moneyColor"
-            android:textSize="@dimen/size_h3"
-            app:drawableStartCompat="@drawable/ic_money"
-            android:gravity="center_vertical"
-            android:drawablePadding="5dp"
-            app:drawableTint="@color/moneyColor"
-            app:layout_constraintEnd_toStartOf="@+id/deadline"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/separator" />
-
-        <!-- Deadline -->
-        <TextView
-            android:id="@+id/deadline"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vertical"
-            android:drawablePadding="5dp"
-            android:fontFamily="@font/poppins"
-            android:text="Deadline: Dec 5, 2024"
-            android:textColor="@color/deadlineColor"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/size_h3"
-            app:drawableStartCompat="@drawable/ic_deadline"
-            app:drawableTint="@color/deadlineColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/expectedRevenue"
-            app:layout_constraintTop_toBottomOf="@id/separator" />
-
-        <Button
-            android:id="@+id/claimDealButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Claim Deal"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/customerName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/dealTitle"
-            app:layout_constraintTop_toTopOf="@+id/dealTitle" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dealMetricsContainer" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+
+</com.google.android.material.card.MaterialCardView>

@@ -30,7 +30,7 @@ class ClaimedDealsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dealAdapter = DealAdapter(listOf(), 1)
+        dealAdapter = DealAdapter(listOf(), 1 , requireActivity())
         binding.rvDeals.adapter = dealAdapter
         binding.rvDeals.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false)
     }

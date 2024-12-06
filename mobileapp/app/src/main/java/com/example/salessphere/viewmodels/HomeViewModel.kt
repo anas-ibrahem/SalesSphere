@@ -16,8 +16,12 @@ class HomeViewModel(val retrofitService: RetrofitService) : ViewModel() {
     val employees : LiveData<List<Employee>>
         get() = _employees
 
+    init {
+        getAllEmployees()
+    }
 
-     fun getAllEmployees(){
+
+     private fun getAllEmployees(){
         viewModelScope.launch(Dispatchers.IO){
             val myEmployees = retrofitService.getAllEmployees().body()
             withContext(Dispatchers.Main){

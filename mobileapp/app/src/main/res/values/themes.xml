@@ -11,12 +11,12 @@
         <item name="colorPrimaryContainer">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
 
-
+        <item name="elevationOverlayColor">@android:color/transparent</item>
 
         <!-- Secondary branding color. (Progress bar color)-->
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/white</item>
-        <item name="colorSecondaryContainer">@color/white</item>
+        <item name="colorSecondaryContainer">@color/backgroundColor</item>
         <item name="colorOnSecondary">@color/white</item>
 
         <!-- Background color. -->

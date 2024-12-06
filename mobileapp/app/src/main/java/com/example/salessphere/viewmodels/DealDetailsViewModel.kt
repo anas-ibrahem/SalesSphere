@@ -11,30 +11,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DealViewModel(val retrofitService: RetrofitService) : ViewModel() {
-    private val _deals : MutableLiveData<List<Deal>> = MutableLiveData()
-    val deals : LiveData<List<Deal>>
-        get() = _deals
+
+class DealDetailsViewModel(private val retrofitService: RetrofitService ,private  val dealId : Int) : ViewModel() {
+    private val _deal : MutableLiveData<Deal> = MutableLiveData()
+    val deal : LiveData<Deal>
+        get() = _deal
 
     init {
-        getAllDeals()
+        getDealById()
     }
-    private fun getAllDeals(){
+    private fun getDealById(){
         viewModelScope.launch(Dispatchers.IO){
-            val myDeals = retrofitService.getAllDeals().body()
+            val myDeal = retrofitService.getDealById(dealId).body()
             withContext(Dispatchers.Main){
-                if (!myDeals.isNullOrEmpty()){
-                    _deals.postValue(myDeals!!)
-                }
+                if (myDeal != null)
+                    _deal.postValue(myDeal!!)
             }
         }
     }
 }
 
-class DealFactory(val retrofitService: RetrofitService) : ViewModelProvider.Factory {
+class DealDetailFactory(val retrofitService: RetrofitService , val dealId : Int) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DealViewModel::class.java)) {
-            return DealViewModel(retrofitService) as T
+        if (modelClass.isAssignableFrom(DealDetailsViewModel::class.java)) {
+            return DealDetailsViewModel(retrofitService , dealId) as T
         } else {
             throw IllegalArgumentException()
         }

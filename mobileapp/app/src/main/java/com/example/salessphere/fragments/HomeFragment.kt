@@ -32,10 +32,9 @@ class HomeFragment : Fragment() {
 
         val retrofitService = RetrofitHelper.retrofitService
         val factory = HomeFactory(retrofitService)
-        var employeeList : List<Employee> = listOf()
+        var employeeList : List<Employee>
         homeViewModel = ViewModelProvider(this , factory ).get(HomeViewModel::class.java)
 
-        homeViewModel.getAllEmployees()
         homeViewModel.employees.observe(viewLifecycleOwner){ employees ->
             employeeList = employees
             val myEmployee = employeeList[0]

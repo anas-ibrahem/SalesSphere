@@ -21,8 +21,8 @@ import com.example.salessphere.viewmodels.HomeViewModel
 
 class OpenDealsFragment : Fragment() {
 
-    private lateinit var binding : FragmentOpenDealsBinding
-    private lateinit var dealAdapter : DealAdapter
+    private lateinit var binding: FragmentOpenDealsBinding
+    private lateinit var dealAdapter: DealAdapter
     private lateinit var dealViewModel: DealViewModel
 
     override fun onCreateView(
@@ -30,26 +30,91 @@ class OpenDealsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_open_deals,container , false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_open_deals, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dealAdapter = DealAdapter(listOf() , 0)
-        binding.rvDeals.adapter = dealAdapter
-        binding.rvDeals.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL,false)
+        setupViewModel()
+        setupRecyclerView()
 
+    }
+
+    private fun setupViewModel() {
         val retrofitService = RetrofitHelper.retrofitService
         val factory = DealFactory(retrofitService)
-        dealViewModel = ViewModelProvider(this , factory ).get(DealViewModel::class.java)
+        dealViewModel = ViewModelProvider(this, factory).get(DealViewModel::class.java)
 
-        dealViewModel.getAllDeals()
+        //        dealViewModel.deals.observe(viewLifecycleOwner){newDeals ->
+//            dealAdapter.deals = newDeals
+//            dealAdapter.notifyDataSetChanged()
+//        }
+    }
 
-        dealViewModel.deals.observe(viewLifecycleOwner){newDeals ->
-            dealAdapter.deals = newDeals
-            dealAdapter.notifyDataSetChanged()
-        }
+    private fun setupRecyclerView(){
+        val dealList = listOf(
+            Deal(1 ,
+                "Software Sale" ,
+                "El ablkash el mateeen" ,
+                "Open" ,
+                1 ,
+                2000f ,
+                1000f ,
+                null ,
+                null ,
+                "1/1/2024" ,
+                "2/2/2024" ,
+                null ,
+                1
+            ) ,
+            Deal(1 ,
+                "Software Sale" ,
+                "El ablkash el mateeen" ,
+                "Open" ,
+                1 ,
+                2000f ,
+                1000f ,
+                null ,
+                null ,
+                "1/1/2024" ,
+                "2/2/2024" ,
+                null ,
+                1
+            ) ,
+            Deal(1 ,
+                "Software Sale" ,
+                "El ablkash el mateeen" ,
+                "Open" ,
+                1 ,
+                2000f ,
+                1000f ,
+                null ,
+                null ,
+                "1/1/2024" ,
+                "2/2/2024" ,
+                null ,
+                1
+            ) ,
+            Deal(1 ,
+                "Software Sale" ,
+                "El ablkash el mateeen" ,
+                "Open" ,
+                1 ,
+                2000f ,
+                1000f ,
+                null ,
+                null ,
+                "1/1/2024" ,
+                "2/2/2024" ,
+                null ,
+                1
+            )
+
+        )
+        dealAdapter = DealAdapter(dealList, 0, requireActivity())
+        binding.rvDeals.adapter = dealAdapter
+        binding.rvDeals.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
 
     }
 }
