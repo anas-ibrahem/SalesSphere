@@ -4,7 +4,7 @@
         {
             "src": "index.js",
             "use": "@vercel/node",
-            "config": {"includeFiles": ["index.js", "package.json", "package-lock.json", "cron.js"]}
+            "config": {"includeFiles": ["index.js", "package.json", "package-lock.json", "db.js"]}
         }
     ],
     "routes": [
