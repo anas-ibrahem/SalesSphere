@@ -1,6 +1,5 @@
-
 class DealModel {
-    async getAll(pool) {
+    getAll = async (pool) => {
         try {
             const result = await pool.query(`
                 SELECT * FROM deal
@@ -12,7 +11,8 @@ class DealModel {
             return [];
         }
     }
-    async getAllClaimedDeals(pool) {
+
+    getAllClaimedDeals = async (pool) => {
         try {
             const result = await pool.query(`
                 SELECT * FROM deal WHERE status = 'claimed'
@@ -24,7 +24,8 @@ class DealModel {
             return [];
         }
     }
-    async getAllOpenDeals(pool) {
+
+    getAllOpenDeals = async (pool) => {
         try {
             const result = await pool.query(`
                 SELECT * FROM deal WHERE status = 'open'
@@ -37,6 +38,5 @@ class DealModel {
         }
     }
 }
-
 
 export default DealModel;

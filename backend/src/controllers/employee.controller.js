@@ -39,7 +39,7 @@ class EmployeeController {
         if(empData.password) {
             delete empData.password;
         }
-        const newEmployee = new EmployeeModel(req.body);
+        const newEmployee = new EmployeeModel(empData);
         const result = await newEmployee.register(req.pool);
         if(result == -1) {
             return res.status(400).json({error: 'Email already exists'});

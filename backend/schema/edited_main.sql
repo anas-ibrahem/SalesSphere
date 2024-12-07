@@ -19,9 +19,12 @@ CREATE TABLE BUSINESS (
 DROP TABLE IF EXISTS EMPLOYEE CASCADE;
 CREATE TABLE EMPLOYEE (
     id SERIAL PRIMARY KEY,
-    role VARCHAR(255) NOT NULL, -- Manager, Deal Executor, Deal Opener
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role INT NOT NULL, -- Manager 2, Deal Executor 1, Deal Opener 0
     account_creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     hashed_password VARCHAR(255) NOT NULL, -- we forgot to add this field
+
+    verified INT NOT NULL DEFAULT 1, -- 0 for unverified, 1 for verified, 2 for blocked
 
     -- Relationships
     business_id INT NOT NULL,
@@ -39,7 +42,7 @@ CREATE TABLE CUSTOMER (
     phone_number VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     address TEXT,
-    type VARCHAR(255) NOT NULL, -- Individual or Company
+    type INT NOT NULL, -- Individual 0 or Company 1
     lead_source VARCHAR(255),
     preferred_contact_method BOOLEAN, -- 0 for email, 1 for phone
 
@@ -55,7 +58,7 @@ DROP TABLE IF EXISTS DEAL CASCADE;
 CREATE TABLE DEAL (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    status VARCHAR(255) NOT NULL, -- Open, Claimed, Closed Won, Closed Lost
+    status INT NOT NULL, -- Open 0, Claimed 1, Closed Won 2, Closed Lost 3
     description TEXT,
     date_opened TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_closed TIMESTAMP,
@@ -82,7 +85,7 @@ CREATE TABLE FINANCIAL_RECORD (
     transaction_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     type VARCHAR(255) NOT NULL, -- Income or Expense
     description TEXT,
-    payment_method VARCHAR(255) NOT NULL, -- Cash, Credit Card, Bank Transfer
+    payment_method INT NOT NULL, -- Cash 0, Credit Card 1, Bank Transfer 2, Electronic Payment 3, Other 4
 
     -- Relationships
     business_id INT NOT NULL,
@@ -161,7 +164,6 @@ CREATE TABLE EMPLOYEE_PROFILE (
     last_name VARCHAR(255) NOT NULL,
     birth_date TIMESTAMP NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
     profile_picture_url VARCHAR(255),
     address TEXT,
     hire_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -169,4 +171,14 @@ CREATE TABLE EMPLOYEE_PROFILE (
     -- Relationships
     employee_id INT NOT NULL,
     FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
+);
+
+-- Admin User for the system
+DROP TABLE IF EXISTS ADMIN CASCADE;
+CREATE TABLE ADMIN (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL,
+    privilege INT NOT NULL DEFAULT 0 -- 0 for normal admin, 1 for super admin
 );
