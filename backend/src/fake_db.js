@@ -63,19 +63,22 @@ async function seedData() {
         });
     }
     // push to db
+    let last_id = 0;
     for (const e of employee) {
-        await pool.query(`
+        const q = await pool.query(`
             INSERT INTO employee (role, account_creation_date, hashed_password, business_id)
             VALUES ($1, $2, $3, $4)
+            RETURNING id
         `, [e.role, e.account_creation_date, e.hashed_password, e.business_id]);
+        last_id = q.rows[0].id;
     }
     console.log('Employee table seeded');
     // Employee profile table
     // employee_id, first_name, last_name, birth_date, phone_number, email, profile_picture_url, address, hire_date, employee_id
     const employee_profile = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = last_id; i < last_id + 5; i++) {
         employee_profile.push({
-            employee_id: faker.number.int({min: 1, max: 5}),
+            employee_id: i - 4,
             first_name: faker.person.firstName(),
             last_name: faker.person.lastName(),
             birth_date: faker.date.past(),
@@ -119,7 +122,33 @@ async function seedData() {
         `, [c.business_id, c.name, c.phone_number, c.email, c.address, c.registration_date, c.type, c.lead_source, c.preferred_contact_method, c.added_by]);
     }
     console.log('Customer table seeded');
+
+    // deal table
+    // customer_id, deal_opener, title, status, date_opened, due_date, expenses, customer_budget
+    // status: open, closed, lost, won, claimed
+    const deals = [];
+    const statuses = ['open', 'closed', 'lost', 'won', 'claimed'];
+    for (let i = 0; i < 5; i++) {
+        deals.push({
+            customer_id: faker.number.int({min: 1, max: 5}),
+            deal_opener: faker.number.int({min: 1, max: 5}),
+            title: faker.company.catchPhrase(),
+            status: statuses[faker.number.int({min: 0, max: statuses.length - 1})],
+            date_opened: faker.date.past(),
+            due_date: faker.date.future(),
+            expenses: faker.finance.amount(),
+            customer_budget: faker.finance.amount(),
+        });
+    }
+    // push to db
+    for (const d of deals) {
+        await pool.query(`
+            INSERT INTO DEAL (customer_id, deal_opener, title, status, date_opened, due_date, expenses, customer_budget)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `, [d.customer_id, d.deal_opener, d.title, d.status, d.date_opened, d.due_date, d.expenses, d.customer_budget]);
+    }
+    console.log('Deal table seeded');
 }
 
 // Run the reset script
-resetDatabase();
+seedData();
