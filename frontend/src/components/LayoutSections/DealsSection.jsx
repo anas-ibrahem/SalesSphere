@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { FaArrowLeft } from 'react-icons/fa';
+import { PieChart  } from '@mui/x-charts/PieChart';
 import Pagination from '../Pagination';
+import DealDetails from './DealsDetails';
 
 const initialDealsData = [
   {
@@ -66,159 +67,180 @@ const initialDealsData = [
 ];
 
 
-// Deal Details Component
-function DealDetails({ deal, onBack }) {
-  return (
-    <div className="p-4">
-      <button 
-        onClick={onBack} 
-        className="mb-3 px-3 py-1 bg-blue-800 text-white text-sm rounded hover:bg-blue-600 transition flex items-center"
-      >
-        <FaArrowLeft className="mr-2" />
-        Back to Deals List
-      </button>
-
-      <h1 className="text-2xl font-bold mb-3">{deal.title}</h1>
-      <div className="grid grid-cols-2 gap-4">
-        {/* Deal Information */}
-        <div className="flex flex-col h-full"> 
-          <div className="bg-white border-4 shadow-sm rounded-lg p-4 flex-grow">
-            <h2 className="text-lg font-semibold mb-2">Deal Information</h2>
-            <p><strong>Status:</strong> {deal.status.replace('_', ' ')}</p>
-            <p><strong>Description:</strong> {deal.description}</p>
-            <p><strong>Account Manager:</strong> {deal.account_manager}</p>
-            <p><strong>Probability of Close:</strong> {deal.probability_of_close}</p>
-            <p><strong>Next Steps:</strong> {deal.next_steps}</p>
-          </div>
-        </div>
-
-        {/* Financial Details */}
-        <div className="flex flex-col h-full">
-          <div className="bg-white border-4 shadow-sm rounded-lg p-4 flex-grow">
-            <h2 className="text-lg font-semibold mb-2">Financial Details</h2>
-            <p><strong>Date Opened:</strong> {new Date(deal.date_opened).toLocaleDateString()}</p>
-            <p><strong>Due Date:</strong> {new Date(deal.due_date).toLocaleDateString()}</p>
-            <p><strong>Expenses:</strong> ${deal.expenses.toLocaleString()}</p>
-            <p><strong>Customer Budget:</strong> ${deal.customer_budget.toLocaleString()}</p>
-            <p><strong>Total Value:</strong> ${deal.total_value.toLocaleString()}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DealsSection() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [sortBy, setSortBy] = useState('date_opened');
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [selectedDeal, setSelectedDeal] = useState(null);
-
-  const filteredAndSortedDeals = useMemo(() => {
-    return initialDealsData
-      .filter(deal => filterStatus === 'all' || deal.status === filterStatus)
-      .sort((a, b) => {
-        if (sortBy === 'date_opened') {
-          return new Date(b.date_opened) - new Date(a.date_opened);
-        }
-        if (sortBy === 'expenses') {
-          return b.expenses - a.expenses;
-        }
-        return 0;
-      });
-  }, [filterStatus, sortBy]);
-
-  const totalPages = Math.ceil(filteredAndSortedDeals.length / itemsPerPage);
-  const paginatedDeals = filteredAndSortedDeals.slice(
-    (currentPage - 1) * itemsPerPage, 
-    currentPage * itemsPerPage
-  );
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filterStatus, sortBy, itemsPerPage]);
 
 
-  useEffect(() => {
-    const updateItemsPerPage = () => {
-      const dealItemHeight = 150;
-      const headerHeight = 200; 
-      const availableHeight = window.innerHeight - headerHeight;
-      const newItemsPerPage = Math.floor(availableHeight / dealItemHeight);
-  
-      setItemsPerPage(newItemsPerPage > 1 ? newItemsPerPage : 1);
+  function DealsSection() {
+
+    const itemsPerPageMap = {
+      mobile: 3,
+      tablet: 5,
+      desktop: 3,
     };
+    const [deviceType, setDeviceType] = useState('mobile'); // New state for device type
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [sortBy, setSortBy] = useState('date_opened');
+    const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageMap[deviceType]);
+    const [selectedDeal, setSelectedDeal] = useState(null);
   
-    updateItemsPerPage();
-    window.addEventListener('resize', updateItemsPerPage);
+    useEffect(() => {
+      const handleResize = () => {
+        const height = window.innerHeight;
+        let newDeviceType = 'mobile';
+    
+        if (height >= 768 && height < 1024) {
+          newDeviceType = 'tablet';
+        } else if (height >= 1024) {
+          newDeviceType = 'desktop';
+        }
   
-    return () => window.removeEventListener('resize', updateItemsPerPage);
-  }, []);
+        if (newDeviceType !== deviceType) {
+          setDeviceType(newDeviceType);
+          setItemsPerPage(itemsPerPageMap[newDeviceType]);
+        }
+      };
+  
+      // Add event listener
+      window.addEventListener('resize', handleResize);
+      
+      // Initial check
+      handleResize();
+  
+      // Cleanup
+      return () => window.removeEventListener('resize', handleResize);
+    }, [deviceType]);
+    
+    const filteredAndSortedDeals = useMemo(() => {
+      return initialDealsData
+        .filter(deal => filterStatus === 'all' || deal.status === filterStatus)
+        .sort((a, b) => {
+          if (sortBy === 'date_opened') {
+            return new Date(b.date_opened) - new Date(a.date_opened);
+          }
+          if (sortBy === 'expenses') {
+            return b.expenses - a.expenses;
+          }
+          return 0;
+        });
+    }, [filterStatus, sortBy]);
+  
+    const totalPages = Math.ceil(filteredAndSortedDeals.length / itemsPerPage);
+    const paginatedDeals = filteredAndSortedDeals.slice(
+      (currentPage - 1) * itemsPerPage, 
+      currentPage * itemsPerPage
+    );
   
 
-  if (selectedDeal) {
+  
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [filterStatus, sortBy, itemsPerPage]);
+  
+
+  
+    if (selectedDeal) {
+      return (
+        <div className="flex bg-white flex-col h-screen">
+          <DealDetails 
+            deal={selectedDeal} 
+            onBack={() => setSelectedDeal(null)} 
+          />
+        </div>
+      );
+    }
+
+
+    const customColors = {
+      open: '#01A2E1',       
+      closed_lost: '#D9605F', 
+      closed_won: '#3357FF' 
+    };
+
+    const processData = (data) => {
+      const statusCounts = data.reduce((acc, item) => {
+        acc[item.status] = (acc[item.status] || 0) + 1;
+        return acc;
+      }, {});
+    
+      return Object.entries(statusCounts).map(([status, count]) => ({
+        id: status,
+        label: status,
+        value: count,
+        color : customColors[status]
+      }));
+    }; 
+    
     return (
-      <div className="flex bg-white flex-col h-screen">
-        <DealDetails 
-          deal={selectedDeal} 
-          onBack={() => setSelectedDeal(null)} 
-        />
+      <div className="flex bg-white flex-col h-full px-2">
+        <h1 className="text-2xl font-bold mb-8 ml-4 mt-6">Deals</h1>
+  
+        {/* Filters */}
+        <div className="flex justify-between mb-4 p-4 pt-0">
+          <div className="space-x-2">
+            <select 
+              value={filterStatus} 
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="p-2 border rounded"
+            >
+              <option value="all">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="closed_won">Closed Won</option>
+              <option value="closed_lost">Closed Lost</option>
+            </select>
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              className="p-2 border rounded"
+            >
+              <option value="date_opened">Sort by Date</option>
+              <option value="expenses">Sort by Expenses</option>
+            </select>
+          </div>
+        </div>
+  
+        {/* Deals List and Stats */}
+        <section className="flex">
+
+          <div className="flex-grow overflow-y-auto px-4 pr-0">
+            
+            <ul className="space-y-4">
+
+              {paginatedDeals.map((deal) => (
+                <li
+                  key={deal.id}
+                  onClick={() => setSelectedDeal(deal)}
+                  className="p-4 border-[3px] shadow-sm rounded cursor-pointer hover:bg-gray-100 transition-all"
+                >
+                  <h3 className="text-xl font-semibold">{deal.title}</h3>
+                  <p>Status: {deal.status.replace('_', ' ')}</p>
+                  <p>Due Date: {new Date(deal.due_date).toLocaleDateString()}</p>
+                  <p>Expenses: ${deal.expenses}</p>
+                </li>
+              ))}
+            </ul>
+
+          </div>
+  
+          {/* TODO fix rotation reposnivity */}
+          
+          <div className="flex-grow-0 w-1/3">
+              <PieChart
+              series={[
+                {
+                  data: processData(initialDealsData),
+                  colors: Object.values(customColors),
+                }
+              ]}           
+                width={370}
+                height={190}
+              />
+          </div>
+        </section>
+  
+        {/* Pagination */}
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
     );
   }
   
-  return (
-      <div className="flex bg-white flex-col h-full px-2">
-        <h1 className="text-2xl font-bold mb-8 ml-4 mt-6">Deals</h1>
-
-      {/* Filters */}
-      <div className="flex justify-between mb-4 p-4 pt-0">
-        <div className="space-x-2">
-          <select 
-            value={filterStatus} 
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="p-2 border rounded"
-          >
-            <option value="all">All Statuses</option>
-            <option value="open">Open</option>
-            <option value="closed_won">Closed Won</option>
-            <option value="closed_lost">Closed Lost</option>
-          </select>
-          <select 
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value)}
-            className="p-2 border rounded"
-          >
-            <option value="date_opened">Sort by Date</option>
-            <option value="expenses">Sort by Expenses</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Deals List - Scrollable */}
-      <div className="flex-grow overflow-y-auto px-4">
-        <ul className="space-y-4">
-          {paginatedDeals.map((deal) => (
-            <li
-              key={deal.id}
-              onClick={() => setSelectedDeal(deal)}
-              className="p-4 border-[3px] shadow-sm rounded cursor-pointer hover:bg-gray-100 transition-all"
-            >
-              <h3 className="text-xl font-semibold">{deal.title}</h3>
-              <p>Status: {deal.status.replace('_', ' ')}</p>
-              <p>Due Date: {new Date(deal.due_date).toLocaleDateString()}</p>
-              <p>Expenses: ${deal.expenses}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Pagination */}
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-
-    </div>
-  );
-}
-
-export default DealsSection;
+  export default DealsSection;
