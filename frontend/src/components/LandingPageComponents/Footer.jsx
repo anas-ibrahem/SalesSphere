@@ -10,7 +10,7 @@ const Footer = function () {
             onClick={() => window.scrollTo(0, 0)}
             className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
           >
-            <Logo className="w-20 lg:w-24" /> {/* Fixed width for Logo */}
+            <Logo className="w-20 lg:w-24" logoChoice={2} /> {/* Fixed width for Logo */}
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               SalesSphere
             </span>
