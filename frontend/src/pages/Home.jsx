@@ -7,7 +7,7 @@ import {
 import RecordsSection from "../components/LayoutSections/RecordsSection";
 import LogsSection from "../components/LayoutSections/LogsSection";
 import DealsSection from "../components/LayoutSections/DealsSection";
-
+import EmployeesSection from "../components/LayoutSections/EmployeesSection";
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -46,6 +46,7 @@ function Home() {
           {activeSection === "logs" && <LogsSection />}
           {activeSection === "records" && <RecordsSection />}
           {activeSection === "deals" && <DealsSection />}
+          {activeSection === "employees" && <EmployeesSection />}
           {activeSection === "default" && <DefaultSection />}
         </div>
       </div>
