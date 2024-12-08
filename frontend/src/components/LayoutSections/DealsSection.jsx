@@ -222,7 +222,6 @@ const initialDealsData = [
           </div>
   
           {/* TODO fix rotation reposnivity */}
-          
           <div className="flex-grow-0 w-1/3">
               <PieChart
               series={[
@@ -235,6 +234,7 @@ const initialDealsData = [
                 height={190}
               />
           </div>
+
         </section>
   
         {/* Pagination */}
