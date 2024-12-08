@@ -79,6 +79,22 @@ export default function SideBar({
             {!isCollapsed && <span>Logs</span>}
           </button>
         </li>
+
+        <li>
+          <button
+            onClick={() => onSectionChange('deals')}
+            className={`
+              flex items-center py-2 
+              ${isCollapsed ? 'justify-center' : 'px-4'}
+              rounded hover:bg-gray-700 w-full text-left
+            `}
+          >
+            {/* TODO change Dollar sign */}
+            <DollarSign className="h-5 w-5 mr-3" />
+            {!isCollapsed && <span>Deals</span>}
+          </button>
+        </li>
+
         <li>
           <button
             onClick={() => onSectionChange("records")}

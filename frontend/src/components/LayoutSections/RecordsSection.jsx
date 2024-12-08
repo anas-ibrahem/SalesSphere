@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-
+import React, { useState, useMemo, useEffect } from "react";
+import Pagination from '../Pagination';
 // TODO add green and red colors for income and expense and + or - sign
 // TODO fix the color blue across all sections
 // TODO add a search bar to filter records by deal name
 // TODO add time (clock)
 // TODO use icons for prev and next buttons
-
 
 // Generate dummy financial records
 const generateDummyData = () => {
@@ -33,8 +32,28 @@ const generateDummyData = () => {
     const [filterType, setFilterType] = useState("All");
     const [sortField, setSortField] = useState("transaction_date");
     const [sortOrder, setSortOrder] = useState("asc");
-    const recordsPerPage = 10;
-  
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    // Calculate items per page based on screen height
+    useEffect(() => {
+      const calculateItemsPerPage = () => {
+        const headerHeight = 200; // Filters and title
+        const paginationHeight = 60; // Pagination section
+        const itemHeight = 40; // Estimated height of each table row
+        const availableHeight = window.innerHeight - headerHeight - paginationHeight;
+        
+        const calculatedItemsPerPage = Math.floor(availableHeight / itemHeight);
+        setItemsPerPage(Math.max(calculatedItemsPerPage, 5)); // Minimum 5 items
+      };
+
+      // Calculate on mount and resize
+      calculateItemsPerPage();
+      window.addEventListener('resize', calculateItemsPerPage);
+      
+      // Cleanup listener
+      return () => window.removeEventListener('resize', calculateItemsPerPage);
+    }, []);
+
     // Filtering logic
     const filteredRecords = dummyData.filter((record) => {
       return filterType === "All" || record.type === filterType;
@@ -52,118 +71,90 @@ const generateDummyData = () => {
     });
   
     // Pagination logic
-    const indexOfLastRecord = currentPage * recordsPerPage;
-    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+    const totalPages = Math.ceil(sortedRecords.length / itemsPerPage);
+    const indexOfLastRecord = currentPage * itemsPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
     const currentRecords = sortedRecords.slice(indexOfFirstRecord, indexOfLastRecord);
-    const totalPages = Math.ceil(sortedRecords.length / recordsPerPage);
   
     const handleExpand = (id) => {
       setExpandedId(expandedId === id ? null : id);
     };
   
     return (
-      <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-        <h1 className="text-2xl font-bold mb-4">Financial Records</h1>
-  
-        {/* Filter and Sort Controls */}
-        <div className="flex justify-between mb-4">
-          {/* Filter */}
-          <div className="flex space-x-4">
-            <select
-              onChange={(e) => setFilterType(e.target.value)}
-              className="p-2 border rounded"
-            >
-              <option value="All">All Types</option>
-              <option value="Income">Income</option>
-              <option value="Expense">Expense</option>
-            </select>
-  
-            {/* Sort */}
-            <select
-              onChange={(e) => setSortField(e.target.value)}
-              className="p-2 border rounded"
-            >
-              <option value="transaction_date">Date</option>
-              <option value="amount">Amount</option>
-            </select>
-            <select
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="p-2 border rounded"
-            >
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
-            </select>
-          </div>
-        </div>
-  
-        {/* Records Table */}
-        <div className="flex-grow overflow-y-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2">ID</th>
-                <th className="border p-2">Amount</th>
-                <th className="border p-2">Date</th>
-                <th className="border p-2">Type</th>
-                <th className="border p-2">Payment Method</th>
-                <th className="border p-2">Deal Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.map((record) => (
-                <React.Fragment key={record.id}>
-                  <tr className="hover:bg-gray-100 cursor-pointer" onClick={() => handleExpand(record.id)}>
-                    <td className="border p-2 text-center">{record.id}</td>
-                    <td className="border p-2 text-center">${record.amount}</td>
-                    <td className="border p-2 text-center">{record.transaction_date}</td>
-                    <td className="border p-2 text-center">{record.type}</td>
-                    <td className="border p-2 text-center">{record.payment_method}</td>
-                    <td className="border p-2 text-center">{record.deal_name}</td>
-                  </tr>
-                  {expandedId === record.id && (
-                    <tr className="bg-gray-50">
-                      <td colSpan="6" className="border p-4">
-                        <p><strong>Description:</strong> {record.description}</p>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-  
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            className={`px-4 py-2 border rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-  
-          <div className="flex space-x-2">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-3 py-1 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white hover:bg-blue-100'}`}
+      <div className="flex bg-white flex-col h-screen">
+        <h1 className="text-2xl font-bold mb-8 ml-6 mt-6">Financial Records</h1>
+
+        <div className="flex flex-col h-full px-2">
+          {/* Filter and Sort Controls */}
+          <div className="flex justify-between mb-4 p-4 pt-0">
+            <div className="space-x-2">
+              <select
+                onChange={(e) => setFilterType(e.target.value)}
+                className="p-2 border rounded"
               >
-                {index + 1}
-              </button>
-            ))}
+                <option value="All">All Types</option>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+              </select>
+  
+              <select
+                onChange={(e) => setSortField(e.target.value)}
+                className="p-2 border rounded"
+              >
+                <option value="transaction_date">Date</option>
+                <option value="amount">Amount</option>
+              </select>
+              <select
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="p-2 border rounded"
+              >
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
           </div>
   
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            className={`px-4 py-2 border rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+          {/* Records Table */}
+          <div className="flex-grow overflow-y-auto px-4">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border p-2">ID</th>
+                  <th className="border p-2">Amount</th>
+                  <th className="border p-2">Date</th>
+                  <th className="border p-2">Type</th>
+                  <th className="border p-2">Payment Method</th>
+                  <th className="border p-2">Deal Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRecords.map((record) => (
+                  <React.Fragment key={record.id}>
+                    <tr className="hover:bg-gray-100 cursor-pointer" onClick={() => handleExpand(record.id)}>
+                      <td className="border p-2 text-center">{record.id}</td>
+                      <td className="border p-2 text-center">${record.amount}</td>
+                      <td className="border p-2 text-center">{record.transaction_date}</td>
+                      <td className="border p-2 text-center">{record.type}</td>
+                      <td className="border p-2 text-center">{record.payment_method}</td>
+                      <td className="border p-2 text-center">{record.deal_name}</td>
+                    </tr>
+                    {expandedId === record.id && (
+                      <tr className="bg-gray-50">
+                        <td colSpan="6" className="border p-4">
+                          <p><strong>Description:</strong> {record.description}</p>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
+          {/* Pagination - Fixed at Bottom */}
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </div>
-      </section>
+      </div>
     );
   };
 
