@@ -1,35 +1,23 @@
 package com.example.salessphere.activities
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.window.Window
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.salessphere.R
 import com.example.salessphere.databinding.ActivityDealDetailsBinding
 import com.example.salessphere.databinding.BottomSheetCallBinding
-import com.example.salessphere.network.RetrofitHelper
+import com.example.salessphere.network.RetrofitClient
 import com.example.salessphere.pojo.Deal
 import com.example.salessphere.viewmodels.DealDetailFactory
 import com.example.salessphere.viewmodels.DealDetailsViewModel
-import com.example.salessphere.viewmodels.DealFactory
-import com.example.salessphere.viewmodels.DealViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
@@ -88,7 +76,7 @@ class DealDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        val retrofitService = RetrofitHelper.retrofitService
+        val retrofitService = RetrofitClient.getInstance(this)
         val dealId = intent.getIntExtra("DEAL_ID", 0)
         val factory = DealDetailFactory(retrofitService, dealId)
         dealDetailsViewModel =

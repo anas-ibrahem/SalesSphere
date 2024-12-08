@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.salessphere.network.RetrofitService
+import com.example.salessphere.network.ApiService
 import com.example.salessphere.pojo.Employee
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeViewModel(val retrofitService: RetrofitService) : ViewModel() {
+class HomeViewModel(val apiService: ApiService) : ViewModel() {
     private val _employees : MutableLiveData<List<Employee>> = MutableLiveData()
     val employees : LiveData<List<Employee>>
         get() = _employees
@@ -23,7 +23,7 @@ class HomeViewModel(val retrofitService: RetrofitService) : ViewModel() {
 
      private fun getAllEmployees(){
         viewModelScope.launch(Dispatchers.IO){
-            val myEmployees = retrofitService.getAllEmployees().body()
+            val myEmployees = apiService.getAllEmployees().body()
             withContext(Dispatchers.Main){
                 if (!myEmployees.isNullOrEmpty()){
                     _employees.postValue(myEmployees!!)
@@ -34,10 +34,10 @@ class HomeViewModel(val retrofitService: RetrofitService) : ViewModel() {
     }
 }
 
-class HomeFactory(val retrofitService: RetrofitService) : ViewModelProvider.Factory {
+class HomeFactory(val apiService: ApiService) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(retrofitService) as T
+            return HomeViewModel(apiService) as T
         } else {
             throw IllegalArgumentException()
         }

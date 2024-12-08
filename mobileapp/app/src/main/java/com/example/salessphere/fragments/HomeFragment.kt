@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.example.salessphere.R
 import com.example.salessphere.databinding.FragmentHomeBinding
-import com.example.salessphere.network.RetrofitHelper
+import com.example.salessphere.network.RetrofitClient
 import com.example.salessphere.pojo.Employee
 import com.example.salessphere.viewmodels.HomeFactory
 import com.example.salessphere.viewmodels.HomeViewModel
@@ -30,7 +29,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val retrofitService = RetrofitHelper.retrofitService
+        val retrofitService = RetrofitClient.getInstance(requireActivity())
         val factory = HomeFactory(retrofitService)
         var employeeList : List<Employee>
         homeViewModel = ViewModelProvider(this , factory ).get(HomeViewModel::class.java)

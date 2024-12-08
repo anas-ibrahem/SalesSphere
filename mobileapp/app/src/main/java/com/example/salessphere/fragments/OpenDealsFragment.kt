@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.salessphere.adapters.DealAdapter
 import com.example.salessphere.R
 import com.example.salessphere.databinding.FragmentOpenDealsBinding
-import com.example.salessphere.network.RetrofitHelper
-import com.example.salessphere.pojo.Deal
+import com.example.salessphere.network.RetrofitClient
 import com.example.salessphere.viewmodels.DealFactory
 import com.example.salessphere.viewmodels.DealViewModel
-import com.example.salessphere.viewmodels.HomeViewModel
 
 
 class OpenDealsFragment : Fragment() {
@@ -42,79 +40,21 @@ class OpenDealsFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val retrofitService = RetrofitHelper.retrofitService
+        val retrofitService = RetrofitClient.getInstance(requireActivity())
         val factory = DealFactory(retrofitService)
         dealViewModel = ViewModelProvider(this, factory).get(DealViewModel::class.java)
 
-        //        dealViewModel.deals.observe(viewLifecycleOwner){newDeals ->
-//            dealAdapter.deals = newDeals
-//            dealAdapter.notifyDataSetChanged()
-//        }
+        dealViewModel.deals.observe(viewLifecycleOwner) { newDeals ->
+            dealAdapter.deals = newDeals
+            dealAdapter.notifyDataSetChanged()
+        }
     }
 
-    private fun setupRecyclerView(){
-        val dealList = listOf(
-            Deal(1 ,
-                "Software Sale" ,
-                "El ablkash el mateeen" ,
-                "Open" ,
-                1 ,
-                2000f ,
-                1000f ,
-                null ,
-                null ,
-                "1/1/2024" ,
-                "2/2/2024" ,
-                null ,
-                1
-            ) ,
-            Deal(1 ,
-                "Software Sale" ,
-                "El ablkash el mateeen" ,
-                "Open" ,
-                1 ,
-                2000f ,
-                1000f ,
-                null ,
-                null ,
-                "1/1/2024" ,
-                "2/2/2024" ,
-                null ,
-                1
-            ) ,
-            Deal(1 ,
-                "Software Sale" ,
-                "El ablkash el mateeen" ,
-                "Open" ,
-                1 ,
-                2000f ,
-                1000f ,
-                null ,
-                null ,
-                "1/1/2024" ,
-                "2/2/2024" ,
-                null ,
-                1
-            ) ,
-            Deal(1 ,
-                "Software Sale" ,
-                "El ablkash el mateeen" ,
-                "Open" ,
-                1 ,
-                2000f ,
-                1000f ,
-                null ,
-                null ,
-                "1/1/2024" ,
-                "2/2/2024" ,
-                null ,
-                1
-            )
-
-        )
-        dealAdapter = DealAdapter(dealList, 0, requireActivity())
+    private fun setupRecyclerView() {
+        dealAdapter = DealAdapter(listOf(), 0, requireActivity())
         binding.rvDeals.adapter = dealAdapter
-        binding.rvDeals.layoutManager = LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
+        binding.rvDeals.layoutManager =
+            LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
 
     }
 }
