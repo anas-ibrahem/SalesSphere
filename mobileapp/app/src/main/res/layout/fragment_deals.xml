@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/padding_fragment"
-        android:background="@color/backgroundColor"
+        android:background="@color/white"
         tools:context=".fragments.DealsFragment">
 
         <TextView
@@ -30,19 +30,12 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
-            android:background="@color/backgroundColor"
             app:tabIndicatorColor="@color/primaryColor"
             app:tabSelectedTextColor="@color/primaryColor"
             app:tabTextColor="@color/primaryColor">
 
         </com.google.android.material.tabs.TabLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/md_theme_outlineVariant"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager2"

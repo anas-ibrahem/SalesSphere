@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.salessphere.network.ApiService
 import com.example.salessphere.pojo.LoginRequest
-import com.example.salessphere.pojo.LoginResponse
 import com.example.salessphere.pojo.LoginState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

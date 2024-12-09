@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/primaryColor"
-            app:itemBackground="@color/backgroundColor"
+            app:itemBackground="@color/white"
             app:itemIconTint="@color/nav_item_selector"
             app:itemTextColor="@color/nav_item_selector"
             app:labelVisibilityMode="labeled"

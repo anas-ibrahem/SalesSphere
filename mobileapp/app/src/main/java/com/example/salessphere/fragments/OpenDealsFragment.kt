@@ -34,20 +34,10 @@ class OpenDealsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel()
         setupRecyclerView()
-
-    }
-
-    private fun setupViewModel() {
-        val retrofitService = RetrofitClient.getInstance(requireActivity())
-        val factory = DealFactory(retrofitService)
-        dealViewModel = ViewModelProvider(this, factory).get(DealViewModel::class.java)
-
-        dealViewModel.deals.observe(viewLifecycleOwner) { newDeals ->
-            dealAdapter.deals = newDeals
-            dealAdapter.notifyDataSetChanged()
-        }
+        setupViewModel()
+        observeOpenDeals()
+        //dealViewModel.getOpenDeals()
     }
 
     private fun setupRecyclerView() {
@@ -57,4 +47,18 @@ class OpenDealsFragment : Fragment() {
             LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false)
 
     }
+    private fun setupViewModel() {
+        val retrofitService = RetrofitClient.getInstance(requireActivity())
+        val factory = DealFactory(retrofitService)
+        dealViewModel = ViewModelProvider(this, factory).get(DealViewModel::class.java)
+
+    }
+    private fun observeOpenDeals(){
+        dealViewModel.openDeals.observe(viewLifecycleOwner) { newDeals ->
+            dealAdapter.deals = newDeals
+            dealAdapter.notifyDataSetChanged()
+        }
+    }
+
+
 }

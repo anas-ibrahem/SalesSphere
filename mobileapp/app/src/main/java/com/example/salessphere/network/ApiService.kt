@@ -15,7 +15,10 @@ interface ApiService {
     suspend fun getAllEmployees() : Response<List<Employee>>
 
     @GET("deal")
-    suspend fun getAllDeals() : Response<List<Deal>>
+    suspend fun getOpenDeals() : Response<List<Deal>>
+
+    @GET("deal")
+    suspend fun getClaimedDeals() : Response<List<Deal>>
 
     @POST("auth/login") // Replace with your actual login endpoint path
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>

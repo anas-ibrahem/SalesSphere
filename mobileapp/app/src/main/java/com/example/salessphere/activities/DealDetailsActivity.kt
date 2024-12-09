@@ -31,7 +31,7 @@ class DealDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_deal_details)
-        setupViewModel()
+        //setupViewModel()
 
         binding.statusChip.text =
             when (dealStatus) {
@@ -75,17 +75,17 @@ class DealDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupViewModel() {
-        val retrofitService = RetrofitClient.getInstance(this)
-        val dealId = intent.getIntExtra("DEAL_ID", 0)
-        val factory = DealDetailFactory(retrofitService, dealId)
-        dealDetailsViewModel =
-            ViewModelProvider(this, factory).get(DealDetailsViewModel::class.java)
-        dealDetailsViewModel.deal.observe(this) { newDeal ->
-                showDealDetails(newDeal)
-        }
-
-    }
+//    private fun setupViewModel() {
+//        val retrofitService = RetrofitClient.getInstance(this)
+//        val dealId = intent.getIntExtra("DEAL_ID", 0)
+//        val factory = DealDetailFactory(retrofitService, dealId)
+//        dealDetailsViewModel =
+//            ViewModelProvider(this, factory).get(DealDetailsViewModel::class.java)
+//        dealDetailsViewModel.deal.observe(this) { newDeal ->
+//                showDealDetails(newDeal)
+//        }
+//
+//    }
 
     private fun showDealDetails(newDeal: Deal) {
         binding.dealTitleText.text = newDeal.title

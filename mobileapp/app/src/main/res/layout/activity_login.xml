@@ -7,7 +7,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="@color/white"
         android:padding="@dimen/padding_fragment"
         tools:context=".activities.LoginActivity">
 
@@ -32,6 +32,7 @@
             app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
             app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
             app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +61,7 @@
             app:cursorColor="@color/primaryColor"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_input_layout_1"
             app:passwordToggleEnabled="true"

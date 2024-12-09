@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        checkIfAlreadyLoggedIn()
+        //checkIfAlreadyLoggedIn()
         binding.progressBar.visibility = ProgressBar.GONE
         setupViewModel()
         observeLoginState()
@@ -75,6 +75,7 @@ class LoginActivity : AppCompatActivity() {
                     val token = loginState.response.token
                     saveToken(token)
                     binding.progressBar.visibility = ProgressBar.GONE
+                    navigateToMainActivity()
                 }
                 is LoginState.Error -> {
                     binding.progressBar.visibility = ProgressBar.GONE

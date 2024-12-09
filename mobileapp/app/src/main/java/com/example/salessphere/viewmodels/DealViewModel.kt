@@ -13,19 +13,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class DealViewModel(val apiService: ApiService) : ViewModel() {
-    private val _deals : MutableLiveData<List<Deal>> = MutableLiveData()
-    val deals : LiveData<List<Deal>>
-        get() = _deals
+    private val _openDeals : MutableLiveData<List<Deal>> = MutableLiveData()
+    val openDeals : LiveData<List<Deal>>
+        get() = _openDeals
+
+    private val _claimedDeals : MutableLiveData<List<Deal>> = MutableLiveData()
+    val claimedDeals : LiveData<List<Deal>>
+        get() = _claimedDeals
+
 
     init {
-        getAllDeals()
+        getClaimedDeals()
+        getOpenDeals()
     }
-    private fun getAllDeals(){
+
+    fun getOpenDeals(){
         viewModelScope.launch(Dispatchers.IO){
-            val myDeals = apiService.getAllDeals().body()
+            val deals = apiService.getOpenDeals().body()
             withContext(Dispatchers.Main){
-                if (!myDeals.isNullOrEmpty()){
-                    _deals.postValue(myDeals!!)
+                if (!deals.isNullOrEmpty()){
+                    _openDeals.postValue(deals!!)
+                }
+                else{
+                    Log.i("elablkash" , "elablkash")
+                }
+            }
+        }
+    }
+    fun getClaimedDeals(){
+        viewModelScope.launch(Dispatchers.IO){
+            val deals = apiService.getClaimedDeals().body()
+            withContext(Dispatchers.Main){
+                if (!deals.isNullOrEmpty()){
+                    _claimedDeals.postValue(deals!!)
                 }
                 else{
                     Log.i("elablkash" , "elablkash")
