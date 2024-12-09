@@ -13,4 +13,5 @@ backend/.env
 backend/.env
 mobileapp/.gradle
 mobileapp/gradle
+mobileapp/build
 .vercel
