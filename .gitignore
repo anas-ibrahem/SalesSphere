@@ -11,4 +11,6 @@
 TODO
 backend/.env
 backend/.env
+mobileapp/.gradle
+mobileapp/gradle
 .vercel

@@ -21,6 +21,7 @@ router.use(authController.verifyToken);
 router.use('/employee', employeeRouter);
 router.use('/deal', dealRouter);
 router.use('/business', businessRouter);
+router.get('/me', authController.me);
 
 // Export the router
 export default router;
