@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
+  UsersRound,
 } from "lucide-react";
 import Logo from "./Logo";
 
@@ -82,10 +83,10 @@ export default function SideBar({
 
         <li>
           <button
-            onClick={() => onSectionChange('deals')}
+            onClick={() => onSectionChange("deals")}
             className={`
               flex items-center py-2 
-              ${isCollapsed ? 'justify-center' : 'px-4'}
+              ${isCollapsed ? "justify-center" : "px-4"}
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
@@ -119,6 +120,19 @@ export default function SideBar({
           >
             <Users className="h-5 w-5 mr-3" />
             {!isCollapsed && <span>Employees</span>}
+          </button>
+        </li>
+        <li>
+          <button
+            onClick={() => onSectionChange("customers")}
+            className={`
+              flex items-center py-2 
+              ${isCollapsed ? "justify-center" : "px-4"}
+              rounded hover:bg-gray-700 w-full text-left
+            `}
+          >
+            <UsersRound className="h-5 w-5 mr-3" />
+            {!isCollapsed && <span>Customers</span>}
           </button>
         </li>
       </ul>

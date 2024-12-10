@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import EmployeeProfile from "./EmployeeProfile";
+// TODO: Import the CustomerProfile component
+//import CustomerProfile from "./CustomerProfile";
 import {
   List,
   ListItem,
@@ -10,8 +11,8 @@ import {
 } from "@material-tailwind/react";
 
 const generateDummyData = () => {
-  const dummyEmployees = [];
-  const employeesNames = [
+  const dummyCustomers = [];
+  const CustomersNames = [
     "Deal Alpha",
     "Deal Beta",
     "Deal Gamma",
@@ -19,86 +20,59 @@ const generateDummyData = () => {
   ];
   for (let i = 1; i <= 50; i++) {
     const numberOfDeals = Math.floor(Math.random() * 1000 + 100);
-    const numberOfDealsThisMonth = Math.floor(Math.random() * numberOfDeals);
     const numberOfSuccessfulDeals = Math.floor(Math.random() * numberOfDeals);
-    const numberOfSuccessfulDealsThisMonth = Math.floor(
-      Math.random() * numberOfDealsThisMonth
-    );
-
     const numberOfUnsuccessfulDeals = numberOfDeals - numberOfSuccessfulDeals;
 
-    const numberOfUnsuccessfulDealsThisMonth =
-      numberOfDealsThisMonth - numberOfSuccessfulDealsThisMonth;
-
-    const employee = {
+    const Customer = {
       id: i,
 
-      name: employeesNames[i % employeesNames.length],
+      name: CustomersNames[i % CustomersNames.length],
 
-      email: `employee${i}@company.com`,
+      email: `customer${i}@company.com`,
 
       phone: `555-01${i.toString().padStart(2, "0")}`,
 
       numberOfDeals,
 
-      numberOfDealsThisMonth,
-
-      accountCreationDate: new Date(2024, 10, (i % 30) + 1)
+      dateRegistered: new Date(2024, 10, (i % 30) + 1)
         .toISOString()
         .slice(0, 10),
-      type: i % 2 === 0 ? "opener" : "closer",
 
       numberOfSuccessfulDeals,
 
-      numberOfSuccessfulDealsThisMonth,
-
       numberOfUnsuccessfulDeals,
-
-      numberOfUnsuccessfulDealsThisMonth,
 
       percentageOfSuccessfulDeals: Math.floor(
         (numberOfSuccessfulDeals / numberOfDeals) * 100
       ),
 
-      percentageOfSuccessfulDealsThisMonth: Math.floor(
-        (numberOfSuccessfulDealsThisMonth / numberOfDealsThisMonth) * 100
-      ),
+      leadSource: i % 2 === 0 ? "Cold Call" : "Referral",
 
-      profilePicture: `https://randomuser.me/api/portraits/men/${i % 100}.jpg`,
+      address: `123 Main St, Springfield, IL ${i.toString().padStart(2, "0")}`,
+
+      preferredContactMethod: i % 2 === 0 ? "Email" : "Phone",
     };
 
-    dummyEmployees.push(employee);
+    dummyCustomers.push(Customer);
   }
-  return dummyEmployees;
+  return dummyCustomers;
 };
 
 const dummyData = generateDummyData();
 
-function EmployeesSection() {
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+function CustomersSection() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentCustomer, setCurrentCustomer] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
-  const [filterType, setFilterType] = useState("All");
-  const [sortField, setSortField] = useState("account_creation_date");
-  const [duration, setDuration] = useState("all times");
+  const [sortField, setSortField] = useState("date register");
   const [dealsType, setDealsType] = useState("all deals");
   const [sortOrder, setSortOrder] = useState("asc");
-  const EmployeesPerPage = 10;
-
-  // Filtering logic
-  const filterEmployees = dummyData.filter((employee) => {
-    return filterType === "All" || employee.type === filterType;
-  });
+  const CustomersPerPage = 10;
 
   // Sorting logic
-  const sortedEmployees = [...filterEmployees].sort((a, b) => {
+  const sortedCustomers = [...dummyData].sort((a, b) => {
     if (sortField === "Number of Deals") {
-      let dealDuration = "";
       let dealType = "";
-
-      if (duration !== "all times") {
-        dealDuration = "ThisMonth";
-      }
 
       if (dealsType === "successful") {
         dealType = "Successful";
@@ -106,26 +80,26 @@ function EmployeesSection() {
         dealType = "Unsuccessful";
       }
 
-      const aDeals = a[`numberOf${dealType}Deals${dealDuration}`];
-      const bDeals = b[`numberOf${dealType}Deals${dealDuration}`];
+      const aDeals = a[`numberOf${dealType}Deals`];
+      const bDeals = b[`numberOf${dealType}Deals`];
 
       return sortOrder === "asc" ? aDeals - bDeals : bDeals - aDeals;
     } else {
-      const aDate = new Date(a.accountCreationDate);
-      const bDate = new Date(b.accountCreationDate);
+      const aDate = new Date(a.dateRegistered);
+      const bDate = new Date(b.dateRegistered);
 
       return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
     }
   });
 
   // Pagination logic
-  const indexOfLastEmployee = currentPage * EmployeesPerPage;
-  const indexOfFirstEmployee = indexOfLastEmployee - EmployeesPerPage;
-  const currentEmployees = sortedEmployees.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
+  const indexOfLastCustomer = currentPage * CustomersPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - CustomersPerPage;
+  const currentCustomers = sortedCustomers.slice(
+    indexOfFirstCustomer,
+    indexOfLastCustomer
   );
-  const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
+  const totalPages = Math.ceil(sortedCustomers.length / CustomersPerPage);
 
   const handleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
@@ -133,36 +107,24 @@ function EmployeesSection() {
 
   return (
     <>
-      {currentEmployee ? (
-        <EmployeeProfile
-          back={() => setCurrentEmployee(null)}
-          employee={currentEmployee}
+      {currentCustomer ? (
+        <CustomerProfile
+          back={() => setCurrentCustomer(null)}
+          customer={currentCustomer}
         />
       ) : (
         <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <h1 className="text-2xl font-bold mb-4">Employees</h1>
+          <h1 className="text-2xl font-bold mb-4">Customers</h1>
 
           {/* Filter and Sort Controls */}
           <div className="flex justify-between mb-4">
-            {/* Filter */}
             <div className="flex space-x-4">
-              <select
-                onChange={(e) => setFilterType(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="All">All Types</option>
-                <option value="opener">Opener</option>
-                <option value="closer">Executor</option>
-              </select>
-
               {/* Sort */}
               <select
                 onChange={(e) => setSortField(e.target.value)}
                 className="p-2 border rounded"
               >
-                <option value="accountCreationDate">
-                  Account Creation Date
-                </option>
+                <option value="dateRegistered">Date Registered</option>
                 <option value="Number of Deals">Number of Deals</option>
               </select>
               <select
@@ -182,65 +144,51 @@ function EmployeesSection() {
                     <option value="successful">Successful Deals</option>
                     <option value="unsuccessful">Unsuccessful Deals</option>
                   </select>
-                  <select
-                    onChange={(e) => setDuration(e.target.value)}
-                    className="p-2 border rounded"
-                  >
-                    <option value="all times">All Times</option>
-                    <option value="this month">This Month</option>
-                  </select>
                 </>
               )}
             </div>
           </div>
 
-          {/* Employees Table */}
+          {/* Customers Table */}
           <div className="flex-grow overflow-y-auto">
             <Card>
               <List>
-                {currentEmployees.map((employee) => (
-                  <React.Fragment key={employee.id}>
+                {currentCustomers.map((customer) => (
+                  <React.Fragment key={customer.id}>
                     <ListItem
                       className="cursor-default my-4 hover:bg-gray-100"
-                      onClick={() => setCurrentEmployee(employee)}
+                      onClick={() => setCurrentCustomer(customer)}
                     >
-                      <ListItemPrefix>
-                        <Avatar
-                          variant="circular"
-                          alt={`${employee.name}'s profile`}
-                          src={employee.profilePicture}
-                          className="w-20 h-20 "
-                        />
-                      </ListItemPrefix>
                       <div>
                         <Typography variant="h6" color="blue-gray">
-                          {employee.name}
+                          {customer.name}
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
                           className="font-normal"
                         >
-                          {employee.email}
+                          {customer.email}
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
                           className="font-normal"
                         >
-                          Id: {employee.id}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          {employee.type}
+                          Id: {customer.id}{" "}
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          Date Registered: {customer.dateRegistered}
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
                           className="font-normal"
                         >
-                          Number of Deals: {employee.numberOfDeals}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success
+                          Number of Deals: {customer.numberOfDeals}{" "}
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success
                           Rate:
-                          {employee.percentageOfSuccessfulDeals}%
+                          {customer.percentageOfSuccessfulDeals}%
                         </Typography>
                         <Typography
                           variant="small"
@@ -248,10 +196,10 @@ function EmployeesSection() {
                           className="font-normal"
                         >
                           Number of Successful Deals:{" "}
-                          {employee.numberOfSuccessfulDeals}{" "}
+                          {customer.numberOfSuccessfulDeals}{" "}
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number
                           of Unsuccessful Deals:{" "}
-                          {employee.numberOfUnsuccessfulDeals}
+                          {customer.numberOfUnsuccessfulDeals}
                         </Typography>
                       </div>
                     </ListItem>
@@ -311,4 +259,4 @@ function EmployeesSection() {
   );
 }
 
-export default EmployeesSection;
+export default CustomersSection;
