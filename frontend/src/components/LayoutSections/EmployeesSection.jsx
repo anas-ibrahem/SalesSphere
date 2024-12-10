@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import EmployeeProfile from "./EmployeeProfile";
+import {
+  List,
+  ListItem,
+  ListItemPrefix,
+  Avatar,
+  Card,
+  Typography,
+} from "@material-tailwind/react";
 
 const generateDummyData = () => {
   const dummyEmployees = [];
@@ -189,88 +197,67 @@ function EmployeesSection() {
 
           {/* Employees Table */}
           <div className="flex-grow overflow-y-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border p-2">ID</th>
-                  <th className="border p-2">Name</th>
-                  <th className="border p-2">Type</th>
-                  <th className="border p-2">Number Of Deals</th>
-                  <th className="border p-2">Number Of Successful Deals</th>
-                  <th className="border p-2">Number Of Unsuccessful Deals</th>
-                  <th className="border p-2">Date</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Card>
+              <List>
                 {currentEmployees.map((employee) => (
                   <React.Fragment key={employee.id}>
-                    <tr
-                      className="hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleExpand(employee.id)}
+                    <ListItem
+                      className="cursor-default my-4 hover:bg-gray-100"
+                      onClick={() => setCurrentEmployee(employee)}
                     >
-                      <td className="border p-2 text-center">
-                        <button onClick={() => setCurrentEmployee(employee)}>
-                          {employee.id}
-                        </button>
-                      </td>
-                      <td className="border p-2 text-center">
-                        {employee.name}
-                      </td>
-                      <td className="border p-2 text-center">
-                        {employee.type}
-                      </td>
-                      <td className="border p-2 text-center">
-                        {
-                          employee[
-                            `numberOfDeals${
-                              duration !== "all times" ? "ThisMonth" : ""
-                            }`
-                          ]
-                        }
-                      </td>
-                      <td className="border p-2 text-center">
-                        {
-                          employee[
-                            `numberOfSuccessfulDeals${
-                              duration !== "all times" ? "ThisMonth" : ""
-                            }`
-                          ]
-                        }
-                      </td>
-                      <td className="border p-2 text-center">
-                        {
-                          employee[
-                            `numberOfUnsuccessfulDeals${
-                              duration !== "all times" ? "ThisMonth" : ""
-                            }`
-                          ]
-                        }
-                      </td>
-                      <td className="border p-2 text-center">
-                        {employee.accountCreationDate}
-                      </td>
-                    </tr>
-                    {expandedId === employee.id && (
-                      <tr className="bg-gray-50">
-                        <td colSpan="6" className="border p-4">
-                          <p>
-                            <strong>Success Rate:</strong>{" "}
-                            {
-                              employee[
-                                `percentageOfSuccessfulDeals${
-                                  duration !== "all times" ? "ThisMonth" : ""
-                                }`
-                              ]
-                            }
-                            %
-                          </p>
-                        </td>
-                      </tr>
-                    )}
+                      <ListItemPrefix>
+                        <Avatar
+                          variant="circular"
+                          alt={`${employee.name}'s profile`}
+                          src={employee.profilePicture}
+                          className="w-20 h-20 "
+                        />
+                      </ListItemPrefix>
+                      <div>
+                        <Typography variant="h6" color="blue-gray">
+                          {employee.name}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal"
+                        >
+                          {employee.email}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal"
+                        >
+                          Id: {employee.id} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          {employee.type}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal"
+                        >
+                          Number of Deals: {employee.numberOfDeals}{" "}
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success Rate:
+                          {employee.percentageOfSuccessfulDeals}%
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal"
+                        >
+                          Number of Successful Deals:{" "}
+                          {employee.numberOfSuccessfulDeals}{" "}
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number
+                          of Unsuccessful Deals:{" "}
+                          {employee.numberOfUnsuccessfulDeals}
+                        </Typography>
+                      </div>
+                    </ListItem>
                   </React.Fragment>
                 ))}
-              </tbody>
-            </table>
+              </List>
+            </Card>
           </div>
 
           {/* Pagination */}
