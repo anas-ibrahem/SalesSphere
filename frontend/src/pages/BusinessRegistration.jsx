@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   Container, 
   Box, 
@@ -21,6 +21,11 @@ import UploadDocs from '../components/registertionComponents/UploadDocs';
 import { PersonalInfoSchema, BusinessInfoSchema, DocumentUploadSchema, validateFile } from '../utils/validationSchemas';
 import FullLogo from '../components/FullLogo';
 import ReviewSection from '../components/registertionComponents/ReviewSection';
+import { useNavigate } from 'react-router-dom';
+import UserContext from '../context/UserContext';
+import fetchAPI from '../utils/fetchAPI';
+
+import { EmployeeRoles } from '../utils/Enums';
 
 
 
@@ -34,6 +39,20 @@ const BusinessRegistration = () => {
     businessLogo: null,
     businessRegistrationDoc: null
   });
+
+  const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(UserContext);
+
+  const Navigate = useNavigate();
+
+  console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        Navigate('/home'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (isAuthenticated) return null;
 
   const steps = [
     'Personal Information', 
@@ -114,11 +133,46 @@ const BusinessRegistration = () => {
 
   const handleSubmit = (values, { setSubmitting }) => {
     // Implement submission logic
-    alert(JSON.stringify(values, null, 2));
-    alert(JSON.stringify(selectedFiles, null, 2));
     console.log('Submission Values:', values);
     console.log('Uploaded Files:', selectedFiles);
-    setSubmitting(false);
+    const valuesToSubmit = {
+      business_data: {
+        name: values.businessName,
+        phone_number: values.businessPhone,
+        email: values.businessEmail,
+        country: values.businessCountry,
+        city: values.businessCity,
+        street: values.businessStreet,
+        website_url: values.businessWebsite,
+        industry: values.businessIndustry
+      },
+      employee_data: {
+        first_name: values.firstName,
+        last_name: values.lastName,
+        birth_date: values.birthdate,
+        address: values.address,
+        email: values.email,
+        phone_number: values.phone,
+        role: EmployeeRoles.Manager,
+        password: values.password
+      }
+    };
+
+    fetchAPI('/business/register', 'POST', valuesToSubmit).then(data => {
+      if(data && data.error) {
+        toast.error(data.error);
+      }
+      else {
+        toast.success('Registration successful! Please wait for approval.');
+        Navigate('/login');
+      }
+      setSubmitting(false);
+    }
+    ).catch(err => {
+      console.error(err);
+      toast.error('An error occurred. Please try again later.');
+      setSubmitting(false);
+    });
   };
 
   return (

@@ -18,8 +18,10 @@ import {
   import * as Yup from 'yup';
 
   import FullLogo from '../components/FullLogo';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import UserContext from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
+import fetchAPI from '../utils/fetchAPI';
   
 
   
@@ -37,40 +39,45 @@ import UserContext from '../context/UserContext';
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const handleSubmit = (values, { setSubmitting }) => {
-      // fetch http://localhost:5000/api/auth/login
+    const Navigate = useNavigate();
 
-      fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Authorization': token,
-        },
-        body: JSON.stringify(values)
-      }).then(res => {
-        if(res.status === 200) {
-          return res.json();
-        }
-        else {
-          alert('Invalid email or password');
-          setSubmitting(false);
-        }
-      }).then(data => {
-        if(data.token) {
+    console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        Navigate('/home'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (isAuthenticated) return null;
+
+    const handleSubmit = (values, { setSubmitting }) => {
+      // fetch /api/auth/login
+      console.log(import.meta.env.VITE_BACKEND_URL);
+
+      fetchAPI('/auth/login', 'POST', values).then(data => {
+        if(data && data.token) {
+          localStorage.setItem('token', data.token);
           setToken(data.token);
           setIsAuthenticated(true);
           setTokenExpired(false);
         }
         else {
           alert('Invalid email or password');
-          setSubmitting(false);
         }
-      });
+        setSubmitting(false);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('An error occurred. Please try again later.');
+        setSubmitting(false);
+      })
 
       // Simulate login process
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        setSubmitting(false);
-      }, 400);
+      // setTimeout(() => {
+      //   alert(JSON.stringify(values, null, 2));
+      //   setSubmitting(false);
+      // }, 400);
     };
     const handleRegisterBtn = (e) => {
       e.preventDefault();

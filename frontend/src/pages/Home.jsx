@@ -6,7 +6,7 @@ import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const { isAuthenticated, employeeId } = useContext(UserContext);
+  const { isAuthenticated, employee } = useContext(UserContext);
   const Navigate = useNavigate();
 
   console.log('isAuthenticated:', isAuthenticated);

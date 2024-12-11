@@ -16,3 +16,4 @@ mobileapp/gradle
 mobileapp/app/build
 .vercel
 
+frontend/.env
