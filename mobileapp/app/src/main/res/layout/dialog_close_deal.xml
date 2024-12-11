@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close Deal"
+        android:textStyle="bold"
+        android:textSize="@dimen/size_h1"
+        android:textColor="@color/primaryColor"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/size_h3"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="What was the outcome of this deal?"
+        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+
+    <RadioGroup
+        android:id="@+id/dealOutcomeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium">
+
+        <RadioButton
+            android:id="@+id/wonRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Won"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+
+        <RadioButton
+            android:id="@+id/lostRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lost"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+    </RadioGroup>
+
+
+</LinearLayout>

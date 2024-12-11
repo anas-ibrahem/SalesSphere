@@ -1,4 +1,3 @@
-
 class EmployeeModel {
     constructor({id, email, hashed_password, first_name, last_name, phone_number, address, birth_date, role, business_id}) {
         this.id = id;
@@ -12,7 +11,12 @@ class EmployeeModel {
         this.role = role;
         this.business_id = business_id;
     }
-    async getAll(pool) {
+
+    setBusinessId = (business_id) => {
+        this.business_id = business_id;
+    }
+
+    getAll = async (pool) => {
         try {
             const result = await pool.query(`
                 SELECT *
@@ -43,7 +47,7 @@ class EmployeeModel {
         }
     }
 
-    async getById(pool, id) {
+    getById = async (pool, id) => {
         try {
             const result = await pool.query(`
                 SELECT *
@@ -75,14 +79,15 @@ class EmployeeModel {
             return {};
         }
     }
-    async getByEmailForAuth(pool, email) {
+
+    getByEmailForAuth = async (pool, email) => {
         try {
             const result = await pool.query(`
                 SELECT *
                 FROM employee e
                 LEFT JOIN employee_profile ep
                 ON e.id = ep.employee_id
-                WHERE ep.email = $1;
+                WHERE e.email = $1;
             `, [email]);
 
             if(result.rows.length === 0) {
@@ -104,7 +109,8 @@ class EmployeeModel {
             return {};
         }
     }
-    async getByEmail(pool, email) {
+
+    getByEmail = async (pool, email) => {
         const emp = await this.getByEmailForAuth(pool, email);
         if(emp) {
             if(emp['hashed_password']) {
@@ -114,23 +120,29 @@ class EmployeeModel {
         return emp;
     }
 
-    async register(pool) {
+    register = async (pool) => {
         try {
             // INSERT INTO EMPLOYEE (role, hashed_password)
             // then insert into EMPLOYEE_PROFILE (first_name, last_name, email)
             await pool.query('BEGIN');
             const result = await pool.query(`
-                INSERT INTO employee (role, hashed_password, business_id)
-                VALUES ($1, $2, $3)
+                INSERT INTO employee (role, email, hashed_password, business_id)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT (email) DO NOTHING
                 RETURNING id;
-            `, [this.role, this.hashed_password, this.business_id]);
+            `, [this.role, this.email, this.hashed_password, this.business_id]);
             
+            if(result.rows.length === 0) {
+                await pool.query('ROLLBACK');
+                return {error: 'Employee Email already exists'};
+            }
+
             const employeeId = result.rows[0].id;
 
             await pool.query(`
-                INSERT INTO employee_profile (employee_id, first_name, last_name, email, phone_number, address, birth_date)
-                VALUES ($1, $2, $3, $4, $5, $6, $7);
-            `, [employeeId, this.first_name, this.last_name, this.email, this.phone_number, this.address, this.birth_date]);
+                INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date)
+                VALUES ($1, $2, $3, $4, $5, $6);
+            `, [employeeId, this.first_name, this.last_name, this.phone_number, this.address, this.birth_date]);
 
             this.id = employeeId;
             await pool.query('COMMIT');
@@ -140,10 +152,9 @@ class EmployeeModel {
         catch (error) {
             await pool.query('ROLLBACK');
             console.error('Database query error:', error);
-            return -1;
+            return {error: 'Error registering employee'};
         }
     }
 }
-
 
 export default EmployeeModel;

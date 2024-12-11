@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "nodemon --watch backend/src --exec 'node --import \"data:text/javascript,import { register } from \\\"node:module\\\"; import { pathToFileURL } from \\\"node:url\\\"; register(\\\"ts-node/esm\\\", pathToFileURL(\\\"./\\\"));\"' backend/src/index.ts",
         "build": "tsc && npm install && npm install --prefix frontend && npm run build --prefix frontend",
-        "start": "node backend/dist/src/index.js"
+        "start": "node ./src/index.js"
     },
     "type": "module",
     "keywords": [],

@@ -39,8 +39,13 @@ class AuthController {
             res.status(401).json({error: 'Not authorized', 'session_end': true});
         }
     }
-    hello = async (req, res) => {
-        res.json({message: 'Hello!', id: req.employeeId});
+    me = async (req, res) => {
+        if(!req.employeeId) {
+            return res.status(400).json({error: 'Invalid employee ID'});
+        }
+
+        const emp = await this.employeeModel.getById(req.pool, req.employeeId);
+        res.json(emp);
     }
 }
 
