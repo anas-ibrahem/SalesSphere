@@ -4,29 +4,35 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "dev": "nodemon --watch backend/src --exec 'node --import \"data:text/javascript,import { register } from \\\"node:module\\\"; import { pathToFileURL } from \\\"node:url\\\"; register(\\\"ts-node/esm\\\", pathToFileURL(\\\"./\\\"));\"' backend/src/index.ts",
-      "build": "tsc && npm install && npm install --prefix frontend && npm run build --prefix frontend",
-      "start": "node backend/dist/src/index.js"
+        "dev": "nodemon --watch backend/src --exec 'node --import \"data:text/javascript,import { register } from \\\"node:module\\\"; import { pathToFileURL } from \\\"node:url\\\"; register(\\\"ts-node/esm\\\", pathToFileURL(\\\"./\\\"));\"' backend/src/index.ts",
+        "build": "tsc && npm install && npm install --prefix frontend && npm run build --prefix frontend",
+        "start": "node ./src/index.js"
     },
     "type": "module",
     "keywords": [],
     "author": "",
     "license": "MIT",
     "devDependencies": {
-      "@types/bcryptjs": "^2.4.6",
-      "@types/cookie-parser": "^1.4.7",
-      "@types/express": "^4.17.21",
-      "@types/jsonwebtoken": "^9.0.6",
-      "nodemon": "^3.1.0",
-      "ts-node": "^10.9.2",
-      "typescript": "^5.4.5"
+        "@types/bcryptjs": "^2.4.6",
+        "@types/cookie-parser": "^1.4.7",
+        "@types/express": "^4.17.21",
+        "@types/jsonwebtoken": "^9.0.6",
+        "@types/node": "^22.10.1",
+        "nodemon": "^3.1.7",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.2"
     },
     "dependencies": {
-      "bcryptjs": "^2.4.3",
-      "cookie-parser": "^1.4.6",
-      "dotenv": "^16.4.5",
-      "express": "^4.19.2",
-      "jsonwebtoken": "^9.0.2"
+        "@faker-js/faker": "^9.3.0",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.20.3",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "^1.10.0",
+        "pg": "^8.13.1",
+        "validator": "^13.12.0"
     }
-  }
-  
+}

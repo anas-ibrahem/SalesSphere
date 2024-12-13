@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FragmentTitleStyle">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="android:gravity">center</item>
+
+    </style>
+
+    <style name="CustomMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:background">@color/backgroundColor</item>
+    </style>
+
+</resources>

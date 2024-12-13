@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/md_theme_primaryContainer">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/md_theme_surfaceVariant" /> <!-- Replace with your desired color -->
+            <size
+                android:width="35dp"
+                android:height="35dp" /> <!-- Adjust size as needed -->
+        </shape>
+    </item>
+</ripple>
