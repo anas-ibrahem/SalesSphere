@@ -1,9 +1,9 @@
-import Footer from "../components/Footer";
-import Hero from "../components/Hero";
-import NavBar from "../components/NavBar";
-import SubHero from "../components/SubHero";
+import Footer from "../components/LandingPageComponents/Footer";
+import Hero from "../components/LandingPageComponents/Hero";
+import NavBar from "../components/LandingPageComponents/NavBar";
+import SubHero from "../components/LandingPageComponents/SubHero";
 import mobileImg from "../assets/mobile.png";
-import Offers from "../components/Offers";
+import Offers from "../components/LandingPageComponents/Offers";
 import laptop from "../assets/laptop.jpg";
 const LandingPage = function () {
   return (

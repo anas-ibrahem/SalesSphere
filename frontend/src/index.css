@@ -75,10 +75,15 @@ button:focus-visible {
 
 
 /* GLOBAL CSS */
+* {
+  font-family: 'Inter Tight' !important;
+}
+
+
 :root {
-  font-family: 'Inter Tight';
   --primary-accent: #1976d2;
   --secondary-accent: #0F0147;
+  --tertiary-accent: #111827;
   /* line-height: 1.5; */
   /* font-weight: 400; */
 
