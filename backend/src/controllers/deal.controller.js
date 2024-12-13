@@ -18,11 +18,12 @@ class DealController {
         res.json(emps);
     }
 
-    getDealById = async (req, res) => {
-        const id = req.params.id;
-        const deal = await this.dealModel.getDealById(req.pool, id);
+    getById = async (req, res) => {
+        const deal = await this.dealModel.getById(req.pool, req.params.id);
         res.json(deal);
     }
+
+
 
 }
 

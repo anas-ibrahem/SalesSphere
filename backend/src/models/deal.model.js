@@ -81,7 +81,7 @@ class DealModel {
             return [];
         }
     }
-    getDealById = async (pool, id) => {
+    getById = async (pool, id) => {
         try {
             const result = await pool.query(`
                 SELECT 
@@ -99,16 +99,21 @@ class DealModel {
                 ) AS customer
             FROM deal d
             JOIN customer c ON d.customer_id = c.id
-            WHERE d.id = $1
+            WHERE d.id = $1;
             `, [id]);
+
+            if(result.rows.length === 0) {
+                return {};
+            }
+
             return result.rows[0];
+
         }
         catch (error) {
             console.error('Database query error:', error);
             return {};
         }
     }
-
 }
 
 export default DealModel;

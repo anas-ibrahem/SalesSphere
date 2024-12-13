@@ -10,8 +10,7 @@ import DealController from '../../controllers/deal.controller.js';
 router.get('/', DealController.getAll);
 router.get('/claimed', DealController.getAllClaimedDeals);
 router.get('/open', DealController.getAllOpenDeals);
-router.get('/:id', DealController.getDealById);
-
+router.get('/:id', DealController.getById);
 
 router.post('/', (req, res) => {
     res.send('Add a user');
