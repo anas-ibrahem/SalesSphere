@@ -9,6 +9,7 @@ import authRouter from './api/auth.route.js';
 import businessRouter from './api/business.route.js';
 import AuthController from '../controllers/auth.controller.js';
 import BusinessController from '../controllers/business.controller.js';
+import notificationRouter from './api/notification.route.js';
 
 const authController = new AuthController();
 const businessController = new BusinessController();
@@ -24,6 +25,7 @@ router.use('/employee', employeeRouter);
 router.use('/deal', dealRouter);
 router.use('/business', businessRouter);
 router.get('/me', authController.me);
+router.use('/notification', notificationRouter);
 
 // Export the router
 export default router;
