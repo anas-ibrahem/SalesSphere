@@ -27,6 +27,22 @@ class NotificationModel {
         }
     }
 
+    getUnreadCount = async (pool, employeeId) => {
+        try {
+            const result = await pool.query(`
+                SELECT COUNT(*) as unread_count
+                FROM notification
+                WHERE recipient = $1 AND seen = false;
+            `, [employeeId]);
+
+            return result.rows[0].unread_count;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return 0;
+        }
+    }
+
     getById = async (pool, id) => {
         try {
             const result = await pool.query(`

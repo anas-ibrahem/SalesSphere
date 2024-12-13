@@ -11,6 +11,8 @@ router.get('/', notificationController.getAllByEmployee);
 
 router.get('/:id', notificationController.getById);
 
+router.get('/unread/count', notificationController.getUnreadCount);
+
 // to create a new notification
 router.post('/', notificationController.addNotification);
 
