@@ -13,6 +13,8 @@ import BusinessController from '../controllers/business.controller.js';
 const authController = new AuthController();
 const businessController = new BusinessController();
 
+// No authentication required for these routes
+// all other files in /routes/api/*.js will require authentication
 router.use('/auth', authRouter);
 router.post('/business/register', businessController.register);
 
