@@ -4,24 +4,34 @@ import {
   Typography, 
   Button, 
   Grid,
+  TextField,
 } from '@mui/material';
 import { 
     Maximize,
   CloudUpload as UploadIcon
 } from '@mui/icons-material';
+import { Field } from 'formik';
 
 
-const UploadDocs = ({ handleFileUpload, selectedFiles }) => {
+const UploadDocs = ({ formik, handleFileUpload, selectedFiles }) => {
+
+  const { 
+    values, 
+    errors, 
+    touched, 
+    handleChange, 
+    handleBlur 
+  } = formik;
     return (<Box sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           {[
             { 
               name: 'managerID', 
-              label: 'Manager ID (Govt Issued)' 
+              label: 'Personal ID (Govt Issued)' 
             },
             { 
               name: 'managerPhoto', 
-              label: 'Manager Photo' 
+              label: 'Personal Photo (Selfie)' 
             },
             { 
               name: 'businessLogo', 
@@ -36,16 +46,21 @@ const UploadDocs = ({ handleFileUpload, selectedFiles }) => {
               <Box sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                border: '2px dashed grey', 
+                border: '2px dashed ' + (errors[file.name] ? 'red' :( values[file.name] !== '' ? 'var(--primary-accent)' : 'grey')), 
                 borderRadius: 2, 
                 p: 2 
               }}>
                 <input
-                  accept="image/*,application/pdf"
-                  style={{ display: 'none' }}
+                  required
+                  name={file.name}
+                  label={file.label}
+                  // accept only png/jpg/jpeg files
+                  accept="image/png, image/jpeg, image/jpg"
                   id={file.name}
+                  style={{ display: 'none' }}
                   type="file"
-                  onChange={(e) => handleFileUpload(file.name, e.target.files[0])}
+                  onChange={(e) => handleFileUpload(formik, file.name, e.target.files[0])}
+                                    
                 />
                 <label htmlFor={file.name}>
                   <Button 
@@ -61,6 +76,11 @@ const UploadDocs = ({ handleFileUpload, selectedFiles }) => {
                   {selectedFiles[file.name] 
                     ? selectedFiles[file.name].name 
                     : file.label}
+                    <small style={{color:'red'}}>
+                    {
+                       " " + (errors[file.name] && touched[file.name] ? errors[file.name] : '')
+                    }
+                      </small>
                 </Typography>
               </Box>
             </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,  useContext, useEffect} from "react";
 import SideBar from "../components/SideBar";
 import {
   BusinessSection,
@@ -9,10 +9,26 @@ import LogsSection from "../components/LayoutSections/LogsSection";
 import DealsSection from "../components/LayoutSections/DealsSection";
 import EmployeesSection from "../components/LayoutSections/EmployeesSection";
 import CustomersSection from "../components/LayoutSections/CustomersSection";
+import NavBar from "../components/NavBar";
+import { Button } from '@mui/material'; // Import Material UI Button
+import UserContext from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const { isAuthenticated, employee } = useContext(UserContext);
+  const Navigate = useNavigate();
+
+  console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (!isAuthenticated) {
+        Navigate('/login'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (!isAuthenticated) return null;
 
   const handleSectionChange = (section) => {
     setActiveSection(section);

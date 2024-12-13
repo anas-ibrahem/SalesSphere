@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { 
   Container, 
   Box, 
@@ -12,31 +12,22 @@ import {
   useTheme
 } from '@mui/material';
 
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
+import toast from 'react-hot-toast';
 
+import { Formik, Form } from 'formik';
 import PersonalInfo from '../components/registertionComponents/PersonalInfo';
 import BusinessDetails from '../components/registertionComponents/BusinessDetails';
 import UploadDocs from '../components/registertionComponents/UploadDocs';
-
+import { PersonalInfoSchema, BusinessInfoSchema, DocumentUploadSchema, validateFile } from '../utils/validationSchemas';
 import FullLogo from '../components/FullLogo';
+import ReviewSection from '../components/registertionComponents/ReviewSection';
+import { useNavigate } from 'react-router-dom';
+import UserContext from '../context/UserContext';
+import fetchAPI from '../utils/fetchAPI';
+
+import { EmployeeRoles } from '../utils/Enums';
 
 
-// Validation schemas for different steps
-const PersonalInfoSchema = Yup.object().shape({
-  firstName: Yup.string().required('First Name is required'),
-  lastName: Yup.string().required('Last Name is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  phone: Yup.string()
-    .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
-    .required('Phone number is required')
-});
-
-const BusinessInfoSchema = Yup.object().shape({
-  businessName: Yup.string().required('Business Name is required'),
-  businessType: Yup.string().required('Business Type is required'),
-  registrationNumber: Yup.string().required('Registration Number is required')
-});
 
 const BusinessRegistration = () => {
   const theme = useTheme();
@@ -49,6 +40,20 @@ const BusinessRegistration = () => {
     businessRegistrationDoc: null
   });
 
+  const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(UserContext);
+
+  const Navigate = useNavigate();
+
+  console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        Navigate('/home'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (isAuthenticated) return null;
+
   const steps = [
     'Personal Information', 
     'Business Details', 
@@ -56,36 +61,60 @@ const BusinessRegistration = () => {
     'Review & Submit'
   ];
 
-  const handleFileUpload = (fileType, file) => {
-    setSelectedFiles(prev => ({
-      ...prev,
-      [fileType]: file
-    }));
+  const handleFileUpload = (formik, fileType, file) => {
+    const vFile = validateFile(file);
+        if (vFile !== true) {
+
+          toast(vFile, { icon: '❌' });
+          formik.setFieldValue(fileType, '');
+          setSelectedFiles(prev => ({
+            ...prev,
+            [fileType]: null
+          }));
+          return;
+        }
+        setSelectedFiles(prev => ({
+          ...prev,
+          [fileType]: file
+        }));
+        formik.setFieldValue(fileType, file);
+
+
   };
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleNext = (e, formik) => {
+    e.preventDefault();
+    formik.validateForm().then(errors => {
+      if (Object.keys(errors).length === 0) {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      }
+      else {
+        formik.setTouched(errors, true);
+      }
+    });
+
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const renderStepContent = (step) => {
+  const renderStepContent = (step, formik) => {
     switch(step) {
       case 0:
         return (
-          <PersonalInfo />
+          <PersonalInfo formik={formik} />
         );
       case 1:
         return (
-          <BusinessDetails />
+          <BusinessDetails formik={formik} />
         );
       case 2:
         return (
           <UploadDocs 
             handleFileUpload={handleFileUpload} 
             selectedFiles={selectedFiles}
+            formik={formik}
           />
         );
       case 3:
@@ -94,7 +123,7 @@ const BusinessRegistration = () => {
             <Typography variant="h6" gutterBottom>
               Review Your Information
             </Typography>
-            {/* Implement a review section that shows all entered details */}
+            <ReviewSection formik={formik} />
           </Box>
         );
       default:
@@ -102,10 +131,48 @@ const BusinessRegistration = () => {
     }
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { setSubmitting }) => {
     // Implement submission logic
     console.log('Submission Values:', values);
     console.log('Uploaded Files:', selectedFiles);
+    const valuesToSubmit = {
+      business_data: {
+        name: values.businessName,
+        phone_number: values.businessPhone,
+        email: values.businessEmail,
+        country: values.businessCountry,
+        city: values.businessCity,
+        street: values.businessStreet,
+        website_url: values.businessWebsite,
+        industry: values.businessIndustry
+      },
+      employee_data: {
+        first_name: values.firstName,
+        last_name: values.lastName,
+        birth_date: values.birthdate,
+        address: values.address,
+        email: values.email,
+        phone_number: values.phone,
+        role: EmployeeRoles.Manager,
+        password: values.password
+      }
+    };
+
+    fetchAPI('/business/register', 'POST', valuesToSubmit).then(data => {
+      if(data && data.error) {
+        toast.error(data.error);
+      }
+      else {
+        toast.success('Registration successful! Please wait for approval.');
+        Navigate('/login');
+      }
+      setSubmitting(false);
+    }
+    ).catch(err => {
+      console.error(err);
+      toast.error('An error occurred. Please try again later.');
+      setSubmitting(false);
+    });
   };
 
   return (
@@ -138,7 +205,7 @@ const BusinessRegistration = () => {
           align="center" 
           gutterBottom
         >
-          Business Registration
+          <strong>Business Registration</strong>
         </Typography>
         
         <Stepper activeStep={activeStep} alternativeLabel>
@@ -153,24 +220,39 @@ const BusinessRegistration = () => {
           initialValues={{
             firstName: '',
             lastName: '',
+            birthdate: '',
+            address: '',
             email: '',
             phone: '',
+            password: '',
+            confirmPassword: '',
             businessName: '',
-            businessType: '',
-            registrationNumber: ''
+            businessEmail: '',
+            businessPhone: '',
+            businessCountry: '',
+            businessCity: '',
+            businessStreet: '',
+            businessWebsite: '',
+            businessIndustry: '',
+            managerID: '',
+            managerPhoto: '',
+            businessLogo: '',
+            businessRegistrationDoc: ''
           }}
           validationSchema={
             activeStep === 0 
               ? PersonalInfoSchema 
               : activeStep === 1 
                 ? BusinessInfoSchema 
-                : null
+                : activeStep === 2
+                  ? DocumentUploadSchema
+                  : null
           }
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting, values }) => (
+          {(formik) => (
             <Form>
-              {renderStepContent(activeStep)}
+              {renderStepContent(activeStep, formik)}
               
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
                 <Button 
@@ -184,7 +266,7 @@ const BusinessRegistration = () => {
                     type="submit" 
                     variant="contained" 
                     color="primary"
-                    disabled={isSubmitting}
+                    disabled={formik.isSubmitting}
                   >
                     Submit for Review
                   </Button>
@@ -192,7 +274,7 @@ const BusinessRegistration = () => {
                   <Button 
                     variant="contained" 
                     color="primary" 
-                    onClick={handleNext}
+                    onClick={(e) => handleNext(e, formik)}
                   >
                     Next
                   </Button>

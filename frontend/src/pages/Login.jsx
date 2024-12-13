@@ -18,6 +18,10 @@ import {
   import * as Yup from 'yup';
 
   import FullLogo from '../components/FullLogo';
+import { useContext, useEffect } from 'react';
+import UserContext from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
+import fetchAPI from '../utils/fetchAPI';
   
 
   
@@ -27,19 +31,57 @@ import {
       .email('Invalid email address')
       .required('Email is required'),
     password: Yup.string()
-      .min(8, 'Password must be at least 8 characters')
       .required('Password is required')
   });
   
   const Login = () => {
+    const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(UserContext);
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const Navigate = useNavigate();
+
+    console.log('isAuthenticated:', isAuthenticated);
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        Navigate('/home'); 
+      }
+    }, [isAuthenticated, Navigate]);
+
+  if (isAuthenticated) return null;
+
     const handleSubmit = (values, { setSubmitting }) => {
-      // Simulate login process
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
+      // fetch /api/auth/login
+      console.log(import.meta.env.VITE_BACKEND_URL);
+
+      fetchAPI('/auth/login', 'POST', values).then(data => {
+        if(data && data.token) {
+          localStorage.setItem('token', data.token);
+          setToken(data.token);
+          setIsAuthenticated(true);
+          setTokenExpired(false);
+        }
+        else {
+          alert('Invalid email or password');
+        }
         setSubmitting(false);
-      }, 400);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('An error occurred. Please try again later.');
+        setSubmitting(false);
+      })
+
+      // Simulate login process
+      // setTimeout(() => {
+      //   alert(JSON.stringify(values, null, 2));
+      //   setSubmitting(false);
+      // }, 400);
+    };
+    const handleRegisterBtn = (e) => {
+      e.preventDefault();
+      alert('Register a new business');
     };
   
     return (
@@ -144,6 +186,7 @@ import {
                     variant="contained"
                     sx={{ mt: 3, mb: 1, backgroundColor: 'var(--secondary-accent)' }}
                     disabled={isSubmitting}
+                    
                   >
                     Sign In
                   </Button>
@@ -153,6 +196,7 @@ import {
                     variant="outlined"
                     sx={{ mb: 2 }}
                     disabled={isSubmitting}
+                    onClick={handleRegisterBtn}
                   >
                     Register a new Business!
                   </Button>
