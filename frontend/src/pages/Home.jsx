@@ -9,7 +9,6 @@ import LogsSection from "../components/LayoutSections/LogsSection";
 import DealsSection from "../components/LayoutSections/DealsSection";
 import EmployeesSection from "../components/LayoutSections/EmployeesSection";
 import CustomersSection from "../components/LayoutSections/CustomersSection";
-import NavBar from "../components/NavBar";
 import { Button } from '@mui/material'; // Import Material UI Button
 import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
