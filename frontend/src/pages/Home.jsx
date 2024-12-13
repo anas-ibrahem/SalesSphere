@@ -8,6 +8,7 @@ import RecordsSection from "../components/LayoutSections/RecordsSection";
 import LogsSection from "../components/LayoutSections/LogsSection";
 import DealsSection from "../components/LayoutSections/DealsSection";
 import EmployeesSection from "../components/LayoutSections/EmployeesSection";
+import CustomersSection from "../components/LayoutSections/CustomersSection";
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -47,6 +48,7 @@ function Home() {
           {activeSection === "records" && <RecordsSection />}
           {activeSection === "deals" && <DealsSection />}
           {activeSection === "employees" && <EmployeesSection />}
+          {activeSection === "customers" && <CustomersSection />}
           {activeSection === "default" && <DefaultSection />}
         </div>
       </div>
