@@ -46,6 +46,23 @@ class EmployeeController {
         }
         res.json(result);
     }
+    
+    updateProfile = async (req, res) => {
+        const empData = req.body;
+        if(!validator.isEmail(empData.email)) {
+            return res.status(400).json({error: 'Invalid email address'});
+        }
+        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        const result = await this.employeeModel.updateProfile(req.pool, req.employeeId, empData);
+        if (result) {
+            res.json({message: 'Profile updated successfully'});
+        } else {
+            res.status(400).json({ error: 'Email already exists' });
+        }
+    }
 }
 
 
