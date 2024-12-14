@@ -9,8 +9,8 @@ class DealController {
         const emps = await this.dealModel.getAll(req.pool);
         res.json(emps);
     }
-    getAllClaimedDeals = async (req, res) => {
-        const emps = await this.dealModel.getAllClaimedDeals(req.pool);
+    getEmployeeClaimedDeals = async (req, res) => {
+        const emps = await this.dealModel.getEmployeeClaimedDeals(req.pool , req.employeeId);
         res.json(emps);
     }
     getAllOpenDeals = async (req, res) => {
@@ -23,6 +23,15 @@ class DealController {
         res.json(deal);
     }
 
+    updateStatus = async (req, res) => {
+        const dealData = req.body;
+        if(!dealData.id || !dealData.status) {
+            return res.status(400).json({error: 'Deal ID and status are required'});
+        }
+
+        const result = await this.dealModel.updateStatus(req.pool, dealData , req.employeeId);
+        res.json({success: result});
+    }
 
 
 }

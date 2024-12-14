@@ -26,7 +26,7 @@ class DealModel {
         }
     }
 
-    getAllClaimedDeals = async (pool) => {
+    getEmployeeClaimedDeals = async (pool , employeeId) => {
         try {
             const result = await pool.query(`
                 SELECT 
@@ -44,8 +44,8 @@ class DealModel {
                 ) AS customer
             FROM deal d
             JOIN customer c ON d.customer_id = c.id
-            WHERE d.status = 1
-            `);
+            WHERE d.status = 1 AND d.deal_executor = $1
+            ` , [employeeId]);
             return result.rows;
         }
         catch (error) {
@@ -112,6 +112,22 @@ class DealModel {
         catch (error) {
             console.error('Database query error:', error);
             return {};
+        }
+    }
+
+    updateStatus = async (pool, dealData , employeeId) => {
+        try {
+            const result = await pool.query(`
+                UPDATE deal
+                SET status = $1, deal_executor = $2
+                WHERE id = $3
+            `, [dealData.status, employeeId , dealData.id]);
+
+            return result.rowCount > 0;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
         }
     }
 }
