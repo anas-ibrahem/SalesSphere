@@ -8,6 +8,8 @@ import {
   Card,
   Typography,
 } from "@material-tailwind/react";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import AddEmployeeForm from "../Forms/AddEmployeeForm";
 
 const generateDummyData = () => {
   const dummyEmployees = [];
@@ -77,13 +79,15 @@ const dummyData = generateDummyData();
 function EmployeesSection() {
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedId, setExpandedId] = useState(null);
+  const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [filterType, setFilterType] = useState("All");
   const [sortField, setSortField] = useState("account_creation_date");
   const [duration, setDuration] = useState("all times");
   const [dealsType, setDealsType] = useState("all deals");
   const [sortOrder, setSortOrder] = useState("asc");
   const EmployeesPerPage = 10;
+
+
 
   // Filtering logic
   const filterEmployees = dummyData.filter((employee) => {
@@ -131,16 +135,40 @@ function EmployeesSection() {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const manager = true;
+
+  const handleAddEmployee = (formData) => {
+    // send the formData to your backend
+    console.log('New Employee Data:', Object.fromEntries(formData));
+    setShowAddEmployeeForm(false);
+  };
+
+
   return (
     <>
-      {currentEmployee ? (
+      {showAddEmployeeForm ? (
+        <AddEmployeeForm 
+          onBack={() => setShowAddEmployeeForm(false)}
+        />
+      ) : currentEmployee ? (
         <EmployeeProfile
           back={() => setCurrentEmployee(null)}
           employee={currentEmployee}
         />
       ) : (
         <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <h1 className="text-2xl font-bold mb-4">Employees</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold mb-4">Employees</h1>
+            {manager && (
+              <button 
+                onClick={() => setShowAddEmployeeForm(true)}
+                className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
+              >
+                <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                <span className="text-lg">Add Employee</span>
+              </button>
+            )}
+          </div>
 
           {/* Filter and Sort Controls */}
           <div className="flex justify-between mb-4">
