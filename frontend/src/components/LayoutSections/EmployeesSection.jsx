@@ -8,7 +8,7 @@ import {
   Card,
   Typography,
 } from "@material-tailwind/react";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
 
 const generateDummyData = () => {
@@ -87,8 +87,6 @@ function EmployeesSection() {
   const [sortOrder, setSortOrder] = useState("asc");
   const EmployeesPerPage = 10;
 
-
-
   // Filtering logic
   const filterEmployees = dummyData.filter((employee) => {
     return filterType === "All" || employee.type === filterType;
@@ -139,17 +137,14 @@ function EmployeesSection() {
 
   const handleAddEmployee = (formData) => {
     // send the formData to your backend
-    console.log('New Employee Data:', Object.fromEntries(formData));
+    console.log("New Employee Data:", Object.fromEntries(formData));
     setShowAddEmployeeForm(false);
   };
-
 
   return (
     <>
       {showAddEmployeeForm ? (
-        <AddEmployeeForm 
-          onBack={() => setShowAddEmployeeForm(false)}
-        />
+        <AddEmployeeForm onBack={() => setShowAddEmployeeForm(false)} />
       ) : currentEmployee ? (
         <EmployeeProfile
           back={() => setCurrentEmployee(null)}
@@ -160,7 +155,7 @@ function EmployeesSection() {
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold mb-4">Employees</h1>
             {manager && (
-              <button 
+              <button
                 onClick={() => setShowAddEmployeeForm(true)}
                 className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
               >
@@ -254,32 +249,44 @@ function EmployeesSection() {
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between"
                         >
-                          Id: {employee.id}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          {employee.type}
+                          <p className="mr-28">Id: {employee.id} </p>
+                          <p>{employee.type}</p>
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between"
                         >
-                          Number of Deals: {employee.numberOfDeals}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success
-                          Rate:
-                          {employee.percentageOfSuccessfulDeals}%
+                          <p className="mr-28">
+                            {" "}
+                            Number of Deals: {employee.numberOfDeals}
+                          </p>
+                          <p>
+                            Success Rate:{employee.percentageOfSuccessfulDeals}%
+                          </p>
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between"
                         >
-                          Number of Successful Deals:{" "}
-                          {employee.numberOfSuccessfulDeals}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number
-                          of Unsuccessful Deals:{" "}
-                          {employee.numberOfUnsuccessfulDeals}
+                          <p>
+                            {" "}
+                            Number of Successful Deals:{" "}
+                            {employee.numberOfSuccessfulDeals}
+                          </p>
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal flex justify-between"
+                        >
+                          <p>
+                            Number of Unsuccessful Deals:{" "}
+                            {employee.numberOfUnsuccessfulDeals}
+                          </p>
                         </Typography>
                       </div>
                     </ListItem>

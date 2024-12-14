@@ -111,17 +111,14 @@ function CustomersSection() {
 
   const handleAddCustomer = (formData) => {
     // send the formData to your backend
-    console.log('New Employee Data:', Object.fromEntries(formData));
+    console.log("New Employee Data:", Object.fromEntries(formData));
     setShowAddCustomerForm(false);
   };
-
 
   return (
     <>
       {showAddCustomerForm ? (
-        <AddCustomerForm 
-          onBack={() => setShowAddCustomerForm(false)}
-        />
+        <AddCustomerForm onBack={() => setShowAddCustomerForm(false)} />
       ) : currentCustomer ? (
         <CustomerProfile
           back={() => setCurrentCustomer(null)}
@@ -132,7 +129,7 @@ function CustomersSection() {
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold mb-4">Customers</h1>
             {DealOpener && (
-              <button 
+              <button
                 onClick={() => setShowAddCustomerForm(true)}
                 className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
               >
@@ -199,33 +196,42 @@ function CustomersSection() {
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between"
                         >
-                          Id: {customer.id}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          Date Registered: {customer.dateRegistered}
+                          <p>ID: {customer.id} </p>
+                          <p>Date Registered: {customer.dateRegistered}</p>
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between "
                         >
-                          Number of Deals: {customer.numberOfDeals}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success
-                          Rate:
-                          {customer.percentageOfSuccessfulDeals}%
+                          <p className="mr-28 ">
+                            Number of Deals: {customer.numberOfDeals}{" "}
+                          </p>
+                          <p>
+                            SuccessRate: {customer.percentageOfSuccessfulDeals}%
+                          </p>
                         </Typography>
                         <Typography
                           variant="small"
                           color="gray"
-                          className="font-normal"
+                          className="font-normal flex justify-between"
                         >
-                          Number of Successful Deals:{" "}
-                          {customer.numberOfSuccessfulDeals}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number
-                          of Unsuccessful Deals:{" "}
-                          {customer.numberOfUnsuccessfulDeals}
+                          <p>
+                            Number of Successful Deals:{" "}
+                            {customer.numberOfSuccessfulDeals}
+                          </p>
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-normal flex justify-between"
+                        >
+                          <p>
+                            Number of Unsuccessful Deals:{" "}
+                            {customer.numberOfUnsuccessfulDeals}
+                          </p>
                         </Typography>
                       </div>
                     </ListItem>
