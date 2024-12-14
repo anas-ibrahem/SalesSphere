@@ -27,7 +27,7 @@ class EmployeeController {
             return res.status(400).json({error: 'Email is required'});
         }
 
-        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date || !empData.role || !empData.business_id) {
+        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date || !empData.role) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -39,6 +39,12 @@ class EmployeeController {
         if(empData.password) {
             delete empData.password;
         }
+
+        const businessId = req.businessId;
+
+        console.log('businessId:', businessId);
+        empData.business_id = businessId;
+        
         const newEmployee = new EmployeeModel(empData);
         const result = await newEmployee.register(req.pool);
         if(result == -1) {
