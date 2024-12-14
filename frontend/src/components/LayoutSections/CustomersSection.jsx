@@ -9,6 +9,7 @@ import {
   Card,
   Typography,
 } from "@material-tailwind/react";
+import AddCustomerForm from "../Forms/AddCustomerForm";
 
 const generateDummyData = () => {
   const dummyCustomers = [];
@@ -67,6 +68,7 @@ function CustomersSection() {
   const [sortField, setSortField] = useState("date register");
   const [dealsType, setDealsType] = useState("all deals");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
   const CustomersPerPage = 10;
 
   // Sorting logic
@@ -105,16 +107,40 @@ function CustomersSection() {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const DealOpener = true;
+
+  const handleAddCustomer = (formData) => {
+    // send the formData to your backend
+    console.log('New Employee Data:', Object.fromEntries(formData));
+    setShowAddCustomerForm(false);
+  };
+
+
   return (
     <>
-      {currentCustomer ? (
+      {showAddCustomerForm ? (
+        <AddCustomerForm 
+          onBack={() => setShowAddCustomerForm(false)}
+        />
+      ) : currentCustomer ? (
         <CustomerProfile
           back={() => setCurrentCustomer(null)}
           customer={currentCustomer}
         />
       ) : (
         <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <h1 className="text-2xl font-bold mb-4">Customers</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold mb-4">Customers</h1>
+            {DealOpener && (
+              <button 
+                onClick={() => setShowAddCustomerForm(true)}
+                className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
+              >
+                <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                <span className="text-lg">Add Customer</span>
+              </button>
+            )}
+          </div>
 
           {/* Filter and Sort Controls */}
           <div className="flex justify-between mb-4">
