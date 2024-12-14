@@ -133,8 +133,8 @@ CREATE TABLE NOTIFICATION (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    priority INT NOT NULL, -- 0 , 1 , 2
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    priority INT NOT NULL, -- 0 low, 1 high
+    type INT NOT NULL, -- 0 general, 1 customer, 2 deal, 3 deadline, 4 target, 5 badge award, 6 finances
 
     -- Relationships
     recipient INT NOT NULL,

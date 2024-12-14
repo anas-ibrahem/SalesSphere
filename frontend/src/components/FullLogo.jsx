@@ -12,7 +12,7 @@ const FullLogo = () => (
       }}
     >
       <img 
-        src="SalesSphere.svg" 
+        src="/SalesSphere.svg" 
         alt="Company Logo" 
         style={{ 
           maxWidth: '200px', 

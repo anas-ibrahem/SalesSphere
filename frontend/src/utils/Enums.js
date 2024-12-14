@@ -37,8 +37,17 @@ const PaymentMethods = {
 
 const NotificationPriority = {
     Low: 0,
-    Medium: 1,
-    High: 2
+    High: 1
+}
+
+const NotificationTypes = {
+    General: 0,
+    Customer: 1,
+    Deal: 2,
+    Deadline: 3,
+    Target: 4,
+    BadgeAward: 5,
+    Finances: 6
 }
 
 const AdminPrivileges = {

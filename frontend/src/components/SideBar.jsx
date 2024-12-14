@@ -10,12 +10,29 @@ import {
 } from "lucide-react";
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
+import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
+import { AddBusiness, AdminPanelSettings } from "@mui/icons-material";
 
+const usersections = [
+  { route: "/home/", icon: Home, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Business" },
+  { route: "/home/logs", icon: FileText, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Logs" },
+  { route: "/home/deals", icon: DollarSign, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Deals" },
+  { route: "/home/records", icon: DollarSign, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Financial Records" },
+  { route: "/home/employees", icon: Users, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Employees" },
+  { route: "/home/customers", icon: UsersRound, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Customers" },
+];
+
+const adminsections = [
+  { route: "/admin/", icon: AddBusiness, roles: [AdminPrivileges.Normal, AdminPrivileges.Super], title: "Business Requests" },
+  { route: "/admin/admins", icon: AdminPanelSettings, roles: [AdminPrivileges.Normal, AdminPrivileges.Super], title: "Manage Admins" },
+ 
+];
 
 export default function SideBar({
   onSectionChange,
   isCollapsed,
   toggleSidebar,
+  type="user",
 }) {
   return (
     <div
@@ -30,12 +47,12 @@ export default function SideBar({
       <div className="flex items-center justify-center h-20 ml-2 border-b border-gray-700">
         <Logo logoChoice={2} size="h-[48px] w-[48px]" />
         {!isCollapsed && (
-          <button
-            onClick={() => onSectionChange("default")} 
+          <Link to={'/'}
+            //onClick={() => onSectionChange("default")} 
             className="self-center text-xl font-semibold whitespace-nowrap ml-2 text-white hover:text-gray-400 "
           >
-            SalesSphere
-          </button>
+            Sales Sphere
+          </Link>
         )}
       </div>
 
@@ -54,84 +71,28 @@ export default function SideBar({
       </div>
 
       {/* Navigation Links */}
+      
       <ul className="flex-grow space-y-2 px-2">
-        <li>
-          <button
-            onClick={() => onSectionChange("business")}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-            <Home className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-            {!isCollapsed && <span>Business</span>}
-          </button>
-        </li>
-        <li>
-          <Link to = {"/home/logs"}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-          <FileText className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-          {!isCollapsed && <span>Logs</span>}
-          </Link>
-        </li>
-
-        <li>
-          <Link to = {"/home/deals"}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-            {/* TODO change Dollar sign */}
-            <DollarSign className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-            {!isCollapsed && <span>Deals</span>}
-          </Link>
-        </li>
-
-        <li>
-          <button
-            onClick={() => onSectionChange("records")}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-            <DollarSign className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-            {!isCollapsed && <span>Financial Records</span>}
-          </button>
-        </li>
-        <li>
-          <Link to={"/home/employees"}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-            <Users className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-            {!isCollapsed && <span>Employees</span>}
-          </Link>
-        </li>
-        <li>
-          <Link to={"/home/employees"}
-            className={`
-              flex items-center py-2 
-              ${isCollapsed ? "justify-center" : "px-4"}
-              rounded hover:bg-gray-700 w-full text-left
-            `}
-          >
-            <UsersRound className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
-            {!isCollapsed && <span>Customers</span>}
-          </Link>
-        </li>
+      {
+        (type == "admin" ? adminsections : usersections).map((section, index) => {
+          //if (section.roles.length === 0 || section.roles.includes(EmployeeRoles.DealExecutor)) {
+            return (
+              <li key={index}>
+                <Link to={`${section.route}`}
+                  key={index}
+                  className={`flex items-center py-2 
+                ${isCollapsed ? "justify-center" : "px-4"}
+                rounded hover:bg-gray-700 w-full text-left
+                  `}
+                >
+                  <section.icon className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
+                  {!isCollapsed && <span>{section.title}</span>}
+                </Link>
+              </li>
+            );
+          //}
+        })
+      }
       </ul>
     </div>
   );

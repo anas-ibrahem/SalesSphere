@@ -9,6 +9,8 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import UserContext, { UserProvider } from './context/UserContext';
 import fetchAPI from "./utils/fetchAPI";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminApp from "./pages/admin/AdminApp";
 
 
 
@@ -27,6 +29,8 @@ function App() {
           <Route path="/home/*" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/business-registration" element={<BusinessRegistration />} />
+          {/* admin */}
+          <Route path="/admin/*" element={<AdminApp />} />
         </Routes>
       </UserProvider>
     </div>
