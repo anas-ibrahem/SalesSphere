@@ -9,9 +9,10 @@ import LogsSection from "../components/LayoutSections/LogsSection";
 import DealsSection from "../components/LayoutSections/DealsSection";
 import EmployeesSection from "../components/LayoutSections/EmployeesSection";
 import CustomersSection from "../components/LayoutSections/CustomersSection";
-import { Button } from '@mui/material'; // Import Material UI Button
 import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { Navigate , Route , Routes } from "react-router-dom";
+
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -38,33 +39,31 @@ function Home() {
   };
 
   return (
-    <div
-      className="h-screen flex"
-      style={{ backgroundColor: "var(--tertiary-accent)" }}
-    >
+    <div className="flex h-screen">
       {/* Sidebar on the left */}
-      <SideBar
-        onSectionChange={handleSectionChange}
-        isCollapsed={isSidebarCollapsed}
-        toggleSidebar={toggleSidebar}
-      />
+        <SideBar
+          onSectionChange={handleSectionChange}
+          isCollapsed={isSidebarCollapsed}
+          toggleSidebar={toggleSidebar}
+        />
 
-      {/* Main content area */}
+      {/* Main content area on the right */}
       <div
         className={`
-        flex h-screen flex-col flex-grow 
-        transition-all duration-300 
-        ${isSidebarCollapsed ? "ml-16" : "ml-64"}
+        flex flex-col flex-grow 
+        duration-300 
       `}
       >
-        <div className="h-full">
-          {activeSection === "business" && <BusinessSection />}
-          {activeSection === "logs" && <LogsSection />}
-          {activeSection === "records" && <RecordsSection />}
-          {activeSection === "deals" && <DealsSection />}
-          {activeSection === "employees" && <EmployeesSection />}
-          {activeSection === "customers" && <CustomersSection />}
-          {activeSection === "default" && <DefaultSection />}
+        <div className="max-h-full overflow-y-auto">
+            <Routes>
+              <Route path="/business" element={<BusinessSection />} />
+              <Route path="/logs" element={<LogsSection />} />
+              <Route path="/records" element={<RecordsSection />} />
+              <Route path="/deals" element={<DealsSection />} />
+              <Route path="/employees" element={<EmployeesSection />} />
+              <Route path="/customers" element={<CustomersSection />} />
+              <Route path="/" element={<DefaultSection />} />
+            </Routes>
         </div>
       </div>
     </div>

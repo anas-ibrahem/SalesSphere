@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Home,
   FileText,
@@ -9,6 +9,8 @@ import {
   UsersRound,
 } from "lucide-react";
 import Logo from "./Logo";
+import { Link } from "react-router-dom";
+
 
 export default function SideBar({
   onSectionChange,
@@ -18,20 +20,19 @@ export default function SideBar({
   return (
     <div
       className={`
-        h-screen fixed top-0 left-0 flex flex-col 
-        transition-all duration-300 
-        ${isCollapsed ? "w-16" : "w-64"}
+        h-full flex flex-col 
         text-white
+        ${!isCollapsed ? "pr-3" : ""}
       `}
       style={{ backgroundColor: "#111827" }}
     >
       {/* Logo Section */}
-      <div className="flex items-center justify-center h-20 border-b border-gray-700">
+      <div className="flex items-center justify-center h-20 ml-2 border-b border-gray-700">
         <Logo logoChoice={2} size="h-[48px] w-[48px]" />
         {!isCollapsed && (
           <button
-            onClick={() => onSectionChange("default")} // Or any other action you want
-            className="self-center text-xl font-semibold whitespace-nowrap ml-2 text-white hover:text-gray-400 transition-all duration-300"
+            onClick={() => onSectionChange("default")} 
+            className="self-center text-xl font-semibold whitespace-nowrap ml-2 text-white hover:text-gray-400 "
           >
             SalesSphere
           </button>
@@ -42,7 +43,7 @@ export default function SideBar({
       <div className="flex justify-center my-4">
         <button
           onClick={toggleSidebar}
-          className="text-white hover:bg-gray-700 p-2 rounded transition-all duration-300 focus:outline-none"
+          className="text-white hover:bg-gray-700 p-2 rounded  focus:outline-none"
         >
           {isCollapsed ? (
             <ChevronRight className="h-6 w-6" />
@@ -63,27 +64,25 @@ export default function SideBar({
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
-            <Home className="h-5 w-5 mr-3" />
+            <Home className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
             {!isCollapsed && <span>Business</span>}
           </button>
         </li>
         <li>
-          <button
-            onClick={() => onSectionChange("logs")}
+          <Link to = {"/home/logs"}
             className={`
               flex items-center py-2 
               ${isCollapsed ? "justify-center" : "px-4"}
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
-            <FileText className="h-5 w-5 mr-3" />
-            {!isCollapsed && <span>Logs</span>}
-          </button>
+          <FileText className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
+          {!isCollapsed && <span>Logs</span>}
+          </Link>
         </li>
 
         <li>
-          <button
-            onClick={() => onSectionChange("deals")}
+          <Link to = {"/home/deals"}
             className={`
               flex items-center py-2 
               ${isCollapsed ? "justify-center" : "px-4"}
@@ -91,9 +90,9 @@ export default function SideBar({
             `}
           >
             {/* TODO change Dollar sign */}
-            <DollarSign className="h-5 w-5 mr-3" />
+            <DollarSign className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
             {!isCollapsed && <span>Deals</span>}
-          </button>
+          </Link>
         </li>
 
         <li>
@@ -105,35 +104,33 @@ export default function SideBar({
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
-            <DollarSign className="h-5 w-5 mr-3" />
+            <DollarSign className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
             {!isCollapsed && <span>Financial Records</span>}
           </button>
         </li>
         <li>
-          <button
-            onClick={() => onSectionChange("employees")}
+          <Link to={"/home/employees"}
             className={`
               flex items-center py-2 
               ${isCollapsed ? "justify-center" : "px-4"}
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
-            <Users className="h-5 w-5 mr-3" />
+            <Users className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
             {!isCollapsed && <span>Employees</span>}
-          </button>
+          </Link>
         </li>
         <li>
-          <button
-            onClick={() => onSectionChange("customers")}
+          <Link to={"/home/employees"}
             className={`
               flex items-center py-2 
               ${isCollapsed ? "justify-center" : "px-4"}
               rounded hover:bg-gray-700 w-full text-left
             `}
           >
-            <UsersRound className="h-5 w-5 mr-3" />
+            <UsersRound className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
             {!isCollapsed && <span>Customers</span>}
-          </button>
+          </Link>
         </li>
       </ul>
     </div>
