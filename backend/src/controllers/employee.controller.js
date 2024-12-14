@@ -11,7 +11,7 @@ class EmployeeController {
     // Please use arrow function to bind 'this' to the class
 
     getAll = async (req, res) => {
-        const emps = await this.employeeModel.getAll(req.pool);
+        const emps = await this.employeeModel.getAll(req.pool, req.businessId);
         res.json(emps);
     }
 
@@ -27,7 +27,7 @@ class EmployeeController {
             return res.status(400).json({error: 'Email is required'});
         }
 
-        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date || !empData.role) {
+        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.hire_date || !empData.birth_date || !empData.role) {
             return res.status(400).json({error: 'All fields are required'});
         }
 

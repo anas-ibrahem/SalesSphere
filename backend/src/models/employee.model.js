@@ -1,5 +1,5 @@
 class EmployeeModel {
-    constructor({id, email, hashed_password, first_name, last_name, phone_number, address, birth_date, role, business_id}) {
+    constructor({id, email, hashed_password, first_name, last_name, phone_number, address, birth_date, role, business_id, hire_date}) {
         this.id = id;
         this.email = email;
         this.hashed_password = hashed_password;
@@ -10,21 +10,23 @@ class EmployeeModel {
         this.birth_date = birth_date;
         this.role = role;
         this.business_id = business_id;
+        this.hire_date = hire_date;
     }
 
     setBusinessId = (business_id) => {
         this.business_id = business_id;
     }
 
-    getAll = async (pool) => {
+    getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`
                 SELECT *
                 FROM employee e
                 LEFT JOIN employee_profile ep
                 ON e.id = ep.employee_id
+                WHERE e.business_id = $1
                 ORDER BY e.id;
-            `);
+            `, [business_id]);
 
             const results = result.rows.map(row => {
                 // clean up the result object
@@ -140,9 +142,9 @@ class EmployeeModel {
             const employeeId = result.rows[0].id;
 
             await pool.query(`
-                INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date)
-                VALUES ($1, $2, $3, $4, $5, $6);
-            `, [employeeId, this.first_name, this.last_name, this.phone_number, this.address, this.birth_date]);
+                INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date, hire_date)
+                VALUES ($1, $2, $3, $4, $5, $6, $7);
+            `, [employeeId, this.first_name, this.last_name, this.phone_number, this.address, this.birth_date, this.hire_date]);
 
             this.id = employeeId;
             await pool.query('COMMIT');
