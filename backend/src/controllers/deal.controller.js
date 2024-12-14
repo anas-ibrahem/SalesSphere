@@ -6,7 +6,7 @@ class DealController {
         this.dealModel = new DealModel();
     }
     getAll = async (req, res) => {
-        const emps = await this.dealModel.getAll(req.pool);
+        const emps = await this.dealModel.getAll(req.pool, req.businessId);
         res.json(emps);
     }
     getEmployeeClaimedDeals = async (req, res) => {
@@ -14,7 +14,7 @@ class DealController {
         res.json(emps);
     }
     getAllOpenDeals = async (req, res) => {
-        const emps = await this.dealModel.getAllOpenDeals(req.pool);
+        const emps = await this.dealModel.getAllOpenDeals(req.pool, req.businessId);
         res.json(emps);
     }
 
