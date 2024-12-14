@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaEye, FaEyeSlash, FaRandom } from 'react-icons/fa';
+import fetchAPI from '../../utils/fetchAPI';
+import { Password, Token } from '@mui/icons-material';
+import { EmployeeRoles } from '../../utils/Enums.js';
 
 const AddEmployeeForm = ({ onBack }) => {
     const [formValues, setFormValues] = useState({
@@ -9,10 +12,12 @@ const AddEmployeeForm = ({ onBack }) => {
         role: '',
         birth_date: '',
         phone_number: '',
-        profile_picture: null,
+        password: '',
         address: '',
         hire_date: ''
     });
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,16 +27,58 @@ const AddEmployeeForm = ({ onBack }) => {
         });
     };
 
-    const handleFileChange = (e) => {
-        setFormValues({
-            ...formValues,
-            profile_picture: e.target.files[0]
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formValues);
+        const token = localStorage.getItem('token');
+        fetchAPI('/employee', 'PUT', formValues, token).then(data => {
+            if(!data.error)
+            {
+                toast.success('Employee added successfully');
+            }
+            else
+            {
+                toast.error('Failed to add Employee');
+            }
+
         });
     };
 
+    const generateRandomPassword = () => {
+        const length = 12;
+        const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+        const numbers = '0123456789';
+        const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+        
+        const getRandomChar = (charSet) => 
+            charSet[Math.floor(Math.random() * charSet.length)];
+        
+        const password = [
+            getRandomChar(uppercaseLetters),
+            getRandomChar(lowercaseLetters),
+            getRandomChar(numbers),
+            getRandomChar(specialChars),
+            ...Array.from({ length: length - 4 }, () => 
+                getRandomChar(
+                    uppercaseLetters + 
+                    lowercaseLetters + 
+                    numbers + 
+                    specialChars
+                )
+            )
+        ]
+        .sort(() => Math.random() - 0.5)
+        .join('');
+        
+        setFormValues(prev => ({
+            ...prev,
+            password
+        }));
+    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -82,6 +129,38 @@ const AddEmployeeForm = ({ onBack }) => {
                     />
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="password" className="block mb-1 text-gray-600">Initial Password *</label>
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            value={formValues.password}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-md text-lg pr-20"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="text-gray-500 hover:text-blue-500 mr-2"
+                                title={showPassword ? "Hide Password" : "Show Password"}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={generateRandomPassword}
+                                className="text-gray-500 hover:text-blue-500"
+                                title="Generate Random Password"
+                            >
+                                <FaRandom />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className="mb-4">
                     <label htmlFor="role" className="block mb-1 text-gray-600">Role *</label>
                     <select
                         id="role"
@@ -92,8 +171,8 @@ const AddEmployeeForm = ({ onBack }) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     >
                         <option value="">Select Role</option>
-                        <option value="1">Deal Executor</option>
-                        <option value="0">Deal Opener</option>
+                        <option value= {EmployeeRoles.DealExecutor }>Deal Executor</option>
+                        <option value= {EmployeeRoles.DealOpener }>Deal Opener</option>
                     </select>
                 </div>
                 <div className="mb-4">
@@ -116,17 +195,6 @@ const AddEmployeeForm = ({ onBack }) => {
                         name="phone_number"
                         value={formValues.phone_number}
                         onChange={handleChange}
-                        required
-                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="profile_picture" className="block mb-1 text-gray-600">Profile Picture *</label>
-                    <input
-                        type="file"
-                        id="profile_picture"
-                        name="profile_picture"
-                        onChange={handleFileChange}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />

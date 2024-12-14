@@ -12,7 +12,7 @@ const VerificationStatus = {
 
 const CustomerTypes = {
     Individual: 0,
-    Business: 1
+    Company: 1
 }
 
 const ContactTypes = {

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
+import  { CustomerTypes , ContactTypes } from '../../utils/Enums.js'
+import fetchAPI from '../../utils/fetchAPI';
+import toast from 'react-hot-toast';
 
 const AddCustomerForm = ({ onBack }) => {
     const [formValues, setFormValues] = useState({
@@ -22,8 +25,20 @@ const AddCustomerForm = ({ onBack }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission logic here
         console.log(formValues);
+        const token = localStorage.getItem('token');
+        fetchAPI('/customer' , 'PUT' , formValues , token).then(data => {
+        if(!data.error)
+        {
+            toast.success('Customer added successfully');
+        }
+        else
+        {
+            toast.error('Failed to add customer');
+        }
+
+
+        });
     };
 
     return (
@@ -49,7 +64,6 @@ const AddCustomerForm = ({ onBack }) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
-                
                 <div className="mb-4">
                     <label htmlFor="email" className="block mb-1 text-gray-600">Email *</label>
                     <input
@@ -85,9 +99,21 @@ const AddCustomerForm = ({ onBack }) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     >
                         <option value="">Select Type</option>
-                        <option value="0">Individual</option>
-                        <option value="1">Company</option>
+                        <option value= {CustomerTypes.Individual}>Individual</option>
+                        <option value= {CustomerTypes.Company}>Company</option>
                     </select>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="lead_source" className="block mb-1 text-gray-600">Lead Source *</label>
+                    <input
+                        type="text"
+                        id="lead_source"
+                        name="lead_source"
+                        value={formValues.lead_source}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="preferred_contact_method" className="block mb-1 text-gray-600">Preferred Contact Method *</label>
@@ -100,8 +126,8 @@ const AddCustomerForm = ({ onBack }) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     >
                         <option value="">Select Contact Method</option>
-                        <option value="0">Email</option>
-                        <option value="1">Phone</option>
+                        <option value= {ContactTypes.Email}>Email</option>
+                        <option value= {ContactTypes.Phone}>Phone</option>
                     </select>
                 </div>
                 <div className="mb-4">
