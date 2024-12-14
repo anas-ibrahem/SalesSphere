@@ -1,5 +1,3 @@
-
-
 const LoadingScreen = () => {
     return (
         <div className="loading-screen"
@@ -12,7 +10,7 @@ const LoadingScreen = () => {
             backgroundColor: 'white'
         }}
         >
-        <img src="LoadingSalesSphere.gif" alt="Company Logo" style={
+        <img src="/LoadingSalesSphere.gif" alt="Company Logo" style={
         {
             width: '200px',
         }

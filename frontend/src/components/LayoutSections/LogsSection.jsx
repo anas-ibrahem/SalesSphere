@@ -10,7 +10,7 @@ const LogsSection = () => {
   }));
 
   return (
-    <section className="bg-white p-6 shadow-md h-screen">
+    <section className="bg-white p-6 shadow-md">
       <h1 className="text-2xl font-bold mb-8">Activity Logs</h1>
       <ol className="relative border-l border-gray-300">
         {logs.map((log) => (
