@@ -16,6 +16,7 @@ const LandingPage = function () {
         imgUrl={laptop}
         button={false}
         description="We’ve built SalesSphere to help teams stay organized, save time, and boost sales performance."
+        ID="About"
       />
       <Offers />
       <SubHero
@@ -25,6 +26,7 @@ const LandingPage = function () {
         imgUrl={mobileImg}
         button={true}
         buttonText="Download Now"
+        ID="Mobile"
       />
       <Footer />
     </>

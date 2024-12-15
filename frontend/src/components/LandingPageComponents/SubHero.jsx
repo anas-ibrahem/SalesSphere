@@ -3,7 +3,7 @@ import RevealOnScroll from "./RevealOnScroll";
 const SubHero = function (props) {
   return (
     <RevealOnScroll>
-      <div className="w-full bg-white px-4 py-16">
+      <section id={props.ID} className="w-full bg-white px-4 py-16">
         <div className="max-w-[1240px] mx-auto grid md:grid-cols-2 gap-8 items-center">
           <img
             className="w-[500px] my-4 "
@@ -23,7 +23,7 @@ const SubHero = function (props) {
             )}
           </div>
         </div>
-      </div>
+      </section>
     </RevealOnScroll>
   );
 };
