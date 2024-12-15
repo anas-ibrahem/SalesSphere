@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-// TODO: Import the CustomerProfile component
-//import CustomerProfile from "./CustomerProfile";
+import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import {
   List,
   ListItem,
@@ -10,6 +9,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import AddCustomerForm from "../Forms/AddCustomerForm";
+import CustomerProfile from "./CustomerProfile"; // Assuming you have this component
 
 const generateDummyData = () => {
   const dummyCustomers = [];
@@ -62,14 +62,12 @@ const generateDummyData = () => {
 const dummyData = generateDummyData();
 
 function CustomersSection() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentCustomer, setCurrentCustomer] = useState(null);
-  const [expandedId, setExpandedId] = useState(null);
+  const navigate = useNavigate();
   const [sortField, setSortField] = useState("date register");
   const [dealsType, setDealsType] = useState("all deals");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
   const CustomersPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Sorting logic
   const sortedCustomers = [...dummyData].sort((a, b) => {
@@ -103,84 +101,74 @@ function CustomersSection() {
   );
   const totalPages = Math.ceil(sortedCustomers.length / CustomersPerPage);
 
-  const handleExpand = (id) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
   const DealOpener = true;
 
   const handleAddCustomer = (formData) => {
     // send the formData to your backend
     console.log("New Employee Data:", Object.fromEntries(formData));
-    setShowAddCustomerForm(false);
+    navigate('/customers');
   };
 
   return (
-    <>
-      {showAddCustomerForm ? (
-        <AddCustomerForm onBack={() => setShowAddCustomerForm(false)} />
-      ) : currentCustomer ? (
-        <CustomerProfile
-          back={() => setCurrentCustomer(null)}
-          customer={currentCustomer}
-        />
-      ) : (
-        <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold mb-4">Customers</h1>
-            {DealOpener && (
-              <button
-                onClick={() => setShowAddCustomerForm(true)}
-                className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
-              >
-                <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
-                <span className="text-lg">Add Customer</span>
-              </button>
-            )}
-          </div>
+    <Routes>
+      {/* Main Customers List Route */}
+      <Route 
+        path="/" 
+        element={
+          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold mb-4">Customers</h1>
+              {DealOpener && (
+                <button
+                  onClick={() => navigate('add')}
+                  className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                  <span className="text-lg">Add Customer</span>
+                </button>
+              )}
+            </div>
 
-          {/* Filter and Sort Controls */}
-          <div className="flex justify-between mb-4">
-            <div className="flex space-x-4">
-              {/* Sort */}
-              <select
-                onChange={(e) => setSortField(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="dateRegistered">Date Registered</option>
-                <option value="Number of Deals">Number of Deals</option>
-              </select>
-              <select
-                onChange={(e) => setSortOrder(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
-              {sortField === "Number of Deals" && (
-                <>
+            {/* Filter and Sort Controls */}
+            <div className="flex justify-between mb-4">
+              <div className="flex space-x-4">
+                {/* Sort */}
+                <select
+                  onChange={(e) => setSortField(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="dateRegistered">Date Registered</option>
+                  <option value="Number of Deals">Number of Deals</option>
+                </select>
+                <select
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+                {sortField === "Number of Deals" && (
                   <select
                     onChange={(e) => setDealsType(e.target.value)}
-                    className="p-2 border rounded "
+                    className="p-2 border rounded"
                   >
                     <option value="all">All Deals</option>
                     <option value="successful">Successful Deals</option>
                     <option value="unsuccessful">Unsuccessful Deals</option>
                   </select>
-                </>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Customers Table */}
-          <div className="flex-grow overflow-y-auto">
-            <Card>
-              <List>
-                {currentCustomers.map((customer) => (
-                  <React.Fragment key={customer.id}>
+            {/* Customers Table */}
+            <div className="flex-grow overflow-y-auto">
+              <Card>
+                <List>
+                  {currentCustomers.map((customer) => (
                     <ListItem
-                      className="cursor-default my-4 hover:bg-gray-100"
-                      onClick={() => setCurrentCustomer(customer)}
+                      key={customer.id}
+                      className="cursor-pointer my-4 hover:bg-gray-100"
+                      onClick={() => navigate(`${customer.id}`)}
                     >
                       <div>
                         <Typography variant="h6" color="blue-gray">
@@ -235,59 +223,79 @@ function CustomersSection() {
                         </Typography>
                       </div>
                     </ListItem>
-                  </React.Fragment>
-                ))}
-              </List>
-            </Card>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={`px-4 py-2 border rounded ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`px-3 py-1 border rounded ${
-                    currentPage === index + 1
-                      ? "bg-blue-500 text-white"
-                      : "bg-white hover:bg-blue-100"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
+                  ))}
+                </List>
+              </Card>
             </div>
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              className={`px-4 py-2 border rounded ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </section>
-      )}
-    </>
+            {/* Pagination */}
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                className={`px-4 py-2 border rounded ${
+                  currentPage === 1
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              <div className="flex space-x-2">
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-3 py-1 border rounded ${
+                      currentPage === index + 1
+                        ? "bg-blue-500 text-white"
+                        : "bg-white hover:bg-blue-100"
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                className={`px-4 py-2 border rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </section>
+        } 
+      />
+
+      {/* Add Customer Form Route */}
+      <Route 
+        path="/add" 
+        element={
+          <AddCustomerForm 
+            onBack={() => navigate('/home/customers')}
+          />
+        } 
+      />
+
+      {/* Individual Customer Profile Route */}
+      <Route 
+        path="/:customerId" 
+        element={
+          <CustomerProfile 
+            back={() => navigate('/home/customers')}
+          />
+        } 
+      />
+    </Routes>
   );
 }
 
