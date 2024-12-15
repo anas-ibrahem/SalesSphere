@@ -11,6 +11,7 @@ import {
 import AddCustomerForm from "../Forms/AddCustomerForm";
 import CustomerProfile from "./CustomerProfile"; // Assuming you have this component
 import Pagination from "../Pagination";
+import fetchAPI from '../../utils/fetchAPI';
 
 const generateDummyData = () => {
   const dummyCustomers = [];
@@ -109,6 +110,15 @@ function CustomersSection() {
     console.log("New Employee Data:", Object.fromEntries(formData));
     navigate('/customers');
   };
+
+  useEffect(() => {
+    // Fetch API Dealsdata from API
+    const token = localStorage.getItem('token');
+      fetchAPI('/customer', 'GET', null, token).then((data) => {
+        console.log(data);
+      });
+
+  } , []);
 
   return (
     <Routes>

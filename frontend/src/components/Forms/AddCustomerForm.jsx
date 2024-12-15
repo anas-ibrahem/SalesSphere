@@ -27,7 +27,7 @@ const AddCustomerForm = ({ onBack }) => {
         e.preventDefault();
         console.log(formValues);
         const token = localStorage.getItem('token');
-        fetchAPI('/customer' , 'PUT' , formValues , token).then(data => {
+        fetchAPI('/customer' , 'POST' , formValues , token).then(data => {
         if(!data.error)
         {
             toast.success('Customer added successfully');

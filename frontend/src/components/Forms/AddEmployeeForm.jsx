@@ -31,7 +31,7 @@ const AddEmployeeForm = ({ onBack }) => {
         e.preventDefault();
         console.log(formValues);
         const token = localStorage.getItem('token');
-        fetchAPI('/employee', 'PUT', formValues, token).then(data => {
+        fetchAPI('/employee', 'POST', formValues, token).then(data => {
             if(!data.error)
             {
                 toast.success('Employee added successfully');

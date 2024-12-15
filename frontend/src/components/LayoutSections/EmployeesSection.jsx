@@ -12,6 +12,7 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
 import Pagination from "../Pagination";
+import fetchAPI from '../../utils/fetchAPI';
 
 const generateDummyData = () => {
   const dummyEmployees = [];
@@ -138,6 +139,15 @@ function EmployeesSection() {
     console.log("New Employee Data:", Object.fromEntries(formData));
     setShowAddEmployeeForm(false);
   };
+
+  useEffect(() => {
+    // Fetch API Dealsdata from API
+    const token = localStorage.getItem('token');
+      fetchAPI('/employee', 'GET', null, token).then((data) => {
+        console.log(data);
+      });
+
+  } , []);
 
   return (
     <Routes>
