@@ -83,6 +83,7 @@ const ManageAdmins = () => {
                 <Button 
                     variant="contained" 
                     color="primary" 
+                    sx={{ backgroundColor: 'var(--secondary-accent)'}}
                     startIcon={<AddIcon />} 
                     onClick={() => setOpenAddAdmin(true)}
                 >
@@ -109,7 +110,7 @@ const ManageAdmins = () => {
                                 <TableCell>{admin.role}</TableCell>
                                 <TableCell align="right">
                                     <IconButton 
-                                        color="primary" 
+                                        sx={{ color: 'var(--secondary-accent)' }}
                                         onClick={() => {
                                             setSelectedAdmin(admin);
                                             setNewAdmin({ ...newAdmin, email: admin.email });

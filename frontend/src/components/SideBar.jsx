@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   FileText,
@@ -34,6 +34,16 @@ export default function SideBar({
   toggleSidebar,
   type="user",
 }) {
+
+  const [selectedSection, setSelectedSection] = useState(0);
+
+  useEffect(() => {
+    // check current route and set selected section accordingly
+    const currentPath = window.location.pathname;
+    const sectionIndex = (type == "admin" ? adminsections : usersections).findIndex((section) => section.route === currentPath);
+    setSelectedSection(sectionIndex);
+  }, []);
+  
   return (
     <div
       className={`
@@ -79,9 +89,13 @@ export default function SideBar({
             return (
               <li key={index}>
                 <Link to={`${section.route}`}
+                  onClick={() => {
+                    setSelectedSection(index);
+                  }}
                   key={index}
                   className={`flex items-center py-2 
                 ${isCollapsed ? "justify-center" : "px-4"}
+                ${selectedSection === index ? "bg-gray-700" : ""}
                 rounded hover:bg-gray-700 w-full text-left
                   `}
                 >

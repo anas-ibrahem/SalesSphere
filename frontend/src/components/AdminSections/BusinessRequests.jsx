@@ -267,7 +267,7 @@ const BusinessRequests = () => {
                 key={tab}
                 className={`w-full sm:flex-1 py-3 font-semibold uppercase tracking-wider text-sm 
                   ${activeTab === tab 
-                    ? 'bg-blue-600 text-white' 
+                    ? 'bg-secondary-accent text-white' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 onClick={() => setActiveTab(tab)}
               >
