@@ -11,6 +11,7 @@ import {
 } from "@material-tailwind/react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
+import Pagination from "../Pagination";
 
 const generateDummyData = () => {
   const dummyEmployees = [];
@@ -290,49 +291,11 @@ function EmployeesSection() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className={`px-4 py-2 border rounded ${
-                  currentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-
-              <div className="flex space-x-2">
-                {Array.from({ length: totalPages }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-1 border rounded ${
-                      currentPage === index + 1
-                        ? "bg-blue-500 text-white"
-                        : "bg-white hover:bg-blue-100"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                className={`px-4 py-2 border rounded ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </section>
         }
       />

@@ -152,7 +152,11 @@ const generateDummyData = () => {
           </div>
   
           {/* Pagination - Fixed at Bottom */}
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+          />
         </div>
       </div>
     );
