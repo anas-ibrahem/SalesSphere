@@ -14,9 +14,10 @@ router.get('/:id', DealController.getById);
 
 router.patch('/status', DealController.updateStatus);
 
+router.post('/', DealController.add);
 
-router.post('/', (req, res) => {
-    res.send('Add a user');
-});
+router.post('/claim', DealController.claim);
+
+router.post('/close', DealController.close);
 
 export default router;

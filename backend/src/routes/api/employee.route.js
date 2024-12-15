@@ -13,7 +13,7 @@ router.get('/', employeeController.getAll);
 router.get('/:id', employeeController.getById);
 
 // to register a new employee
-router.put('/', employeeController.register);
+router.post('/', employeeController.register);
 
 // to update employee profile
 router.patch('/', employeeController.updateProfile);

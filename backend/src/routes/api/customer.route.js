@@ -13,7 +13,7 @@ router.get('/', customerController.getAll);
 router.get('/:id', customerController.getById);
 
 // to register a new customer
-router.put('/', customerController.add);
+router.post('/', customerController.add);
 
 
 export default router;
