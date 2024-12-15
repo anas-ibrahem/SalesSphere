@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "primary-accent": "var(--primary-accent)",
+        "secondary-accent": "var(--secondary-accent)",
+        "tertiary-accent": "var(--tertiary-accent)"
+      },
+    }
   },
   plugins: [],
 }

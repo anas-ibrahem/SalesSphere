@@ -13,46 +13,45 @@ import {
   import { 
       AlternateEmail as EmailIcon,
       Lock as LockIcon, 
+      Person,
       Visibility,
       VisibilityOff
   } from '@mui/icons-material';
   import { Formik, Form, Field } from 'formik';
   import * as Yup from 'yup';
 
-  import FullLogo from '../components/FullLogo';
+  import FullLogo from '../../components/FullLogo';
 import { useContext, useEffect, useState } from 'react';
-import UserContext from '../context/UserContext';
+import UserContext from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import fetchAPI from '../utils/fetchAPI';
+import fetchAPI from '../../utils/fetchAPI';
+import AdminContext from '../../context/AdminContext';
   
 
   
   // Validation schema
   const LoginSchema = Yup.object().shape({
-    email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
+    username: Yup.string()
+      .required('User Name is required'),
     password: Yup.string()
       .required('Password is required')
   });
   
-  const Login = () => {
-    const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(UserContext);
+  const AdminLogin = () => {
+    const { isAuthenticated, token, setToken, setIsAuthenticated, setTokenExpired } = useContext(AdminContext);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const Navigate = useNavigate();
 
     console.log('isAuthenticated:', isAuthenticated);
-
     const [showPassword, setShowPassword] = useState(false);
-     const togglePassword = () => {
-       setShowPassword(!showPassword);
-     }
-
+    const togglePassword = () => {
+      setShowPassword(!showPassword);
+    }
     useEffect(() => {
       if (isAuthenticated) {
-        Navigate('/home'); 
+        Navigate('/admin/'); 
       }
     }, [isAuthenticated, Navigate]);
 
@@ -62,9 +61,9 @@ import fetchAPI from '../utils/fetchAPI';
       // fetch /api/auth/login
       console.log(import.meta.env.VITE_BACKEND_URL);
 
-      fetchAPI('/auth/login', 'POST', values).then(data => {
+      fetchAPI('/auth/admin/login', 'POST', values).then(data => {
         if(data && data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem('admin_token', data.token);
           setToken(data.token);
           setIsAuthenticated(true);
           setTokenExpired(false);
@@ -79,10 +78,7 @@ import fetchAPI from '../utils/fetchAPI';
         alert('An error occurred. Please try again later.');
         setSubmitting(false);
       })
-    };
-    const handleRegisterBtn = (e) => {
-      e.preventDefault();
-      Navigate('/business-registration');
+
     };
   
     return (
@@ -128,11 +124,11 @@ import fetchAPI from '../utils/fetchAPI';
               variant="h5" 
               sx={{ mb: 3, textAlign: 'center' }}
             >
-              Welcome Back!
+              Admin Panel
             </Typography>
             
             <Formik
-              initialValues={{ email: '', password: '' }}
+              initialValues={{ username: '', password: '' }}
               validationSchema={LoginSchema}
               onSubmit={handleSubmit}
             >
@@ -143,18 +139,18 @@ import fetchAPI from '../utils/fetchAPI';
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    id="email"
-                    label="Email Address"
-                    placeholder="Email Address"
-                    name="email"
-                    autoComplete="email"
+                    id="username"
+                    label="User Name"
+                    placeholder="User Name"
+                    name="username"
+                    autoComplete="username"
                     autoFocus
-                    error={touched.email && Boolean(errors.email)}
-                    helperText={touched.email && errors.email}
+                    error={touched.username && Boolean(errors.username)}
+                    helperText={touched.username && errors.username}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <EmailIcon color="action" />
+                          <Person color="action" />
                         </InputAdornment>
                       ),
                     }}
@@ -200,17 +196,7 @@ import fetchAPI from '../utils/fetchAPI';
                   >
                     Sign In
                   </Button>
-                  <Button
-                    type="button"
-                    fullWidth
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                    disabled={isSubmitting}
-                    onClick={handleRegisterBtn}
-                  >
-                    Register a new Business!
-                  </Button>
-  
+
                   <Box
                     sx={{ 
                       display: 'flex', 
@@ -232,4 +218,4 @@ import fetchAPI from '../utils/fetchAPI';
     );
   };
   
-  export default Login;
+  export default AdminLogin;
