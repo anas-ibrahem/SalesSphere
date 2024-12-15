@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import EmployeeProfile from "./EmployeeProfile";
 import {
   List,
@@ -10,6 +11,7 @@ import {
 } from "@material-tailwind/react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
+import Pagination from "../Pagination";
 
 const generateDummyData = () => {
   const dummyEmployees = [];
@@ -77,7 +79,6 @@ const generateDummyData = () => {
 const dummyData = generateDummyData();
 
 function EmployeesSection() {
-  const [currentEmployee, setCurrentEmployee] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [filterType, setFilterType] = useState("All");
@@ -86,6 +87,7 @@ function EmployeesSection() {
   const [dealsType, setDealsType] = useState("all deals");
   const [sortOrder, setSortOrder] = useState("asc");
   const EmployeesPerPage = 10;
+  const navigate = useNavigate();
 
   // Filtering logic
   const filterEmployees = dummyData.filter((employee) => {
@@ -129,10 +131,6 @@ function EmployeesSection() {
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
 
-  const handleExpand = (id) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
   const manager = true;
 
   const handleAddEmployee = (formData) => {
@@ -142,207 +140,176 @@ function EmployeesSection() {
   };
 
   return (
-    <>
-      {showAddEmployeeForm ? (
-        <AddEmployeeForm onBack={() => setShowAddEmployeeForm(false)} />
-      ) : currentEmployee ? (
-        <EmployeeProfile
-          back={() => setCurrentEmployee(null)}
-          employee={currentEmployee}
-        />
-      ) : (
-        <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold mb-4">Employees</h1>
-            {manager && (
-              <button
-                onClick={() => setShowAddEmployeeForm(true)}
-                className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
-              >
-                <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
-                <span className="text-lg">Add Employee</span>
-              </button>
-            )}
-          </div>
-
-          {/* Filter and Sort Controls */}
-          <div className="flex justify-between mb-4">
-            {/* Filter */}
-            <div className="flex space-x-4">
-              <select
-                onChange={(e) => setFilterType(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="All">All Types</option>
-                <option value="opener">Opener</option>
-                <option value="closer">Executor</option>
-              </select>
-
-              {/* Sort */}
-              <select
-                onChange={(e) => setSortField(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="accountCreationDate">
-                  Account Creation Date
-                </option>
-                <option value="Number of Deals">Number of Deals</option>
-              </select>
-              <select
-                onChange={(e) => setSortOrder(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
-              {sortField === "Number of Deals" && (
-                <>
-                  <select
-                    onChange={(e) => setDealsType(e.target.value)}
-                    className="p-2 border rounded "
-                  >
-                    <option value="all">All Deals</option>
-                    <option value="successful">Successful Deals</option>
-                    <option value="unsuccessful">Unsuccessful Deals</option>
-                  </select>
-                  <select
-                    onChange={(e) => setDuration(e.target.value)}
-                    className="p-2 border rounded"
-                  >
-                    <option value="all times">All Times</option>
-                    <option value="this month">This Month</option>
-                  </select>
-                </>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold mb-4">Employees</h1>
+              {manager && (
+                <button
+                  onClick={() => navigate("add")}
+                  className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                  <span className="text-lg">Add Employee</span>
+                </button>
               )}
             </div>
-          </div>
 
-          {/* Employees Table */}
-          <div className="flex-grow overflow-y-auto">
-            <Card>
-              <List>
-                {currentEmployees.map((employee) => (
-                  <React.Fragment key={employee.id}>
-                    <ListItem
-                      className="cursor-default my-4 hover:bg-gray-100"
-                      onClick={() => setCurrentEmployee(employee)}
-                    >
-                      <ListItemPrefix>
-                        <Avatar
-                          variant="circular"
-                          alt={`${employee.name}'s profile`}
-                          src={employee.profilePicture}
-                          className="w-20 h-20 "
-                        />
-                      </ListItemPrefix>
-                      <div>
-                        <Typography variant="h6" color="blue-gray">
-                          {employee.name}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal"
-                        >
-                          {employee.email}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal flex justify-between"
-                        >
-                          <p className="mr-28">Id: {employee.id} </p>
-                          <p>{employee.type}</p>
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal flex justify-between"
-                        >
-                          <p className="mr-28">
-                            {" "}
-                            Number of Deals: {employee.numberOfDeals}
-                          </p>
-                          <p>
-                            Success Rate:{employee.percentageOfSuccessfulDeals}%
-                          </p>
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal flex justify-between"
-                        >
-                          <p>
-                            {" "}
-                            Number of Successful Deals:{" "}
-                            {employee.numberOfSuccessfulDeals}
-                          </p>
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal flex justify-between"
-                        >
-                          <p>
-                            Number of Unsuccessful Deals:{" "}
-                            {employee.numberOfUnsuccessfulDeals}
-                          </p>
-                        </Typography>
-                      </div>
-                    </ListItem>
-                  </React.Fragment>
-                ))}
-              </List>
-            </Card>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={`px-4 py-2 border rounded ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`px-3 py-1 border rounded ${
-                    currentPage === index + 1
-                      ? "bg-blue-500 text-white"
-                      : "bg-white hover:bg-blue-100"
-                  }`}
+            {/* Filter and Sort Controls */}
+            <div className="flex justify-between mb-4">
+              {/* Filter */}
+              <div className="flex space-x-4">
+                <select
+                  onChange={(e) => setFilterType(e.target.value)}
+                  className="p-2 border rounded"
                 >
-                  {index + 1}
-                </button>
-              ))}
+                  <option value="All">All Types</option>
+                  <option value="opener">Opener</option>
+                  <option value="closer">Executor</option>
+                </select>
+
+                {/* Sort */}
+                <select
+                  onChange={(e) => setSortField(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="accountCreationDate">
+                    Account Creation Date
+                  </option>
+                  <option value="Number of Deals">Number of Deals</option>
+                </select>
+                <select
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+                {sortField === "Number of Deals" && (
+                  <>
+                    <select
+                      onChange={(e) => setDealsType(e.target.value)}
+                      className="p-2 border rounded "
+                    >
+                      <option value="all">All Deals</option>
+                      <option value="successful">Successful Deals</option>
+                      <option value="unsuccessful">Unsuccessful Deals</option>
+                    </select>
+                    <select
+                      onChange={(e) => setDuration(e.target.value)}
+                      className="p-2 border rounded"
+                    >
+                      <option value="all times">All Times</option>
+                      <option value="this month">This Month</option>
+                    </select>
+                  </>
+                )}
+              </div>
             </div>
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              className={`px-4 py-2 border rounded ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </section>
-      )}
-    </>
+            {/* Employees Table */}
+            <div className="flex-grow overflow-y-auto">
+              <Card>
+                <List>
+                  {currentEmployees.map((employee) => (
+                    <React.Fragment key={employee.id}>
+                      <ListItem
+                        className="cursor-default my-4 hover:bg-gray-100"
+                        onClick={() => navigate(`${employee.id}`)}
+                      >
+                        <ListItemPrefix>
+                          <Avatar
+                            variant="circular"
+                            alt={`${employee.name}'s profile`}
+                            src={employee.profilePicture}
+                            className="w-20 h-20 "
+                          />
+                        </ListItemPrefix>
+                        <div>
+                          <Typography variant="h6" color="blue-gray">
+                            {employee.name}
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal"
+                          >
+                            {employee.email}
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p className="mr-28">Id: {employee.id} </p>
+                            <p>{employee.type}</p>
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p className="mr-28">
+                              {" "}
+                              Number of Deals: {employee.numberOfDeals}
+                            </p>
+                            <p>
+                              Success Rate:
+                              {employee.percentageOfSuccessfulDeals}%
+                            </p>
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p>
+                              {" "}
+                              Number of Successful Deals:{" "}
+                              {employee.numberOfSuccessfulDeals}
+                            </p>
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p>
+                              Number of Unsuccessful Deals:{" "}
+                              {employee.numberOfUnsuccessfulDeals}
+                            </p>
+                          </Typography>
+                        </div>
+                      </ListItem>
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Card>
+            </div>
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </section>
+        }
+      />
+      <Route
+        path=":employeeId"
+        element={<EmployeeProfile back={() => navigate("/home/employees")} />}
+      />
+      <Route
+        path="add"
+        element={
+          <AddEmployeeForm onBack={() => navigate("/home/employees")} />
+        }
+      />
+    </Routes>
   );
 }
 

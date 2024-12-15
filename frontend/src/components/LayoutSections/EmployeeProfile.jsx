@@ -109,7 +109,7 @@ const EmployeeProfile = (props) => {
         />
       )}
 
-      <div className="relative h-[150px] bg-gradient-to-r from-cyan-500 to-blue-500 flex-shrink-0">
+      <div className="relative h-[120px] bg-gradient-to-r from-cyan-500 to-blue-500 flex-shrink-0">
         <button
           onClick={back}
           className="absolute top-6 left-6 inline-flex w-auto cursor-pointer 
