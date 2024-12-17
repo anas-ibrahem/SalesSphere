@@ -1,7 +1,29 @@
+import { 
+    Star, Medal, UserPlus, TrendingUp, BarChart2, List, X, User, UsersRound, 
+    Trophy, Target, HandCoins, DollarSign, MapPin, Calendar, Flag, BookCheck, 
+    Rocket, Clock, CheckCircle2, AlertCircle, Briefcase 
+  } from "lucide-react";
+  
 const EmployeeRoles = {
     DealOpener: 0,
     DealExecutor: 1,
     Manager: 2
+}
+
+const TargetTypes = {
+    OpenDeals: 0,
+    CloseDeals: 1,
+    AddCustomers: 2,
+    Revenue: 3,
+}
+
+const BadgeTypes = {
+    OpenDeals: 0,
+    CloseDeals: 1,
+    AddCustomers: 2,
+    Revenue: 3,
+    Badges: 4,
+    TopEmployee : 5
 }
 
 const VerificationStatus = {
@@ -55,8 +77,32 @@ const AdminPrivileges = {
     Super: 1
 }
 
+
+
+// Mapping of Badge Types to Icons
+const BadgeIcons = {
+    [BadgeTypes.OpenDeals]: Target,
+    [BadgeTypes.CloseDeals]: CheckCircle2,
+    [BadgeTypes.AddCustomers]: UserPlus,
+    [BadgeTypes.Revenue]: HandCoins,
+    [BadgeTypes.Badges]: Trophy,
+    [BadgeTypes.TopEmployee]: Rocket
+  };
+  
+  // Mapping of Target Types to Icons
+const TargetIcons = {
+    [TargetTypes.OpenDeals]: List,
+    [TargetTypes.CloseDeals]: Flag,
+    [TargetTypes.AddCustomers]: UsersRound,
+    [TargetTypes.Revenue]: DollarSign
+  };
+  
+
+
 // Export all enums
 export {
+    NotificationTypes,
+    BadgeIcons,
     EmployeeRoles,
     VerificationStatus,
     CustomerTypes,
@@ -64,5 +110,11 @@ export {
     DealStatus,
     PaymentMethods,
     NotificationPriority,
-    AdminPrivileges
+    AdminPrivileges,
+    BadgeTypes,
+    TargetTypes,
+    TargetIcons,
+
 };
+
+
