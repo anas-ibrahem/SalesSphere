@@ -24,6 +24,7 @@ import { useContext, useEffect, useState } from 'react';
 import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import fetchAPI from '../utils/fetchAPI';
+import toast from 'react-hot-toast';
   
 
   
@@ -68,9 +69,12 @@ import fetchAPI from '../utils/fetchAPI';
           setToken(data.token);
           setIsAuthenticated(true);
           setTokenExpired(false);
+          toast.success('Login successful');
         }
         else {
-          alert('Invalid email or password');
+          if(data.error) {
+            toast.error(data.error);
+          }
         }
         setSubmitting(false);
       })

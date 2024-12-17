@@ -46,7 +46,7 @@ class EmployeeController {
         empData.business_id = businessId;
         
         const newEmployee = new EmployeeModel(empData);
-        const result = await newEmployee.register(req.pool);
+        const result = await newEmployee.register(req.pool, 1);
         if(result == -1) {
             return res.status(400).json({error: 'Email already exists'});
         }

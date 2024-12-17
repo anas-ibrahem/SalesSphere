@@ -22,9 +22,9 @@ const fetchAPI = async (endpoint, method = 'GET', body = null, token = null) => 
             localStorage.removeItem('token');
             throw new Error('Not authorized');
         }
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // if (!response.ok) {
+        //     throw new Error(`HTTP error! status: ${response.status}`);
+        // }
         return await response.json();
     } catch (error) {
         console.error('Fetch API error:', error);

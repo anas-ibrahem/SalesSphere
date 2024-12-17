@@ -125,17 +125,17 @@ class EmployeeModel {
         return emp;
     }
 
-    register = async (pool) => {
+    register = async (pool, verified=0) => {
         try {
             // INSERT INTO EMPLOYEE (role, hashed_password)
             // then insert into EMPLOYEE_PROFILE (first_name, last_name, email)
             await pool.query('BEGIN');
             const result = await pool.query(`
-                INSERT INTO employee (role, email, hashed_password, business_id)
+                INSERT INTO employee (role, email, hashed_password, business_id, verified)
                 VALUES ($1, $2, $3, $4)
                 ON CONFLICT (email) DO NOTHING
                 RETURNING id;
-            `, [this.role, this.email, this.hashed_password, this.business_id]);
+            `, [this.role, this.email, this.hashed_password, this.business_id, verified]);
             
             if(result.rows.length === 0) {
                 await pool.query('ROLLBACK');
