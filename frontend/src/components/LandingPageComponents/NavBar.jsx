@@ -7,6 +7,7 @@ import { ImCross } from "react-icons/im";
 import { NavLink } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import { Dashboard, Logout } from "@mui/icons-material";
+import { Link } from "react-scroll";
 
 export default function NavBar() {
   const [showMenu, setShowMenu] = useState(false);
@@ -21,21 +22,24 @@ export default function NavBar() {
       {/* Left Section: Logo and Navigation Links */}
       <div className="flex items-center space-x-4">
         <NavLink to="/" onClick={() => window.scrollTo(0, 0)}>
-          <Logo className="w-20 lg:w-24"  /> {/* Fixed width for Logo */}
+          <Logo className="w-20 lg:w-24" /> {/* Fixed width for Logo */}
         </NavLink>
         {/* Navigation Links */}
         <ul className="hidden lg:flex space-x-6">
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
-            <a href="#About">About</a>
+            <Link to="About" smooth={true} duration={500} offset={-50}>
+              About
+            </Link>
           </li>
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
-            <a href="#Contact">Contact Us</a>
+            <Link to="Benefits" smooth={true} duration={500} offset={-100}>
+              Benefits
+            </Link>
           </li>
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
-            <a href="#Services">Services</a>
-          </li>
-          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
-            <a href="#Help">Help</a>
+            <Link to="Mobile" smooth={true} duration={500} offset={100}>
+              Mobile App
+            </Link>
           </li>
         </ul>
       </div>
@@ -97,24 +101,37 @@ export default function NavBar() {
         {/* Mobile Navigation Links */}
         <ul className="flex flex-col mt-20 space-y-6 px-8">
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
-            <a href="#About" onClick={handleBars}>
+            <Link
+              to="About"
+              smooth={true}
+              duration={500}
+              onClick={handleBars}
+              offset={-50}
+            >
               About
-            </a>
+            </Link>
           </li>
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
-            <a href="#Contact" onClick={handleBars}>
-              Contact Us
-            </a>
+            <Link
+              to="Benefits"
+              smooth={true}
+              duration={500}
+              onClick={handleBars}
+              offset={-100}
+            >
+              Benefits
+            </Link>
           </li>
           <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
-            <a href="#Services" onClick={handleBars}>
-              Services
-            </a>
-          </li>
-          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
-            <a href="#Help" onClick={handleBars}>
-              Help
-            </a>
+            <Link
+              to="Mobile"
+              smooth={true}
+              duration={500}
+              onClick={handleBars}
+              offset={100}
+            >
+              Mobile App
+            </Link>
           </li>
 
           {/* Mobile Authentication Buttons */}
