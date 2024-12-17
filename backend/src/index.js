@@ -43,7 +43,7 @@ app.get('/', dbConnection, async (req, res) => {
 app.use('/api', dbConnection, apiRouter);
 
 
-// Start the server
+// Start the server for Localhost testing
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -19,7 +19,7 @@ class AuthController {
         if(emp && emp.hashed_password) {
             const match = await bcypt.compare(empData.password, emp.hashed_password);
             if(match) {
-                const token = jwt.sign({id: emp.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+                const token = jwt.sign({id: emp.id, businessId: emp.business_id}, process.env.JWT_SECRET, {expiresIn: '30d'});
                 return res.json({token});
             }
         }
@@ -34,6 +34,7 @@ class AuthController {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.employeeId = decoded.id;
+            req.businessId = decoded.businessId;
             next();
         } catch (error) {
             res.status(401).json({error: 'Not authorized', 'session_end': true});

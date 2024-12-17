@@ -1,5 +1,5 @@
 class EmployeeModel {
-    constructor({id, email, hashed_password, first_name, last_name, phone_number, address, birth_date, role, business_id}) {
+    constructor({id, email, hashed_password, first_name, last_name, phone_number, address, birth_date, role, business_id, hire_date}) {
         this.id = id;
         this.email = email;
         this.hashed_password = hashed_password;
@@ -10,21 +10,23 @@ class EmployeeModel {
         this.birth_date = birth_date;
         this.role = role;
         this.business_id = business_id;
+        this.hire_date = hire_date;
     }
 
     setBusinessId = (business_id) => {
         this.business_id = business_id;
     }
 
-    getAll = async (pool) => {
+    getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`
                 SELECT *
                 FROM employee e
                 LEFT JOIN employee_profile ep
                 ON e.id = ep.employee_id
+                WHERE e.business_id = $1
                 ORDER BY e.id;
-            `);
+            `, [business_id]);
 
             const results = result.rows.map(row => {
                 // clean up the result object
@@ -140,9 +142,9 @@ class EmployeeModel {
             const employeeId = result.rows[0].id;
 
             await pool.query(`
-                INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date)
-                VALUES ($1, $2, $3, $4, $5, $6);
-            `, [employeeId, this.first_name, this.last_name, this.phone_number, this.address, this.birth_date]);
+                INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date, hire_date)
+                VALUES ($1, $2, $3, $4, $5, $6, $7);
+            `, [employeeId, this.first_name, this.last_name, this.phone_number, this.address, this.birth_date, this.hire_date]);
 
             this.id = employeeId;
             await pool.query('COMMIT');
@@ -155,6 +157,53 @@ class EmployeeModel {
             return {error: 'Error registering employee'};
         }
     }
+
+    updateProfile = async (pool, employeeId, empData) => {
+        try {
+            await pool.query('BEGIN');
+            
+            // Check if the email already exists for another employee
+            const emailCheck = await pool.query(`
+                SELECT id 
+                FROM employee 
+                WHERE email = $1 AND id != $2;
+            `, [empData.email, employeeId]);
+    
+            if (emailCheck.rows.length > 0) {
+                await pool.query('ROLLBACK');
+                return false; // Email already exists
+            }
+    
+            // Update the employee email
+            await pool.query(`
+                UPDATE employee 
+                SET email = $1
+                WHERE id = $2;
+            `, [empData.email, employeeId]);
+    
+            // Update the employee profile
+            await pool.query(`
+                UPDATE employee_profile 
+                SET first_name = $1, last_name = $2, phone_number = $3, address = $4
+                WHERE employee_id = $5;
+            `, [
+                empData.first_name,
+                empData.last_name,
+                empData.phone_number,
+                empData.address,
+                employeeId
+            ]);
+    
+            await pool.query('COMMIT');
+            return true; // Update successful
+        } catch (error) {
+            await pool.query('ROLLBACK');
+            console.error('Database query error:', error);
+            return false; // Error occurred
+        }
+    }
+    
+    
 }
 
 export default EmployeeModel;

@@ -12,7 +12,11 @@ router.get('/', employeeController.getAll);
 
 router.get('/:id', employeeController.getById);
 
+// to register a new employee
 router.post('/', employeeController.register);
+
+// to update employee profile
+router.patch('/', employeeController.updateProfile);
 
 
 export default router;
