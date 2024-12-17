@@ -20,19 +20,22 @@ class CustomerModel {
         try {
             const result = await pool.query(`
                 SELECT c.*,
-                json_build_object(
-                    'id', e.employee_id,
-                    'first_name', e.first_name,
-                    'last_name', e.last_name,
-                    'phone_number', e.phone_number,
-                    'address', e.address,
-                    'birth_date', e.birth_date,
-                    'profile_picture_url', e.profile_picture_url,
-                    'hire_date', e.hire_date
-                ) AS added_by
+                CAST(COUNT(od.id) AS INT) as open_deals_count,
+                CAST(COUNT(cd.id) AS INT) as claimed_deals_count,
+                CAST(COUNT(cw.id) AS INT) as closed_won_deals_count,
+                CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
                 FROM customer c
                 join employee_profile e on c.added_by = e.employee_id
+                LEFT JOIN deal od
+                ON c.id = od.customer_id AND od.status = 0
+                LEFT JOIN deal cd
+                ON c.id = cd.customer_id AND cd.status = 1
+                LEFT JOIN deal cw
+                ON c.id = cw.customer_id AND cw.status = 2
+                LEFT JOIN deal cl
+                ON c.id = cl.customer_id AND cl.status = 3
                 WHERE business_id = $1
+                GROUP BY c.id;
             `, [business_id]);
 
 
@@ -47,16 +50,36 @@ class CustomerModel {
     getById = async (pool, id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM customer
-                WHERE id = $1;
+                SELECT c.*,
+                CAST(COUNT(od.id) AS INT) as open_deals_count,
+                CAST(COUNT(cd.id) AS INT) as claimed_deals_count,
+                CAST(COUNT(cw.id) AS INT) as closed_won_deals_count,
+                CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
+                FROM customer c
+                LEFT JOIN deal od
+                ON c.id = od.customer_id AND od.status = 0
+                LEFT JOIN deal cd
+                ON c.id = cd.customer_id AND cd.status = 1
+                LEFT JOIN deal cw
+                ON c.id = cw.customer_id AND cw.status = 2
+                LEFT JOIN deal cl
+                ON c.id = cl.customer_id AND cl.status = 3
+                WHERE c.id = $1
+                GROUP BY c.id;
             `, [id]);
 
             if(result.rows.length === 0) {
                 return {};
             }
-
             const results = result.rows[0];
+
+            const employee = await pool.query(`
+                SELECT e.*
+                FROM employee_profile e
+                WHERE e.employee_id = $1;
+            `, [results.added_by]);
+
+            results.added_by = employee.rows[0];
 
             return results;
 

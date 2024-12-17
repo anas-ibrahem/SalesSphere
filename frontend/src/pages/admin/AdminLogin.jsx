@@ -22,11 +22,11 @@ import {
 
   import FullLogo from '../../components/FullLogo';
 import { useContext, useEffect, useState } from 'react';
-import UserContext from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import fetchAPI from '../../utils/fetchAPI';
 import AdminContext from '../../context/AdminContext';
-  
+import toast from 'react-hot-toast';
+
 
   
   // Validation schema
@@ -69,7 +69,9 @@ import AdminContext from '../../context/AdminContext';
           setTokenExpired(false);
         }
         else {
-          alert('Invalid email or password');
+          if(data.error) {
+            toast.error(data.error);
+          }
         }
         setSubmitting(false);
       })

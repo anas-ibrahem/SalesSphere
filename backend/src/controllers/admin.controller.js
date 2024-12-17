@@ -58,7 +58,7 @@ class AdminController {
         if(!req.admin || !req.admin.id) {
             return res.status(400).json({error: 'Invalid admin ID'});
         }
-
+        
         const admin = await this.adminModel.getById(req.pool, req.admin.id);
         res.json(admin);
     }
@@ -117,6 +117,23 @@ class AdminController {
         res.json(admin);
     }
 
+    getAllBusinessRequests = async (req, res) => {
+        const requests = await this.adminModel.getAllBusinessRequests(req.pool);
+        res.json(requests);
+    }
+
+    acceptBusinessRequest = async (req, res) => {
+        const requestId = req.params.id;
+        const request = await this.adminModel.acceptBusinessRequest(req.pool, requestId);
+        res.json(request);
+    }
+
+    rejectBusinessRequest = async (req, res) => {
+        const requestId = req.params.id;
+        const request = await this.adminModel.rejectBusinessRequest(req.pool, requestId);
+        res.json(request);
+    }
+    
 
 }
 

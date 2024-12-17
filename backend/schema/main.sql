@@ -9,7 +9,11 @@ CREATE TABLE BUSINESS (
     country VARCHAR(255) NOT NULL,
     street VARCHAR(255),
     website_url VARCHAR(255),
-    industry VARCHAR(255) NOT NULL
+    industry VARCHAR(255) NOT NULL,
+    -- Document URLs
+    managerid_card_url VARCHAR(255),
+    manager_personal_photo_url VARCHAR(255),
+    business_logo_url VARCHAR(255),
 
     -- Relationships
     --business_manager INT NOT NULL
