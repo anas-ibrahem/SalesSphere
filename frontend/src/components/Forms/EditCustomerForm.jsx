@@ -4,7 +4,7 @@ import  { CustomerTypes , ContactTypes } from '../../utils/Enums.js'
 import fetchAPI from '../../utils/fetchAPI';
 import toast from 'react-hot-toast';
 
-const AddCustomerForm = ({ onBack }) => {
+const EditCustomerForm = ({ onBack }) => {
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
@@ -155,4 +155,4 @@ const AddCustomerForm = ({ onBack }) => {
     );
 };
 
-export default AddCustomerForm;
+export default EditCustomerForm;

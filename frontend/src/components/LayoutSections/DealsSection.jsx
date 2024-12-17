@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import DealDetails from "./DealsDetails";
-import AddDealForm from "../Forms/AddDealForm";
+import OpenDealForm from "../Forms/OpenDealForm";
 import {
   List,
   ListItem,
@@ -19,7 +19,7 @@ function DealsSection() {
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
-  const manager = true; // You might want to get this from context or props
+  const manager = true; // TODO - Replace with actual user role
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -65,7 +65,7 @@ function DealsSection() {
                   className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
                 >
                   <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
-                  <span className="text-lg">Add Deal</span>
+                  <span className="text-lg">Open Deal</span>
                 </button>
               )}
             </div>
@@ -150,7 +150,7 @@ function DealsSection() {
       {/* Route for adding a new deal */}
       <Route 
         path="add" 
-        element={<AddDealForm onBack={() => navigate("/home/deals")} />} 
+        element={<OpenDealForm onBack={() => navigate("/home/deals")} />} 
       />
     </Routes>
   );

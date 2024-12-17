@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { FaArrowLeft, FaPlus } from 'react-icons/fa';
+import { FaArrowLeft, FaPlus, FaTimes } from 'react-icons/fa';
 import fetchAPI from '../../utils/fetchAPI';
-import { useNavigate } from 'react-router-dom'; // Ensure react-router is installed
+import { useNavigate } from 'react-router-dom'; 
+import { toast } from 'react-hot-toast';
 
-const AddDealForm = ({ onBack }) => {
-    const navigate = useNavigate(); // For navigation
+const OpenDealForm = ({ onBack }) => {
+    const navigate = useNavigate();
     const [customerSearch, setCustomerSearch] = useState('');
     const [customerOptions, setCustomerOptions] = useState([]);
-    const [isSearching, setIsSearching] = useState(false);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
 
     const [formValues, setFormValues] = useState({
         title: '',
@@ -19,36 +20,36 @@ const AddDealForm = ({ onBack }) => {
     });
 
     useEffect(() => {
-        // Fetch API Dealsdata from API
         const token = localStorage.getItem('token');
-          fetchAPI('/customer', 'GET', null, token).then((data) => {
+        fetchAPI('/customer', 'GET', null, token).then((data) => {
             setCustomerOptions(data);
-            console.log(data);
-          });
-    
-      } , []);
+        });
+    }, []);
 
-    // New state for customer search
-
-    // Handle customer search input
-    const handleCustomerSearch = async (e) => {
+    const handleCustomerSearch = (e) => {
         const searchTerm = e.target.value;
         setCustomerSearch(searchTerm);
-        setIsSearching(true);
-        setIsSearching(false);
+        setSelectedCustomer(null);
     };
 
-    // Select a customer
     const handleCustomerSelect = (customer) => {
         setFormValues(prev => ({
             ...prev,
             customer_id: customer.id,
         }));
         setCustomerSearch(customer.name);
-        setCustomerOptions([]);
+        setSelectedCustomer(customer);
     };
 
-    // Existing change handler
+    const handleCustomerClear = () => {
+        setCustomerSearch('');
+        setSelectedCustomer(null);
+        setFormValues(prev => ({
+            ...prev,
+            customer_id: '',
+        }));
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({
@@ -57,26 +58,38 @@ const AddDealForm = ({ onBack }) => {
         });
     };
 
-    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formValues);
+        
+        // Validate customer selection
+        if (!selectedCustomer) {
+            toast.error('Please select a customer from the suggested list');
+            return;
+        }
+
         const token = localStorage.getItem('token');
-        fetchAPI('/deal', 'POST', formValues, token).then(data => {
-            if(!data.error)
-            {
+        fetchAPI('/deal', 'POST', formValues, token)
+            .then(data => {
                 toast.success('Deal added successfully');
-            }
-            else
-            {
-                toast.error('Failed to add Deal');
-            }
-        });
+                // Optional: Reset form or navigate away
+            })
+            .catch((error) => {
+                toast.error('An error occurred. Please try again.');
+            });
     };
 
-    // Navigate to add customer page
     const handleAddCustomer = () => {
         navigate('/home/customers/add');
+    };
+
+    const filterCustomers = () => {
+        if (!customerSearch) return [];
+
+        const searchTermLower = customerSearch.toLowerCase();
+        return customerOptions.filter(customer => 
+            customer.name.toLowerCase().includes(searchTermLower) || 
+            customer.email.toLowerCase().includes(searchTermLower)
+        );
     };
 
     return (
@@ -88,9 +101,9 @@ const AddDealForm = ({ onBack }) => {
             >
                 <FaArrowLeft className="mr-2" /> Back
             </button>
-            <h2 className="text-center font-extrabold text-xl text-blue-800 mb-1">Add New Deal</h2>
+            <h2 className="text-center font-extrabold text-xl text-blue-800 mb-1">Open New Deal</h2>
             <form onSubmit={handleSubmit}>
-                {/* Existing form fields... */}
+                {/* Existing form fields */}
                 <div className="mb-4">
                     <label htmlFor="title" className="block mb-1 text-gray-600">Title *</label>
                     <input
@@ -118,9 +131,22 @@ const AddDealForm = ({ onBack }) => {
                 </div>
 
                 <div className="mb-4">
+                    <label htmlFor="customer_budget" className="block mb-1 text-gray-600">Customer Budget *</label>
+                    <input
+                        type="number"
+                        id="customer_budget"
+                        name="customer_budget"
+                        value={formValues.customer_budget}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
+                </div>
+
+                <div className="mb-4">
                     <label htmlFor="expenses" className="block mb-1 text-gray-600">Expenses *</label>
                     <input
-                        type="text"
+                        type="number"
                         id="expenses"
                         name="expenses"
                         value={formValues.expenses}
@@ -130,7 +156,7 @@ const AddDealForm = ({ onBack }) => {
                     />
                 </div>
 
-                {/* New Customer Selection Section */}
+                {/* Updated Customer Selection Section */}
                 <div className="mb-4 relative">
                     <label htmlFor="customer" className="block mb-1 text-gray-600">Customer *</label>
                     <div className="flex items-center">
@@ -141,42 +167,53 @@ const AddDealForm = ({ onBack }) => {
                                 name="customer"
                                 value={customerSearch}
                                 onChange={handleCustomerSearch}
-                                placeholder="Search customer by name"
+                                placeholder="Search customer by name or email"
                                 required
                                 className="w-full p-2 border border-gray-300 rounded-md text-lg"
                             />
-                            {isSearching && (
-                                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                    Searching...
-                                </div>
-                            )}
-                            {customerOptions.length > 0 && (
+                            {!selectedCustomer && customerSearch && (
                                 <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 shadow-lg max-h-60 overflow-y-auto">
-                                    {customerOptions.map((customer) => 
-                                        {
-                                            if (customer.name.toLowerCase().includes(customerSearch.toLowerCase()))
-                                            return (
-                                            <li 
-                                                key={customer.id} 
-                                                onClick={() => handleCustomerSelect(customer)}
-                                                className="p-2 hover:bg-gray-100 cursor-pointer"
-                                            >
-                                                {customer.name} - {customer.email}
-                                            </li>
-                                            );
-                                        }
-                                    )}
+                                    {filterCustomers().map((customer) => (
+                                        <li 
+                                            key={customer.id} 
+                                            onClick={() => handleCustomerSelect(customer)}
+                                            className="p-2 hover:bg-gray-100 cursor-pointer"
+                                        >
+                                            {customer.name} - {customer.email}
+                                        </li>
+                                    ))}
                                 </ul>
                             )}
+                            
+                            {/* Selected Customer Display */}
+                            {selectedCustomer && (
+                                <div className="flex items-center mt-2">
+                                    <span className="mr-2 text-gray-700">
+                                        {selectedCustomer.name} - {selectedCustomer.email}
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                        <button
-                            type="button"
-                            onClick={handleAddCustomer}
-                            className="bg-green-500 text-white p-2 rounded-md flex items-center"
-                            title="Add New Customer"
-                        >
-                            <FaPlus />
-                        </button>
+                        <div className={`flex items-center ${selectedCustomer ? '-mt-8' : ''}`}>
+                            <button
+                                type="button"
+                                onClick={handleAddCustomer}
+                                className="bg-green-500 text-white p-2 rounded-md flex items-center mr-2"
+                                title="Add New Customer"
+                            >
+                                <FaPlus />
+                            </button>
+                            {selectedCustomer && (
+                                <button
+                                    type="button"
+                                    onClick={handleCustomerClear}
+                                    className="bg-red-500 text-white p-2 rounded-md flex items-center"
+                                    title="Clear Customer Selection"
+                                >
+                                    <FaTimes />
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -203,4 +240,4 @@ const AddDealForm = ({ onBack }) => {
     );
 };
 
-export default AddDealForm;
+export default OpenDealForm;

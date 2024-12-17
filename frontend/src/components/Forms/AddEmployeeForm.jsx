@@ -3,6 +3,7 @@ import { FaArrowLeft, FaEye, FaEyeSlash, FaRandom } from 'react-icons/fa';
 import fetchAPI from '../../utils/fetchAPI';
 import { Password, Token } from '@mui/icons-material';
 import { EmployeeRoles } from '../../utils/Enums.js';
+import { toast } from 'react-hot-toast';
 
 const AddEmployeeForm = ({ onBack }) => {
     const [formValues, setFormValues] = useState({
@@ -31,17 +32,15 @@ const AddEmployeeForm = ({ onBack }) => {
         e.preventDefault();
         console.log(formValues);
         const token = localStorage.getItem('token');
-        fetchAPI('/employee', 'POST', formValues, token).then(data => {
-            if(!data.error)
-            {
+        fetchAPI('/employee', 'POST', formValues, token)
+            .then(data => {
+                console.log(data);
                 toast.success('Employee added successfully');
             }
-            else
-            {
-                toast.error('Failed to add Employee');
-            }
-
-        });
+            )
+            .catch((error) => {
+                toast.error('An error occurred. Please try again.');
+            });
     };
 
     const generateRandomPassword = () => {
@@ -194,7 +193,13 @@ const AddEmployeeForm = ({ onBack }) => {
                         id="phone_number"
                         name="phone_number"
                         value={formValues.phone_number}
-                        onChange={handleChange}
+                        onChange={(e) => { // TODO - test this
+                            const { name, value } = e.target;
+                            const phoneNumberPattern = /^[0-9+\-() ]*$/;
+                            if (phoneNumberPattern.test(value)) {
+                                handleChange(e);
+                            }
+                        }}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
