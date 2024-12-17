@@ -72,6 +72,16 @@ class DealController {
         res.json(result);
     }
 
+    getEmployeeDeals = async (req, res) => {
+        const deals = await this.dealModel.getEmployeeDeals(req.pool, req.params.id);
+        res.json(deals);
+    }
+
+    getCustomerDeals = async (req, res) => {
+        const deals = await this.dealModel.getCustomerDeals(req.pool, req.params.id);
+        res.json(deals);
+    }
+
 }
 
 

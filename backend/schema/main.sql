@@ -137,7 +137,7 @@ CREATE TABLE NOTIFICATION (
 
 CREATE TABLE TARGET (
     id SERIAL PRIMARY KEY,
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- Depends on the event
     goal INT NOT NULL, -- Requirement to complete the target
     deadline TIMESTAMP NOT NULL,
     progress INT NOT NULL DEFAULT 0,
@@ -148,6 +148,7 @@ CREATE TABLE TARGET (
     employee_id INT NOT NULL,
     FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
 );
+
 
 CREATE TABLE EMPLOYEE_PROFILE (
     first_name VARCHAR(255) NOT NULL,
