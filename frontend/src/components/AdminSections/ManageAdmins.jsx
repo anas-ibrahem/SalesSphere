@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     Dialog, 
     DialogTitle, 
@@ -25,44 +25,79 @@ import {
     Delete as DeleteIcon, 
     Edit as EditIcon 
 } from '@mui/icons-material';
+import fetchAPI from '../../utils/fetchAPI';
+import { AdminPrivileges as AP } from '../../utils/Enums';
+import toast from 'react-hot-toast';
 
 const ManageAdmins = () => {
-    const [admins, setAdmins] = useState([
-        { id: 1, username: 'john.doe', email: 'john.doe@example.com', role: 'master' },
-        { id: 2, username: 'jane.smith', email: 'jane.smith@example.com', role: 'normal' }
-    ]);
+    const [admins, setAdmins] = useState([]);
 
     const [openAddAdmin, setOpenAddAdmin] = useState(false);
     const [openEditEmailPassword, setOpenEditEmailPassword] = useState(false);
-    const [newAdmin, setNewAdmin] = useState({ username: '', email: '', role: 'normal', password: '' });
+    const [newAdmin, setNewAdmin] = useState({ id:-1, email: '', password: '' });
     const [selectedAdmin, setSelectedAdmin] = useState(null);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('admin_token');
+        fetchAPI('/admin/', 'GET', null, token)
+            .then(data => {
+                if (data && !data.error) {
+                    setAdmins(data);
+                }
+            });
+    }, [openAddAdmin, openEditEmailPassword]);
+
 
     const handleAddAdmin = () => {
         if (newAdmin.username && newAdmin.email && newAdmin.password) {
-            setAdmins([...admins, { 
-                id: admins.length + 1, 
-                username: newAdmin.username, 
-                email: newAdmin.email,
-                role: newAdmin.role 
-            }]);
-            setOpenAddAdmin(false);
-            setNewAdmin({ username: '', email: '', role: 'normal', password: '' });
+            const token = localStorage.getItem('admin_token');
+            fetchAPI('/admin/', 'POST', newAdmin, token).then(data => {
+                if (data && !data.error) {
+                    toast.success('Admin added successfully');
+                    setOpenAddAdmin(false);
+                }
+                else {
+                    toast.error(data.error);
+                }
+            }).catch(error => {
+                setOpenAddAdmin(false);
+                toast.error('Failed to add admin');
+            }
+            );
         }
     };
 
     const handleDeleteAdmin = (id) => {
-        setAdmins(admins.filter(admin => admin.id !== id));
+        const token = localStorage.getItem('admin_token');
+        fetchAPI(`/admin/${id}`, 'DELETE', null, token).then(data => {
+            if (data && !data.error) {
+                setAdmins(admins.filter(admin => admin.id !== id));
+                toast.success('Admin deleted successfully');
+            }
+            else {
+                toast.error(data.error);
+            }
+        }).catch(error => {
+            toast.error('Failed to delete admin');
+        });
     };
 
     const handleChangeEmailPassword = () => {
-        if (selectedAdmin && newAdmin.email && newAdmin.password) {
-            setAdmins(admins.map(admin => 
-                admin.id === selectedAdmin.id 
-                ? { ...admin, email: newAdmin.email, password: newAdmin.password } 
-                : admin
-            ));
-            setOpenEditEmailPassword(false);
-            setNewAdmin({ username: '', email: '', role: 'normal', password: '' });
+        if (selectedAdmin && newAdmin.email) {
+            const token = localStorage.getItem('admin_token');
+            fetchAPI(`/admin/`, 'PATCH', newAdmin, token).then(data => {
+                if (data && !data.error) {
+                    toast.success('Email/Password changed successfully');
+                    setOpenEditEmailPassword(false);
+                }
+                else {
+                    toast.error(data.error);
+                }
+            }).catch(error => {
+                setOpenEditEmailPassword(false);
+                toast.error('Failed to change email/password');
+            });
         }
     };
 
@@ -98,7 +133,7 @@ const ManageAdmins = () => {
                         <TableRow>
                             <TableCell>Username</TableCell>
                             <TableCell>Email</TableCell>
-                            <TableCell>Role</TableCell>
+                            <TableCell>privilege</TableCell>
                             <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -107,24 +142,28 @@ const ManageAdmins = () => {
                             <TableRow key={admin.id}>
                                 <TableCell>{admin.username}</TableCell>
                                 <TableCell>{admin.email}</TableCell>
-                                <TableCell>{admin.role}</TableCell>
+                                <TableCell>{admin.privilege == AP.Super ? "Master" : "Normal"}</TableCell>
                                 <TableCell align="right">
                                     <IconButton 
                                         sx={{ color: 'var(--secondary-accent)' }}
                                         onClick={() => {
                                             setSelectedAdmin(admin);
-                                            setNewAdmin({ ...newAdmin, email: admin.email });
+                                            setNewAdmin({ ...newAdmin, email: admin.email, id: admin.id });
                                             setOpenEditEmailPassword(true);
                                         }}
                                     >
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton 
-                                        color="error" 
-                                        onClick={() => handleDeleteAdmin(admin.id)}
-                                    >
+                                    {
+                                        admin.privilege !== AP.Super &&
+                                        <IconButton 
+                                            color="error" 
+                                            onClick={() => handleDeleteAdmin(admin.id)}
+                                        >
                                         <DeleteIcon />
                                     </IconButton>
+                                    }
+                                    
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -165,17 +204,17 @@ const ManageAdmins = () => {
                                 onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                             <Select
-                                value={newAdmin.role}
-                                onChange={(e) => setNewAdmin({...newAdmin, role: e.target.value})}
+                                value={newAdmin.privilege}
+                                onChange={(e) => setNewAdmin({...newAdmin, privilege: e.target.value})}
                                 fullWidth
                                 margin="dense"
                             >
-                                <MenuItem value="normal">Normal Admin</MenuItem>
-                                <MenuItem value="master">Master Admin</MenuItem>
+                                <MenuItem value={0}>Normal Admin</MenuItem>
+                                <MenuItem value={1}>Master Admin</MenuItem>
                             </Select>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </DialogContent>
                 <DialogActions>
@@ -201,7 +240,7 @@ const ManageAdmins = () => {
                         <Grid item xs={12}>
                             <TextField
                                 margin="dense"
-                                label="New Password"
+                                label="New Password (Leave empty for no change)"
                                 type="password"
                                 fullWidth
                                 value={newAdmin.password}

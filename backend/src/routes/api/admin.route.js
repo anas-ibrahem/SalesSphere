@@ -24,6 +24,8 @@ router.get('/', adminController.getAll);
 
 router.get('/:id', adminController.getById);
 
+router.delete('/:id', adminController.deleteAdmin);
+
 
 router.post('/', adminController.addAdmin);
 

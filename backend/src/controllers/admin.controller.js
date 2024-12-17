@@ -64,6 +64,9 @@ class AdminController {
     }
 
     addAdmin = async (req, res) => {
+        if(!req.admin || req.admin.privilege !== 1) {
+            return res.status(400).json({error: 'Not authorized'});
+        }
         const adminData = req.body;
 
         if(!adminData || typeof adminData !== 'object') {
@@ -90,14 +93,13 @@ class AdminController {
     }
 
     updateAdmin = async (req, res) => {
+        if(!req.admin || req.admin.privilege !== 1) {
+            return res.status(400).json({error: 'Not authorized'});
+        }
         const adminData = req.body;
 
         if(!adminData || typeof adminData !== 'object') {
             return res.status(400).json({error: 'Invalid admin data'});
-        }
-
-        if(!adminData.username) {
-            return res.status(400).json({error: 'Username is required'});
         }
 
         if(!adminData.email) {
@@ -109,12 +111,27 @@ class AdminController {
         }
 
         if(adminData.password && adminData.password.length > 0) {
-            const hashedPassword = await bcypt.hash(adminData.password, 10);
-            adminData.hashed_password = hashedPassword;
+            if(adminData.password.replace(/\s/g, '').length > 0) {
+                const hashedPassword = await bcypt.hash(adminData.password, 10);
+                adminData.hashed_password = hashedPassword;
+            }
         }
 
         const admin = await this.adminModel.updateAdmin(req.pool, adminData);
         res.json(admin);
+    }
+
+    deleteAdmin = async (req, res) => {
+        if(!req.admin || req.admin.privilege !== 1) {
+            return res.status(400).json({error: 'Not authorized'});
+        }
+        const adminId = req.params.id;
+        const admin = await this.adminModel.getById(req.pool, adminId);
+        if(admin.privilege === 1) {
+            return res.status(400).json({error: 'Cannot delete super admin'});
+        }
+        const del = await this.adminModel.deleteAdmin(req.pool, adminId);
+        res.json(del);
     }
 
     getAllBusinessRequests = async (req, res) => {
@@ -133,7 +150,7 @@ class AdminController {
         const request = await this.adminModel.rejectBusinessRequest(req.pool, requestId);
         res.json(request);
     }
-    
+
 
 }
 

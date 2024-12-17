@@ -6,88 +6,6 @@ import fetchAPI from '../../utils/fetchAPI';
 
 import { VerificationStatus as VS } from '../../utils/Enums';
 
-// Mock data (replace with actual data fetching)
-const mockBusinessRequests = [
-    {
-        id: 1,
-        businessName: 'Tech Innovators Inc',
-        submissionDate: '2024-03-15',
-        status: 'Pending',
-        managerName: 'Sarah Johnson',
-        managerEmail: 'sarah.johnson@techinnovators.com',
-        description: 'Technology consulting startup seeking initial approval',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
-        birthdate: '1990-01-01',
-        address: '123 Main St, San Francisco, CA 94105',
-        email: 'sarah.johnson@techinnovators.com',
-        phone: '123-456-7890',
-        businessEmail: 'contact@techinnovators.com',
-        businessPhone: '123-456-7890',
-        businessCountry: 'USA',
-        businessCity: 'San Francisco',
-        businessStreet: '123 Main St',
-        businessWebsite: 'https://techinnovators.com',
-        businessIndustry: 'Technology',
-        managerID: { url: '/path/to/managerID.jpg' },
-        managerPhoto: { url: '/path/to/managerPhoto.jpg' },
-        businessLogo: { url: '/path/to/businessLogo.jpg' },
-        businessRegistrationDoc: { url: '/path/to/businessRegistrationDoc.jpg' }
-    },
-    {
-        id: 2,
-        businessName: 'Green Solutions LLC',
-        submissionDate: '2024-03-10',
-        status: 'Approved',
-        managerName: 'Michael Chen',
-        managerEmail: 'michael.chen@greensolutions.com',
-        description: 'Sustainable energy consulting firm',
-        firstName: 'Michael',
-        lastName: 'Chen',
-        birthdate: '1985-05-15',
-        address: '456 Green St, New York, NY 10001',
-        email: 'michael.chen@greensolutions.com',
-        phone: '987-654-3210',
-        businessEmail: 'contact@greensolutions.com',
-        businessPhone: '987-654-3210',
-        businessCountry: 'USA',
-        businessCity: 'New York',
-        businessStreet: '456 Green St',
-        businessWebsite: 'https://greensolutions.com',
-        businessIndustry: 'Energy',
-        managerID: { url: '/path/to/managerID.jpg' },
-        managerPhoto: { url: '/path/to/managerPhoto.jpg' },
-        businessLogo: { url: '/path/to/businessLogo.jpg' },
-        businessRegistrationDoc: { url: '/path/to/businessRegistrationDoc.jpg' }
-    },
-    {
-        id: 3,
-        businessName: 'Retail Dynamics',
-        submissionDate: '2024-03-12',
-        status: 'Rejected',
-        managerName: 'Emily Rodriguez',
-        managerEmail: 'emily.rodriguez@retaildynamics.com',
-        description: 'Retail analytics platform',
-        firstName: 'Emily',
-        lastName: 'Rodriguez',
-        birthdate: '1992-07-20',
-        address: '789 Market St, Los Angeles, CA 90001',
-        email: 'emily.rodriguez@retaildynamics.com',
-        phone: '555-123-4567',
-        businessEmail: 'contact@retaildynamics.com',
-        businessPhone: '555-123-4567',
-        businessCountry: 'USA',
-        businessCity: 'Los Angeles',
-        businessStreet: '789 Market St',
-        businessWebsite: 'https://retaildynamics.com',
-        businessIndustry: 'Retail',
-        managerID: { url: '/path/to/managerID.jpg' },
-        managerPhoto: { url: '/path/to/managerPhoto.jpg' },
-        businessLogo: { url: '/path/to/businessLogo.jpg' },
-        businessRegistrationDoc: { url: '/path/to/businessRegistrationDoc.jpg' }
-    }
-];
-
 
 const BusinessRequestModal = ({ request, onClose, onAccept, onReject }) => {
     return (
@@ -327,7 +245,7 @@ const BusinessRequests = () => {
                   <th className="p-4 text-left">Business Name</th>
                   <th className="p-4 text-left">Manager</th>
                   <th className="p-4 text-left">Submission Date</th>
-                  <th className="p-4 text-left">Description</th>
+                  <th className="p-4 text-left">Industry</th>
                   <th className="p-4 text-left">Status</th>
                 </tr>
               </thead>

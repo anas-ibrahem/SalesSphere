@@ -1,10 +1,10 @@
 class AdminModel {
-    constructor({id, email, username, hashed_password, privileges}) {
+    constructor({id, email, username, hashed_password, privilege}) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.hashed_password = hashed_password;
-        this.privileges = privileges;
+        this.privilege = privilege;
     }
 
 
@@ -12,7 +12,8 @@ class AdminModel {
         try {
             const result = await pool.query(`
                 SELECT *
-                FROM admin;
+                FROM admin
+                ORDER BY privilege desc;
             `);
 
             const results = result.rows.map(row => {
@@ -59,6 +60,21 @@ class AdminModel {
         }
     }
 
+    deleteAdmin = async (pool, id) => {
+        try {
+            const result = await pool.query(`
+                DELETE FROM admin
+                WHERE id = $1;
+            `, [id]);
+            
+            return true;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
+        }
+    }
+
     getByEmailForAuth = async (pool, email) => {
         try {
             const result = await pool.query(`
@@ -100,10 +116,10 @@ class AdminModel {
     addAdmin = async (pool, admin) => {
         try {
             const result = await pool.query(`
-                INSERT INTO admin(email, username, hashed_password, privilege)
-                VALUES($1, $2, $3, $4)
+                INSERT INTO admin(email, username, hashed_password)
+                VALUES($1, $2, $3)
                 RETURNING id;
-            `, [admin.email, admin.username, admin.hashed_password, admin.privilege]);
+            `, [admin.email, admin.username, admin.hashed_password]);
 
             if(result.rows.length === 0) {
                 return {};
@@ -119,7 +135,7 @@ class AdminModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Email/Username already exists'};
         }
     }
 
@@ -129,18 +145,18 @@ class AdminModel {
             if(admin.hashed_password && admin.hashed_password.length > 0) {
             result = await pool.query(`
                 UPDATE admin
-                SET email = $1, username = $2, hashed_password = $3, privilege = $4
-                WHERE id = $5
+                SET email = $1, hashed_password = $2
+                WHERE id = $3
                 RETURNING *;
-            `, [admin.email, admin.username, admin.hashed_password, admin.privilege, admin.id]);
+            `, [admin.email, admin.hashed_password, admin.id]);
             }
             else{
                 result = await pool.query(`
                 UPDATE admin
-                SET email = $1, username = $2, privilege = $3
-                WHERE id = $4
+                SET email = $1
+                WHERE id = $2
                 RETURNING *;
-            `, [admin.email, admin.username, admin.privilege, admin.id]);
+            `, [admin.email, admin.id]);
             }
             if(result.rows.length === 0) {
                 return {};
