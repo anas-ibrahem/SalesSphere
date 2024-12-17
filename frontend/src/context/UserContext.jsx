@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import LoadingScreen from "../pages/LoadingScreen";
 import fetchAPI from "../utils/fetchAPI";
+import toast from 'react-hot-toast';
 
 const UserContext = createContext(null);
 
@@ -21,9 +22,17 @@ const UserProvider = ({children, provideOther={}}) => {
               setIsAuthenticated(true);
               setEmployee(data);
             }
-            else if(data.error && data.session_end) {
-              setTokenExpired(true);
-              toast.error('Session expired. Please login again.', {icon: '🔒'});
+            else if(data.error) {
+              if(data.session_end) {
+                setTokenExpired(true);
+                toast.error('Session expired. Please login again.', {icon: '🔒'});
+              }
+              else {
+                toast.error(data.error);
+              }
+              
+              setIsAuthenticated(false);
+              localStorage.removeItem('token');
             }
             setIsLoading(false);
           }).catch(error => {

@@ -8,11 +8,20 @@ import DealController from '../../controllers/deal.controller.js';
 
 // Define routes for /api/deal
 router.get('/', DealController.getAll);
-router.get('/claimed', DealController.getAllClaimedDeals);
+router.get('/claimed', DealController.getEmployeeClaimedDeals);
 router.get('/open', DealController.getAllOpenDeals);
+router.get('/:id', DealController.getById);
 
-router.post('/', (req, res) => {
-    res.send('Add a user');
-});
+router.get('/employee/:id', DealController.getEmployeeDeals);
+router.get('/customer/:id', DealController.getCustomerDeals);
+
+
+router.patch('/status', DealController.updateStatus);
+
+router.post('/', DealController.add);
+
+router.post('/claim', DealController.claim);
+
+router.post('/close', DealController.close);
 
 export default router;

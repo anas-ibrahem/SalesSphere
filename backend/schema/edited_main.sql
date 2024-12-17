@@ -11,7 +11,10 @@ CREATE TABLE BUSINESS (
     street VARCHAR(255),
     website_url VARCHAR(255),
     industry VARCHAR(255) NOT NULL
-
+    -- Document URLs
+    managerid_card_url VARCHAR(255) NOT NULL,
+    manager_personal_photo_url VARCHAR(255),
+    business_logo_url VARCHAR(255),
     -- Relationships
     --business_manager INT NOT NULL
 );
@@ -24,7 +27,7 @@ CREATE TABLE EMPLOYEE (
     account_creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     hashed_password VARCHAR(255) NOT NULL, -- we forgot to add this field
 
-    verified INT NOT NULL DEFAULT 1, -- 0 for unverified, 1 for verified, 2 for blocked
+    verified INT NOT NULL DEFAULT 0, -- 0 for unverified, 1 for verified, 2 for blocked
 
     -- Relationships
     business_id INT NOT NULL,
@@ -112,7 +115,7 @@ CREATE TABLE BADGE (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- Depends on the event
     icon_url VARCHAR(255) NOT NULL,
     required_points INT NOT NULL -- Requirement to get the badge
 );

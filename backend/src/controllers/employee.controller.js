@@ -11,7 +11,7 @@ class EmployeeController {
     // Please use arrow function to bind 'this' to the class
 
     getAll = async (req, res) => {
-        const emps = await this.employeeModel.getAll(req.pool);
+        const emps = await this.employeeModel.getAll(req.pool, req.businessId);
         res.json(emps);
     }
 
@@ -27,7 +27,7 @@ class EmployeeController {
             return res.status(400).json({error: 'Email is required'});
         }
 
-        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date || !empData.role || !empData.business_id) {
+        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.hire_date || !empData.birth_date || !empData.role) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -39,12 +39,46 @@ class EmployeeController {
         if(empData.password) {
             delete empData.password;
         }
+
+        const businessId = req.businessId;
+
+        console.log('businessId:', businessId);
+        empData.business_id = businessId;
+        
         const newEmployee = new EmployeeModel(empData);
-        const result = await newEmployee.register(req.pool);
+        const result = await newEmployee.register(req.pool, 1);
         if(result == -1) {
             return res.status(400).json({error: 'Email already exists'});
         }
         res.json(result);
+    }
+    
+    updateProfile = async (req, res) => {
+        const empData = req.body;
+        if(!validator.isEmail(empData.email)) {
+            return res.status(400).json({error: 'Invalid email address'});
+        }
+        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        const result = await this.employeeModel.updateProfile(req.pool, req.employeeId, empData);
+        if (result) {
+            res.json({message: 'Profile updated successfully'});
+        } else {
+            res.status(400).json({ error: 'Email already exists' });
+        }
+    }
+
+    getSummary = async (req, res) => {
+        const id = req.params.id;
+        const summary = await this.employeeModel.getSummary(req.pool, id);
+        res.json(summary);
+    }
+
+    getAllSummary = async (req, res) => {
+        const summary = await this.employeeModel.getAllSummary(req.pool, req.businessId);
+        res.json(summary);
     }
 }
 

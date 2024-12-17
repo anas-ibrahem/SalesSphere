@@ -24,13 +24,13 @@ function AdminHome() {
 
   console.log('isAuthenticated:', isAuthenticated);
 
-  //   useEffect(() => {
-  //     if (!isAuthenticated) {
-  //       Navigate('/admin/login'); 
-  //     }
-  //   }, [isAuthenticated, Navigate]);
+    useEffect(() => {
+      if (!isAuthenticated) {
+        Navigate('/admin/login'); 
+      }
+    }, [isAuthenticated, Navigate]);
 
-  // if (!isAuthenticated) return null;
+  if (!isAuthenticated) return null;
 
   const handleSectionChange = (section) => {
     setActiveSection(section);

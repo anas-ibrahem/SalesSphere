@@ -45,6 +45,9 @@ async function seedData() {
             registration_date: faker.date.past(),
             city: faker.location.city(),
             country: faker.location.country(),
+            managerid_card_url: faker.image.url(),
+            manager_personal_photo_url: faker.image.url(),
+            business_logo_url: faker.image.url(),
             //description: faker.lorem.paragraph(), // maybe later
         });
     }
@@ -52,10 +55,10 @@ async function seedData() {
     let last_business_id = 0;
     for (const b of business) {
         const q = await pool.query(`
-            INSERT INTO business (name, street, phone_number, email, website_url, industry, registration_date, city, country)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            INSERT INTO business (name, street, phone_number, email, website_url, industry, registration_date, city, country, managerid_card_url, manager_personal_photo_url, business_logo_url)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING id
-        `, [b.name, b.street, b.phone_number, b.email, b.website_url, b.industry, b.registration_date, b.city, b.country]);
+        `, [b.name, b.street, b.phone_number, b.email, b.website_url, b.industry, b.registration_date, b.city, b.country, b.managerid_card_url, b.manager_personal_photo_url, b.business_logo_url]);
         last_business_id = q.rows[0].id;
     }
     console.log('Business table seeded');

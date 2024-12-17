@@ -9,7 +9,11 @@ CREATE TABLE BUSINESS (
     country VARCHAR(255) NOT NULL,
     street VARCHAR(255),
     website_url VARCHAR(255),
-    industry VARCHAR(255) NOT NULL
+    industry VARCHAR(255) NOT NULL,
+    -- Document URLs
+    managerid_card_url VARCHAR(255),
+    manager_personal_photo_url VARCHAR(255),
+    business_logo_url VARCHAR(255),
 
     -- Relationships
     --business_manager INT NOT NULL
@@ -105,10 +109,11 @@ CREATE TABLE BADGE (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- Depends on the event
     icon_url VARCHAR(255) NOT NULL,
     required_points INT NOT NULL -- Requirement to get the badge
 );
+
 
 CREATE TABLE EMPLOYEE_BADGE (
     date_awarded TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -136,7 +141,7 @@ CREATE TABLE NOTIFICATION (
 
 CREATE TABLE TARGET (
     id SERIAL PRIMARY KEY,
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- Depends on the event
     goal INT NOT NULL, -- Requirement to complete the target
     deadline TIMESTAMP NOT NULL,
     progress INT NOT NULL DEFAULT 0,
@@ -147,6 +152,7 @@ CREATE TABLE TARGET (
     employee_id INT NOT NULL,
     FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
 );
+
 
 CREATE TABLE EMPLOYEE_PROFILE (
     first_name VARCHAR(255) NOT NULL,
