@@ -11,6 +11,8 @@ import CustomerProfile from "./CustomerProfile";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
 import { CustomerTypes } from "../../utils/Enums";
+import { LineChart } from '@mui/x-charts';
+import { BarChart } from "@mui/icons-material";
 
 const CustomersSection = () => {
   const [customers, setCustomers] = useState([]);
@@ -20,6 +22,9 @@ const CustomersSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [loading, setLoading] = useState(true);
+
+  const [metrics, setMetrics] = useState([]);
+  const [isBack, setIsBack] = useState(false);
   const CustomersPerPage = 4;
   const navigate = useNavigate();
 
@@ -36,7 +41,16 @@ const CustomersSection = () => {
         console.error("Error fetching customers:", error);
         setLoading(false);
       });
-  }, []);
+
+    fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
+      console.log(data);
+      setMetrics(data);
+    }).catch((error) => {
+      console.error("Error fetching metrics:", error);
+    }
+    );
+
+  }, [isBack]);
 
   const getCustomerType = (typeValue) => {
     return Object.keys(CustomerTypes).find(key => CustomerTypes[key] === typeValue) || "Unknown";
@@ -159,71 +173,98 @@ const CustomersSection = () => {
             </div>
 
             {/* Customers Table */}
-            <div className="flex-grow overflow-y-auto">
-              {loading ? (
-                <div className="text-center">Loading...</div>
-              ) : (
-                <Card>
-                  <List>
-                    {currentCustomers.map((customer) => (
-                      <ListItem
-                        key={customer.id}
-                        className="cursor-default my-2 hover:bg-gray-100 border border-gray-200"
-                        onClick={() => navigate(`${customer.id}`)}
-                      >
-                        <div>
-                          <Typography variant="h6" color="blue-gray">
-                            {customer.name}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal"
-                          >
-                            {customer.email}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            <p className="mr-28">Id: {customer.id}</p>
-                            <p>{getCustomerType(customer.type)}</p>
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            <p className="mr-28">
-                              Registration Date: {new Date(customer.registration_date).toLocaleDateString()}
-                            </p>
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            <p>Lead Source: {customer.lead_source}</p>
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between mt-2"
-                          >
-                            <div className="flex space-x-4">
-                              <span>Open Deals: {customer.open_deals_count}</span>
-                              <span>Claimed Deals: {customer.claimed_deals_count}</span>
-                              <span>Closed Won: {customer.closed_won_deals_count}</span>
-                              <span>Closed Lost: {customer.closed_lost_deals_count}</span>
-                            </div>
-                          </Typography>
-                        </div>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Card>
-              )}
+            <div className="flex">
+              <div className="flex-grow overflow-y-auto">
+                {loading ? (
+                  <div className="text-center">Loading...</div>
+                ) : (
+                  <Card>
+                    <List>
+                      {currentCustomers.map((customer) => (
+                        <ListItem
+                          key={customer.id}
+                          className="cursor-default my-2 hover:bg-gray-100 border border-gray-200"
+                          onClick={() => navigate(`${customer.id}`)}
+                        >
+                          <div>
+                            <Typography variant="h6" color="blue-gray">
+                              {customer.name}
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="gray"
+                              className="font-normal"
+                            >
+                              {customer.email}
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="gray"
+                              className="font-normal flex justify-between"
+                            >
+                              <p className="mr-28">Id: {customer.id}</p>
+                              <p>{getCustomerType(customer.type)}</p>
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="gray"
+                              className="font-normal flex justify-between"
+                            >
+                              <p className="mr-28">
+                                Registration Date: {new Date(customer.registration_date).toLocaleDateString()}
+                              </p>
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="gray"
+                              className="font-normal flex justify-between"
+                            >
+                              <p>Lead Source: {customer.lead_source}</p>
+                            </Typography>
+                            <Typography
+                              variant="small"
+                              color="gray"
+                              className="font-normal flex justify-between mt-2"
+                            >
+                              <div className="flex space-x-4">
+                                <span>Open Deals: {customer.open_deals_count}</span>
+                                <span>Claimed Deals: {customer.claimed_deals_count}</span>
+                                <span>Closed Won: {customer.closed_won_deals_count}</span>
+                                <span>Closed Lost: {customer.closed_lost_deals_count}</span>
+                              </div>
+                            </Typography>
+                          </div>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Card>
+                )}
+              </div>
+              {/* Metrics Part */}
+              <div className="flex justify-between mt-2 p-2 flex-grow">
+                <h1><BarChart /> Metrics</h1>
+                <LineChart
+                  dataset={metrics}
+
+                  series={[{
+                    dataKey: 'customers_count',
+                    name: 'Customers',
+                    label: 'Customers',
+                    color: '#8884d8',
+                  }]}
+
+                  xAxis={[{
+                    id: 'Date',
+                    dataKey: 'reg_date',
+                    label: 'Date',
+                    scaleType: 'band',
+                    valueFormatter: (v) => new Date(v).toLocaleDateString(),
+                }]}
+                 
+                  width={500}
+                  height={300}
+                />
+              </div>
             </div>
 
             {/* Pagination */}
@@ -242,7 +283,10 @@ const CustomersSection = () => {
       <Route
         path="add"
         element={
-          <AddCustomerForm onBack={() => navigate("/home/customers")} />
+          <AddCustomerForm onBack={() => {
+            setIsBack(!isBack);
+            navigate("/home/customers")
+          }} />
         }
       />
     </Routes>

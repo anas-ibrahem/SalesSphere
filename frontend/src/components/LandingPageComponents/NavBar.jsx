@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Logo from "../Logo";
 import { LuLogIn } from "react-icons/lu";
 import { IoMdPersonAdd } from "react-icons/io";
 import { FaBars } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { NavLink } from "react-router-dom";
+import UserContext from "../../context/UserContext";
+import { Dashboard, Logout } from "@mui/icons-material";
 
 export default function NavBar() {
   const [showMenu, setShowMenu] = useState(false);
+  const { isAuthenticated, employee } = useContext(UserContext);
 
   const handleBars = () => {
     setShowMenu(!showMenu);
@@ -41,16 +44,31 @@ export default function NavBar() {
       <div className="flex items-center space-x-4">
         {/* Authentication Buttons */}
         <div className="hidden lg:flex space-x-4">
-          <NavLink to="login">
-            <button className="btn btn-accent flex items-center justify-center px-4 py-2">
-              <LuLogIn className="mr-2" /> Log In
-            </button>
-          </NavLink>
-          <NavLink to="signup">
+          {
+            isAuthenticated && employee ? (
+              <NavLink to="/home" className="btn btn-accent flex items-center justify-center px-4 py-2 bg-primary-accent text-white rounded-lg">
+                <Dashboard className="mr-2" /> Dashboard
+              </NavLink>
+            ) : <NavLink to="/login">
+                <button className="btn btn-accent flex items-center justify-center px-4 py-2">
+                  <LuLogIn className="mr-2" /> Log In
+                </button>
+              </NavLink>
+          }
+          {
+            !isAuthenticated || !employee ? (
+              <NavLink to="/business-registration">
             <button className="btn btn-primary flex items-center justify-center px-4 py-2">
               <IoMdPersonAdd className="mr-2" /> Sign Up
             </button>
           </NavLink>
+            ) : <NavLink to="/logout">
+            <button className="btn btn-primary flex items-center justify-center px-4 py-2">
+              <Logout className="mr-2" /> Logout
+            </button>
+          </NavLink>
+          }
+          
         </div>
 
         {/* Hamburger Menu Button (Visible on Mobile) */}
