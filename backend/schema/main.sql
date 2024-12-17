@@ -105,10 +105,11 @@ CREATE TABLE BADGE (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    type VARCHAR(255) NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- Depends on the event
     icon_url VARCHAR(255) NOT NULL,
     required_points INT NOT NULL -- Requirement to get the badge
 );
+
 
 CREATE TABLE EMPLOYEE_BADGE (
     date_awarded TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

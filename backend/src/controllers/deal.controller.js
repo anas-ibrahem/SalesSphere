@@ -40,8 +40,8 @@ class DealController {
             return res.status(400).json({error: 'Customer ID is required'});
         }
 
-        if(!dealData.title || !dealData.status || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
-            return res.status(400).json({error: 'Deal name, description, value and status are required'});
+        if(!dealData.title || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
+            return res.status(400).json({error: 'Deal title, due_date, expenses and customer_budget are required'});
         }
 
         const result = await this.dealModel.add(req.pool, dealData, req.employeeId);

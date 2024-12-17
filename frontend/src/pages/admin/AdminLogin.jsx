@@ -61,7 +61,7 @@ import AdminContext from '../../context/AdminContext';
       // fetch /api/auth/login
       console.log(import.meta.env.VITE_BACKEND_URL);
 
-      fetchAPI('/auth/admin/login', 'POST', values).then(data => {
+      fetchAPI('/admin/login', 'POST', values).then(data => {
         if(data && data.token) {
           localStorage.setItem('admin_token', data.token);
           setToken(data.token);
