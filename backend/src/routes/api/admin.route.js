@@ -7,7 +7,7 @@ import AdminController from '../../controllers/admin.controller.js';
 
 const adminController = new AdminController();
 
-router.get('/login', adminController.login);
+router.post('/login', adminController.login);
 
 router.use(adminController.verifyToken);
 

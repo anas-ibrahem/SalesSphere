@@ -1,0 +1,54 @@
+import { createContext, useEffect, useState } from "react";
+import LoadingScreen from "../pages/LoadingScreen";
+import fetchAPI from "../utils/fetchAPI";
+
+const AdminContext = createContext(null);
+
+const AdminProvider = ({children, provideOther={}}) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [admin, setAdmin] = useState(null);
+    const [tokenExpired, setTokenExpired] = useState(false);
+    const [token, setToken] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const _token = localStorage.getItem('admin_token');
+        console.log('Token:', _token);
+        setToken(_token);
+        if(_token) {
+          fetchAPI('/admin/me', 'GET', null, _token).then(data => {
+            if(data.id) {
+              setIsAuthenticated(true);
+              setEmployee(data);
+            }
+            else if(data.error && data.session_end) {
+              setTokenExpired(true);
+              toast.error('Session expired. Please login again.', {icon: '🔒'});
+            }
+            setIsLoading(false);
+          }).catch(error => {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            localStorage.removeItem('token');
+          });
+        }
+        else {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+        }
+      }, []);
+
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
+
+    return (
+        <AdminContext.Provider value={{isLoading, setIsLoading, isAuthenticated, setIsAuthenticated, admin, setAdmin, tokenExpired, setTokenExpired, token, setToken, ...provideOther}}>
+            {children}
+        </AdminContext.Provider>
+    );
+}
+
+export default AdminContext;
+
+export { AdminProvider };

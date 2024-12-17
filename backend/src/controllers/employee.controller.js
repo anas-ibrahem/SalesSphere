@@ -69,6 +69,17 @@ class EmployeeController {
             res.status(400).json({ error: 'Email already exists' });
         }
     }
+
+    getSummary = async (req, res) => {
+        const id = req.params.id;
+        const summary = await this.employeeModel.getSummary(req.pool, id);
+        res.json(summary);
+    }
+
+    getAllSummary = async (req, res) => {
+        const summary = await this.employeeModel.getAllSummary(req.pool, req.businessId);
+        res.json(summary);
+    }
 }
 
 

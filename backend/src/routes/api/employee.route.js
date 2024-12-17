@@ -12,6 +12,9 @@ router.get('/', employeeController.getAll);
 
 router.get('/:id', employeeController.getById);
 
+router.get('/summary/all', employeeController.getAllSummary);
+router.get('/summary/:id', employeeController.getSummary);
+
 // to register a new employee
 router.post('/', employeeController.register);
 

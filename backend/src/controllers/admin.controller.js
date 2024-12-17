@@ -1,6 +1,7 @@
 import AdminModel from "../models/admin.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
+import jwt from 'jsonwebtoken';
 
 
 class AdminController {
@@ -24,11 +25,11 @@ class AdminController {
     login = async (req, res) => {
             const adminData = req.body;
     
-            if(!adminData.email || !adminData.password) {
-                return res.status(400).json({error: 'Email and password are required'});
+            if(!adminData.username || !adminData.password) {
+                return res.status(400).json({error: 'email/username and password are required'});
             }
     
-            const admin = await this.adminModel.getByEmailForAuth(req.pool, adminData.email);
+            const admin = await this.adminModel.getByEmailForAuth(req.pool, adminData.username);
             if(admin && admin.hashed_password) {
                 const match = await bcypt.compare(adminData.password, admin.hashed_password);
                 if(match) {
@@ -36,7 +37,7 @@ class AdminController {
                     return res.json({token});
                 }
             }
-            res.status(400).json({error: 'Invalid email or password'});
+            res.json({error: 'Invalid email/username or password'});
     }
 
     verifyToken = async (req, res, next) => {

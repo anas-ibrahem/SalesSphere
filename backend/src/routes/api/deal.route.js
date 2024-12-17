@@ -12,6 +12,10 @@ router.get('/claimed', DealController.getEmployeeClaimedDeals);
 router.get('/open', DealController.getAllOpenDeals);
 router.get('/:id', DealController.getById);
 
+router.get('/employee/:id', DealController.getEmployeeDeals);
+router.get('/customer/:id', DealController.getCustomerDeals);
+
+
 router.patch('/status', DealController.updateStatus);
 
 router.post('/', DealController.add);

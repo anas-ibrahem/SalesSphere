@@ -40,8 +40,8 @@ class DealController {
             return res.status(400).json({error: 'Customer ID is required'});
         }
 
-        if(!dealData.title || !dealData.status || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
-            return res.status(400).json({error: 'Deal name, description, value and status are required'});
+        if(!dealData.title || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
+            return res.status(400).json({error: 'Deal title, due_date, expenses and customer_budget are required'});
         }
 
         const result = await this.dealModel.add(req.pool, dealData, req.employeeId);
@@ -70,6 +70,16 @@ class DealController {
 
         const result = await this.dealModel.close(req.pool, dealData.id , dealData.status);
         res.json(result);
+    }
+
+    getEmployeeDeals = async (req, res) => {
+        const deals = await this.dealModel.getEmployeeDeals(req.pool, req.params.id);
+        res.json(deals);
+    }
+
+    getCustomerDeals = async (req, res) => {
+        const deals = await this.dealModel.getCustomerDeals(req.pool, req.params.id);
+        res.json(deals);
     }
 
 }
