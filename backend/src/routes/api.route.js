@@ -11,6 +11,7 @@ import AuthController from '../controllers/auth.controller.js';
 import BusinessController from '../controllers/business.controller.js';
 import notificationRouter from './api/notification.route.js';
 import customerRouter from './api/customer.route.js';
+import adminRouter from './api/admin.route.js';
 
 const authController = new AuthController();
 const businessController = new BusinessController();
@@ -19,6 +20,8 @@ const businessController = new BusinessController();
 // all other files in /routes/api/*.js will require authentication
 router.use('/auth', authRouter);
 router.post('/business/register', businessController.register);
+
+router.use('/admin', adminRouter)
 
 // routes with authentication required
 router.use(authController.verifyToken);
