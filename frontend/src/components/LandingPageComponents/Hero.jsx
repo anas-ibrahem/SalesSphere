@@ -1,6 +1,13 @@
 import RevealOnScroll from "./RevealOnScroll.jsx";
 import HeroImg from "../../assets/Hero.jpg";
+import { useContext } from "react";
+import UserContext from "../../context/UserContext.jsx";
+import { Dashboard, Login } from "@mui/icons-material";
+import { LuLogIn } from "react-icons/lu";
 const Hero = function () {
+
+  const { isAuthenticated } = useContext(UserContext);
+
   return (
     <RevealOnScroll>
       <div
@@ -36,7 +43,11 @@ const Hero = function () {
               href="/business-registration"
               className="px-5 py-3 text-lg tracking-wider text-white bg-blue-500 rounded-lg md:px-8 hover:bg-blue-600 group"
             >
-              <span>Get Started</span>
+              {isAuthenticated ? 
+              <span>
+                <Dashboard /> Dashboard
+              </span>: <span>Get Started</span>
+              }
             </a>
           </div>
         </div>
