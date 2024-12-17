@@ -54,14 +54,14 @@ function Home() {
         duration-300 
       `}
       >
-        <div className="max-h-full overflow-y-auto">
+        <div className="max-h-full overflow-y-auto ">
             <Routes>
               <Route path="/business" element={<BusinessSection />} />
               <Route path="/logs" element={<LogsSection />} />
               <Route path="/records" element={<RecordsSection />} />
-              <Route path="/deals" element={<DealsSection />} />
-              <Route path="/employees" element={<EmployeesSection />} />
-              <Route path="/customers" element={<CustomersSection />} />
+              <Route path="/deals/*" element={<DealsSection />} />
+              <Route path="/employees/*" element={<EmployeesSection />} />
+              <Route path="/customers/*" element={<CustomersSection />} />
               <Route path="/" element={<DefaultSection />} />
             </Routes>
         </div>

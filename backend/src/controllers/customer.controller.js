@@ -45,6 +45,12 @@ class CustomerController {
         }
         res.json(result);
     }
+
+    getCustomersPerDate = async (req, res) => {
+        console.log(req.businessId);
+        const customers = await this.customerModel.getCustomersPerDate(req.pool, req.businessId);
+        res.json(customers);
+    }
 }
 
 

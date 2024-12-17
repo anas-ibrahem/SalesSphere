@@ -106,6 +106,28 @@ class CustomerModel {
         }
     }
 
+    getCustomersPerDate = async (pool, business_id) => {
+        try {
+            const result = await pool.query(`
+                WITH daily_counts AS (
+                    SELECT cast(COUNT(c.id) as int) as count, cast(registration_date as date) as reg_date
+                    FROM customer c
+                    WHERE c.business_id = $1
+                    GROUP BY reg_date
+                    ORDER BY reg_date
+                )
+                SELECT reg_date, cast(SUM(count) OVER (ORDER BY reg_date) as int) as customers_count
+                FROM daily_counts;
+            `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+
 }
 
 export default CustomerModel;

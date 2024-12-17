@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import EmployeeProfile from "./EmployeeProfile";
 import {
   List,
@@ -8,117 +9,80 @@ import {
   Card,
   Typography,
 } from "@material-tailwind/react";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
+import Pagination from "../Pagination";
+import fetchAPI from '../../utils/fetchAPI';
+import { EmployeeRoles } from "../../utils/Enums";
 
-const generateDummyData = () => {
-  const dummyEmployees = [];
-  const employeesNames = [
-    "Deal Alpha",
-    "Deal Beta",
-    "Deal Gamma",
-    "Deal Delta",
-  ];
-  for (let i = 1; i <= 50; i++) {
-    const numberOfDeals = Math.floor(Math.random() * 1000 + 100);
-    const numberOfDealsThisMonth = Math.floor(Math.random() * numberOfDeals);
-    const numberOfSuccessfulDeals = Math.floor(Math.random() * numberOfDeals);
-    const numberOfSuccessfulDealsThisMonth = Math.floor(
-      Math.random() * numberOfDealsThisMonth
-    );
-
-    const numberOfUnsuccessfulDeals = numberOfDeals - numberOfSuccessfulDeals;
-
-    const numberOfUnsuccessfulDealsThisMonth =
-      numberOfDealsThisMonth - numberOfSuccessfulDealsThisMonth;
-
-    const employee = {
-      id: i,
-
-      name: employeesNames[i % employeesNames.length],
-
-      email: `employee${i}@company.com`,
-
-      phone: `555-01${i.toString().padStart(2, "0")}`,
-
-      numberOfDeals,
-
-      numberOfDealsThisMonth,
-
-      accountCreationDate: new Date(2024, 10, (i % 30) + 1)
-        .toISOString()
-        .slice(0, 10),
-      type: i % 2 === 0 ? "opener" : "closer",
-
-      numberOfSuccessfulDeals,
-
-      numberOfSuccessfulDealsThisMonth,
-
-      numberOfUnsuccessfulDeals,
-
-      numberOfUnsuccessfulDealsThisMonth,
-
-      percentageOfSuccessfulDeals: Math.floor(
-        (numberOfSuccessfulDeals / numberOfDeals) * 100
-      ),
-
-      percentageOfSuccessfulDealsThisMonth: Math.floor(
-        (numberOfSuccessfulDealsThisMonth / numberOfDealsThisMonth) * 100
-      ),
-
-      profilePicture: `https://randomuser.me/api/portraits/men/${i % 100}.jpg`,
-    };
-
-    dummyEmployees.push(employee);
-  }
-  return dummyEmployees;
-};
-
-const dummyData = generateDummyData();
-
-function EmployeesSection() {
-  const [currentEmployee, setCurrentEmployee] = useState(null);
+const EmployeesSection = () => {
+  const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [filterType, setFilterType] = useState("All");
   const [sortField, setSortField] = useState("account_creation_date");
-  const [duration, setDuration] = useState("all times");
-  const [dealsType, setDealsType] = useState("all deals");
+  const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  const EmployeesPerPage = 10;
+  const [loading, setLoading] = useState(true);
+  const EmployeesPerPage = 4;
+  const navigate = useNavigate();
 
+  // Fetch employees from API
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetchAPI('/employee/summary/all', 'GET', null, token)
+      .then((data) => {
+        console.log(data);
+        setEmployees(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching employees:", error);
+        setLoading(false);
+      });
+  }, []);
 
+  const getRoleType = (typeValue) => {
+    return Object.keys(EmployeeRoles).find(key => EmployeeRoles[key] === typeValue) || "Unknown";
+  };
 
   // Filtering logic
-  const filterEmployees = dummyData.filter((employee) => {
-    return filterType === "All" || employee.type === filterType;
+  const filterEmployees = employees.filter((employee) => {
+    const roleType = getRoleType(employee.role);
+    return (
+      (filterType === "All" || roleType === filterType) &&
+      (searchQuery === "" || 
+       employee.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       employee.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       employee.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
   });
 
   // Sorting logic
   const sortedEmployees = [...filterEmployees].sort((a, b) => {
-    if (sortField === "Number of Deals") {
-      let dealDuration = "";
-      let dealType = "";
-
-      if (duration !== "all times") {
-        dealDuration = "ThisMonth";
-      }
-
-      if (dealsType === "successful") {
-        dealType = "Successful";
-      } else if (dealsType === "unsuccessful") {
-        dealType = "Unsuccessful";
-      }
-
-      const aDeals = a[`numberOf${dealType}Deals${dealDuration}`];
-      const bDeals = b[`numberOf${dealType}Deals${dealDuration}`];
-
-      return sortOrder === "asc" ? aDeals - bDeals : bDeals - aDeals;
-    } else {
-      const aDate = new Date(a.accountCreationDate);
-      const bDate = new Date(b.accountCreationDate);
-
-      return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+    switch (sortField) {
+      case "account_creation_date":
+        const aDate = new Date(a.account_creation_date);
+        const bDate = new Date(b.account_creation_date);
+        return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+      
+      case "total_customers":
+        const aCustomers = a.customers?.customers_count || 0;
+        const bCustomers = b.customers?.customers_count || 0;
+        return sortOrder === "asc" ? aCustomers - bCustomers : bCustomers - aCustomers;
+      
+      case "closed_deals":
+        const aClosedDeals = a.deals?.closed_won_deals_count || 0;
+        const bClosedDeals = b.deals?.closed_won_deals_count || 0;
+        return sortOrder === "asc" ? aClosedDeals - bClosedDeals : bClosedDeals - aClosedDeals;
+      
+      case "name":
+        return sortOrder === "asc" 
+          ? a.first_name.localeCompare(b.first_name)
+          : b.first_name.localeCompare(a.first_name);
+      
+      default:
+        return 0;
     }
   });
 
@@ -131,211 +95,178 @@ function EmployeesSection() {
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
 
-  const handleExpand = (id) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
   const manager = true;
 
-  const handleAddEmployee = (formData) => {
-    // send the formData to your backend
-    console.log('New Employee Data:', Object.fromEntries(formData));
-    setShowAddEmployeeForm(false);
-  };
-
-
   return (
-    <>
-      {showAddEmployeeForm ? (
-        <AddEmployeeForm 
-          onBack={() => setShowAddEmployeeForm(false)}
-        />
-      ) : currentEmployee ? (
-        <EmployeeProfile
-          back={() => setCurrentEmployee(null)}
-          employee={currentEmployee}
-        />
-      ) : (
-        <section className="bg-white p-6 shadow-md h-screen flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold mb-4">Employees</h1>
-            {manager && (
-              <button 
-                onClick={() => setShowAddEmployeeForm(true)}
-                className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
-              >
-                <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
-                <span className="text-lg">Add Employee</span>
-              </button>
-            )}
-          </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold mb-4">Employees</h1>
 
-          {/* Filter and Sort Controls */}
-          <div className="flex justify-between mb-4">
-            {/* Filter */}
-            <div className="flex space-x-4">
-              <select
-                onChange={(e) => setFilterType(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="All">All Types</option>
-                <option value="opener">Opener</option>
-                <option value="closer">Executor</option>
-              </select>
-
-              {/* Sort */}
-              <select
-                onChange={(e) => setSortField(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="accountCreationDate">
-                  Account Creation Date
-                </option>
-                <option value="Number of Deals">Number of Deals</option>
-              </select>
-              <select
-                onChange={(e) => setSortOrder(e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
-              {sortField === "Number of Deals" && (
-                <>
-                  <select
-                    onChange={(e) => setDealsType(e.target.value)}
-                    className="p-2 border rounded "
+              {manager && (
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => navigate("add")}
+                    className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
                   >
-                    <option value="all">All Deals</option>
-                    <option value="successful">Successful Deals</option>
-                    <option value="unsuccessful">Unsuccessful Deals</option>
-                  </select>
-                  <select
-                    onChange={(e) => setDuration(e.target.value)}
-                    className="p-2 border rounded"
+                    <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                    <span className="text-lg">Add Employee</span>
+                  </button>
+                  <button
+                    onClick={() => navigate("addtarget")}
+                    className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
                   >
-                    <option value="all times">All Times</option>
-                    <option value="this month">This Month</option>
-                  </select>
-                </>
+                    <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                    <span className="text-lg">Add Target</span>
+                  </button>
+                </div>
               )}
             </div>
-          </div>
 
-          {/* Employees Table */}
-          <div className="flex-grow overflow-y-auto">
-            <Card>
-              <List>
-                {currentEmployees.map((employee) => (
-                  <React.Fragment key={employee.id}>
-                    <ListItem
-                      className="cursor-default my-4 hover:bg-gray-100"
-                      onClick={() => setCurrentEmployee(employee)}
-                    >
-                      <ListItemPrefix>
-                        <Avatar
-                          variant="circular"
-                          alt={`${employee.name}'s profile`}
-                          src={employee.profilePicture}
-                          className="w-20 h-20 "
-                        />
-                      </ListItemPrefix>
-                      <div>
-                        <Typography variant="h6" color="blue-gray">
-                          {employee.name}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal"
-                        >
-                          {employee.email}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal"
-                        >
-                          Id: {employee.id}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          {employee.type}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal"
-                        >
-                          Number of Deals: {employee.numberOfDeals}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Success
-                          Rate:
-                          {employee.percentageOfSuccessfulDeals}%
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="gray"
-                          className="font-normal"
-                        >
-                          Number of Successful Deals:{" "}
-                          {employee.numberOfSuccessfulDeals}{" "}
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number
-                          of Unsuccessful Deals:{" "}
-                          {employee.numberOfUnsuccessfulDeals}
-                        </Typography>
-                      </div>
-                    </ListItem>
-                  </React.Fragment>
-                ))}
-              </List>
-            </Card>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={`px-4 py-2 border rounded ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(index + 1)}
-                  className={`px-3 py-1 border rounded ${
-                    currentPage === index + 1
-                      ? "bg-blue-500 text-white"
-                      : "bg-white hover:bg-blue-100"
-                  }`}
+            {/* Filter and Sort Controls */}
+            <div className="flex justify-between mb-4">
+              <div className="flex space-x-4">
+                {/* Role Filter */}
+                <select
+                  onChange={(e) => setFilterType(e.target.value)}
+                  className="p-2 border rounded"
                 >
-                  {index + 1}
-                </button>
-              ))}
+                  <option value="All">All Types</option>
+                  {Object.values(EmployeeRoles).map((role) => (
+                    <option key={role} value={getRoleType(role)}>
+                      {getRoleType(role)}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Sort Field */}
+                <select
+                  onChange={(e) => setSortField(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="account_creation_date">Creation Date</option>
+                  <option value="name">Name</option>
+                  <option value="total_customers">Total Customers</option>
+                  <option value="closed_deals">Closed Deals</option>
+                </select>
+
+                {/* Sort Order */}
+                <select
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="p-2 border rounded"
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+
+                {/* Search Input */}
+                <input 
+                  type="text"
+                  placeholder="Search employees..."
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="p-2 border rounded flex-grow"
+                />
+              </div>
             </div>
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              className={`px-4 py-2 border rounded ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </section>
-      )}
-    </>
+            {/* Employees Table */}
+            <div className="flex-grow overflow-y-auto">
+              <Card>
+                <List>
+                  {loading ? (
+                    <Typography variant="h6" color="blue-gray" className="text-center">
+                      Loading...
+                    </Typography>
+                  ) : (
+                    currentEmployees.map((employee) => (
+                      <ListItem
+                        key={employee.id}
+                        className="cursor-default my-2 hover:bg-gray-100 border border-gray-200"
+                        onClick={() => navigate(`${employee.id}`)}
+                      >
+                        <ListItemPrefix>
+                          <Avatar
+                            variant="circular"
+                            alt={`${employee.first_name} ${employee.last_name}'s profile`}
+                            src={employee.profile_picture_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.first_name)}+${encodeURIComponent(employee.last_name)}`}
+                            className="w-20 h-20"
+                          />
+                        </ListItemPrefix>
+                        <div>
+                          <Typography variant="h6" color="blue-gray">
+                            {employee.first_name} {employee.last_name}
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal"
+                          >
+                            {employee.email}
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p className="mr-28">Id: {employee.id}</p>
+                            <p>{getRoleType(employee.role)}</p>
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p className="mr-28">
+                              Total Customers: {employee.customers?.customers_count || 0}
+                            </p>
+                          </Typography>
+                          <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal flex justify-between"
+                          >
+                            <p>
+                              Deals:
+                              Open: {employee.deals?.open_deals_count || 0}, 
+                              Closed Won: {employee.deals?.closed_won_deals_count || 0}, 
+                              Closed Lost: {employee.deals?.closed_lost_deals_count || 0}
+                            </p>
+                          </Typography>
+                        </div>
+                      </ListItem>
+                    ))
+                  )}
+                </List>
+              </Card>
+            </div>
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </section>
+        }
+      />
+      <Route
+        path=":employeeId"
+        element={<EmployeeProfile back={() => navigate("/home/employees")} />}
+      />
+      <Route
+        path="add"
+        element={
+          <AddEmployeeForm onBack={() => navigate("/home/employees")} />
+        }
+      />
+      <Route
+        path="addtarget"
+        element={<AddEmployeeForm onBack={() => navigate("/home/employees")} />}
+      />
+    </Routes>
   );
 }
 

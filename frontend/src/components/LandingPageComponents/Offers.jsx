@@ -2,7 +2,7 @@ import RevealOnScroll from "./RevealOnScroll.jsx";
 const Offers = function Offers() {
   return (
     <RevealOnScroll>
-      <div className="bg-white py-16 px-6 my-8">
+      <section id="Benefits" className="bg-white py-16 px-6 my-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-blue-900 mb-16">
           What SalesSphere Offers
         </h2>
@@ -46,7 +46,7 @@ const Offers = function Offers() {
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </RevealOnScroll>
   );
 };

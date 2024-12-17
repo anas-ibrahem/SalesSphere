@@ -16,6 +16,7 @@ const AdminProvider = ({children, provideOther={}}) => {
         const _token = localStorage.getItem('admin_token');
         console.log('Token:', _token);
         setToken(_token);
+        setIsLoading(true);
         if(_token) {
           fetchAPI('/admin/me', 'GET', null, _token).then(data => {
             if(data.id) {
@@ -45,7 +46,7 @@ const AdminProvider = ({children, provideOther={}}) => {
           setIsAuthenticated(false);
           setIsLoading(false);
         }
-      }, []);
+      }, [isAuthenticated]);
 
     if (isLoading) {
         return <LoadingScreen />;

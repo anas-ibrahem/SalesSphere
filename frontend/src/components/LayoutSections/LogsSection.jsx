@@ -1,3 +1,6 @@
+import { useState } from "react";
+import Pagination from "../Pagination";
+
 const LogsSection = () => {
   const logs = Array.from({ length: 100 }, (_, i) => ({
     id: i,
@@ -9,11 +12,19 @@ const LogsSection = () => {
     time: "12:00PM",
   }));
 
+  // Pagination logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const LogsPerPage = 10;
+  const indexOfLastLog = currentPage * LogsPerPage;
+  const indexOfFirstLog = indexOfLastLog - LogsPerPage;
+  const currentLogs = logs.slice(indexOfFirstLog, indexOfLastLog);
+  const totalPages = Math.ceil(logs.length / LogsPerPage);
+
   return (
     <section className="bg-white p-6 shadow-md">
       <h1 className="text-2xl font-bold mb-8">Activity Logs</h1>
       <ol className="relative border-l border-gray-300">
-        {logs.map((log) => (
+        {currentLogs.map((log) => (
           <li key={log.id} className="mb-10 ml-6">
             <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-gray-100">
               <img
@@ -45,7 +56,14 @@ const LogsSection = () => {
           </li>
         ))}
       </ol>
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </section>
   );
 };
+
 export default LogsSection;

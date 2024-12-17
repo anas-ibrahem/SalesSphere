@@ -1,115 +1,80 @@
-import React, { useState } from "react";
-import { Star, Medal, UserPlus, TrendingUp, BarChart2, List, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { 
+  Star, Medal, UserPlus, TrendingUp, BarChart2, List, X, User, UsersRound, 
+  Trophy, Target, HandCoins, DollarSign, MapPin, Calendar, Flag, BookCheck, 
+  Rocket, Clock, CheckCircle2, AlertCircle, Briefcase 
+} from "lucide-react";
+import { useParams } from "react-router-dom";
+import fetchAPI from '../../utils/fetchAPI';
+import { EmployeeRoles } from "../../utils/Enums";
+import DetailModal from "./DetailModal";
+import { BadgeIcons, TargetIcons } from "../../utils/Enums";
 
-// Mock Data for Testing
-const mockEmployeeData = {
-  name: "Tamer Elyar",
-  email: "john.doe@company.com",
-  type: "Sales Representative",
-  profilePicture: "https://yt3.googleusercontent.com/ytc/AIdro_mQAsn4usidMAmf8_liUmjs9yOMT4j2Zcb1TYwNZa8jVw=s900-c-k-c0x00ffffff-no-rj",
-  numberOfDeals: 25,
-  numberOfSuccessfulDeals: 18,
-  customersAddedThisMonth: 5,
-  totalCustomersAdded: 45,
-  performanceMetrics: {
-    salesTarget: 50000,
-    targetGoal: 40000,
-    performanceNotes: "Consistently exceeding monthly targets"
-  },
-  badges: ["Top Performer", "Customer Champion"],
-  dealsList: [
-    { id: 1, client: "Acme Corp", value: "$15,000", status: "Closed Won" },
-    { id: 2, client: "Tech Innovations", value: "$22,500", status: "Closed Won" }
-  ],
-  customersList: [
-    { id: 1, name: "Alice Smith", company: "Tech Startup" },
-    { id: 2, name: "Bob Johnson", company: "Digital Solutions" }
-  ]
-};
 
-const DetailModal = ({ title, data, onClose }) => {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-xl font-bold">{title}</h2>
-          <button 
-            onClick={onClose} 
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-        <div className="p-4">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                {Object.keys(data[0] || {}).map((header) => (
-                  <th key={header} className="py-2 text-left">{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="border-b last:border-b-0">
-                  {Object.values(item).map((value, valueIndex) => (
-                    <td key={valueIndex} className="py-2">{value}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {data.length === 0 && (
-            <p className="text-center text-gray-500 py-4">No data available</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const EmployeeProfile = (props) => {
-  var { employee = mockEmployeeData, back } = props;
-  employee = mockEmployeeData;
-
+const EmployeeProfile = ({ back }) => {
+  const { employeeId } = useParams();
+  const [employee, setEmployee] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
+  const [modalData, setModalData] = useState([]);
 
-  // Safely calculate success rate with default values
-  const numberOfDeals = employee.numberOfDeals || 0;
-  const numberOfSuccessfulDeals = employee.numberOfSuccessfulDeals || 0;
-  
-  const successRate = numberOfDeals > 0 
-    ? ((numberOfSuccessfulDeals / numberOfDeals) * 100).toFixed(2) 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetchAPI(`/employee/summary/${employeeId}`, 'GET', null, token)
+      .then((data) => {
+        console.log(data);
+        setEmployee(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching employee details:", error);
+      });
+  }, [employeeId]);
+
+  if (!employee) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  // Deals calculations
+  const totalDeals = 
+    (employee.deals?.closed_won_deals_count || 0) + 
+    (employee.deals?.closed_lost_deals_count || 0);
+
+  const successRate = totalDeals > 0 
+    ? ((employee.deals?.closed_won_deals_count || 0) / totalDeals * 100).toFixed(2)
     : '0.00';
 
-  // Performance calculation
-  const performanceScore = employee.performanceMetrics ? 
-    (
-      (employee.performanceMetrics.salesTarget || 0) / 
-      (employee.performanceMetrics.targetGoal || 1) * 
-      100
-    ).toFixed(2) 
-    : '0.00';
+  const openBadgeModal = () => {
+    setModalData(employee.badges);
+    setActiveModal('badges');
+  };
 
-  return (
-    <div className="bg-white m-0 rounded shadow-xl w-full h-screen flex flex-col overflow-hidden">
-      {/* Modal for Deals or Customers */}
-      {activeModal === 'deals' && (
-        <DetailModal 
-          title="Deals Details" 
-          data={employee.dealsList || []} 
-          onClose={() => setActiveModal(null)} 
-        />
-      )}
-      {activeModal === 'customers' && (
-        <DetailModal 
-          title="Customers Details" 
-          data={employee.customersList || []} 
-          onClose={() => setActiveModal(null)} 
-        />
-      )}
+  const openTargetModal = () => {
+    setModalData(employee.targets);
+    setActiveModal('targets');
+  };
+  // Profile picture fallback
+  const profilePicture = employee.profile_picture_url || 
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.first_name)}+${encodeURIComponent(employee.last_name)}`;
 
-      <div className="relative h-[150px] bg-gradient-to-r from-cyan-500 to-blue-500 flex-shrink-0">
+    return (
+      <div className="bg-white m-0 rounded shadow-xl w-full h-screen flex flex-col overflow-hidden">
+        {activeModal === 'badges' && (
+          <DetailModal 
+            title="Badges Details" 
+            data={modalData} 
+            onClose={() => setActiveModal(null)} 
+            type="badge"
+          />
+        )}
+        {activeModal === 'targets' && (
+          <DetailModal 
+            title="Targets Details" 
+            data={modalData} 
+            onClose={() => setActiveModal(null)} 
+            type="target"
+          />
+        )}
+
+      <div className="relative h-[120px] bg-gradient-to-r from-cyan-500 to-blue-500 flex-shrink-0">
         <button
           onClick={back}
           className="absolute top-6 left-6 inline-flex w-auto cursor-pointer 
@@ -123,8 +88,8 @@ const EmployeeProfile = (props) => {
         
         <div className="absolute bottom-[-45px] left-5 h-[90px] w-[90px] shadow-md rounded-full border-4 overflow-hidden border-white">
           <img
-            src={employee.profilePicture}
-            alt={`${employee.name || 'Employee'}'s profile`}
+            src={profilePicture}
+            alt={`${employee.first_name} ${employee.last_name}'s profile`}
             className="w-full h-full rounded-full object-center object-cover"
           />
         </div>
@@ -134,121 +99,156 @@ const EmployeeProfile = (props) => {
         <div className="flex flex-col gap-3 pb-6">
           <div>
             <h3 className="text-xl text-slate-900 relative font-bold leading-6">
-              {employee.name || 'Employee Name'}
+              {employee.first_name} {employee.last_name}
             </h3>
-            <p className="text-sm text-gray-600">{employee.email || 'No email provided'}</p>
+            <p className="text-sm text-gray-600">{employee.email}</p>
           </div>
 
-          <h4 className="text-md font-medium leading-3">About</h4>
-          <p className="text-sm text-stone-500">{employee.type || 'No type specified'}</p>
+          <p className="text-sm text-stone-500">
+            {employee.role === EmployeeRoles.DealOpener && "Deal Opener"}
+            {employee.role === EmployeeRoles.DealExecutor && "Deal Executor"}
+            {employee.role === EmployeeRoles.Manager && "Manager"}
+          </p>
+
+          {/* Badges Section */}
+        <div className="mt-4">
+            <h4 className="text-md font-medium flex items-center gap-2">
+              <Medal className="w-5 h-5 text-yellow-600" /> Badges
+            </h4>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {employee.badges && employee.badges.length > 0 ? (
+                employee.badges.map((badge, index) => {
+                  const BadgeIcon = BadgeIcons[badge.type] || Star;
+                  return (
+                    <div 
+                      key={index} 
+                      onClick={openBadgeModal}
+                      className="bg-gray-100 px-3 py-1 rounded-full flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-200 transition"
+                    >
+                      <BadgeIcon className="w-4 h-4 text-blue-500" />
+                      {badge.name}
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-sm text-gray-500">No badges earned yet</p>
+              )}
+            </div>
+          </div>
+
+          {/* Personal Information Section */}
+          <div className="mt-4">
+            <h4 className="text-md font-medium flex items-center gap-2">
+              <User className="w-5 h-5 text-green-600" /> Personal Details
+            </h4>
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">Phone Number</p>
+                <p className="text-lg font-bold">{employee.phone_number || 'N/A'}</p>
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">Birth Date</p>
+                <p className="text-lg font-bold">
+                  {employee.birth_date 
+                    ? new Date(employee.birth_date).toLocaleDateString() 
+                    : 'N/A'}
+                </p>
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">Hire Date</p>
+                <p className="text-lg font-bold">
+                  {employee.hire_date 
+                    ? new Date(employee.hire_date).toLocaleDateString() 
+                    : 'N/A'}
+                </p>
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">Address</p>
+                <p className="text-lg font-bold">{employee.address || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Deals Section */}
           <div className="mt-4">
             <h4 className="text-md font-medium flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-blue-600" /> Deals
+              <TrendingUp className="w-5 h-5 text-blue-600" /> Related Deals
             </h4>
             <div className="grid grid-cols-2 gap-4 mt-2">
               <div className="bg-gray-100 p-3 rounded-lg">
                 <p className="text-xs text-gray-500">Total Deals</p>
-                <p className="text-lg font-bold">{numberOfDeals}</p>
+                <p className="text-lg font-bold">{totalDeals}</p>
               </div>
               <div className="bg-gray-100 p-3 rounded-lg">
                 <p className="text-xs text-gray-500">Success Rate</p>
                 <p className="text-lg font-bold">{successRate}%</p>
               </div>
             </div>
-            {employee.dealsList && employee.dealsList.length > 0 && (
-              <button 
-                onClick={() => setActiveModal('deals')}
-                className="mt-2 w-full text-sm text-blue-600 hover:bg-blue-50 p-2 rounded flex items-center justify-center"
-              >
-                <List className="w-4 h-4 mr-2" /> View Deals Details
-              </button>
-            )}
-          </div>
-
-          {/* Customers Added Section */}
-          <div className="mt-4">
-            <h4 className="text-md font-medium flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-green-600" /> Customers Added
-            </h4>
-            <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="grid grid-cols-3 gap-4 mt-2">
               <div className="bg-gray-100 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">This Month</p>
-                <p className="text-lg font-bold">{employee.customersAddedThisMonth || 0}</p>
+                <p className="text-xs text-gray-500">Open Deals</p>
+                <p className="text-lg font-bold">{employee.deals?.open_deals_count || 0}</p>
               </div>
               <div className="bg-gray-100 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">Total</p>
-                <p className="text-lg font-bold">{employee.totalCustomersAdded || 0}</p>
+                <p className="text-xs text-gray-500">Closed Won</p>
+                <p className="text-lg font-bold">{employee.deals?.closed_won_deals_count || 0}</p>
+              </div>
+              <div className="bg-gray-100 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">Closed Lost</p>
+                <p className="text-lg font-bold">{employee.deals?.closed_lost_deals_count || 0}</p>
               </div>
             </div>
-            {employee.customersList && employee.customersList.length > 0 && (
-              <button 
-                onClick={() => setActiveModal('customers')}
-                className="mt-2 w-full text-sm text-green-600 hover:bg-green-50 p-2 rounded flex items-center justify-center"
-              >
-                <List className="w-4 h-4 mr-2" /> View Customers Details
-              </button>
-            )}
           </div>
 
-          {/* Performance Metrics Section */}
+          {/* Customers Section */}
           <div className="mt-4">
             <h4 className="text-md font-medium flex items-center gap-2">
-              <BarChart2 className="w-5 h-5 text-purple-600" /> Performance
+              <UsersRound className="w-5 h-5 text-cyan-800" /> Customers
             </h4>
-            <div className="grid grid-cols-2 gap-4 mt-2">
+            <div className="grid grid-cols-1 gap-4 mt-2">
               <div className="bg-gray-100 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">Sales Target</p>
-                <p className="text-lg font-bold">
-                  {employee.performanceMetrics?.salesTarget || 0}
-                </p>
-              </div>
-              <div className="bg-gray-100 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">Performance Score</p>
-                <p className={`text-lg font-bold ${
-                  performanceScore > 100 
-                    ? 'text-green-600' 
-                    : performanceScore > 75 
-                      ? 'text-yellow-600' 
-                      : 'text-red-600'
-                }`}>
-                  {performanceScore}%
-                </p>
+                <p className="text-xs text-gray-500">Total Customers</p>
+                <p className="text-lg font-bold">{employee.customers?.customers_count || 0}</p>
               </div>
             </div>
-            {employee.performanceMetrics?.performanceNotes && (
-              <div className="mt-2 bg-gray-50 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">Performance Notes</p>
-                <p className="text-sm text-gray-700">
-                  {employee.performanceMetrics.performanceNotes}
-                </p>
-              </div>
-            )}
           </div>
 
-          {/* Badges Section */}
-          <div className="mt-4">
-            <h4 className="text-md font-medium flex items-center gap-2">
-              <Medal className="w-5 h-5 text-yellow-600" /> Badges
-            </h4>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {employee.badges && employee.badges.length > 0 ? (
-                employee.badges.map((badge, index) => (
-                  <div 
-                    key={index} 
-                    className="bg-gray-100 px-3 py-1 rounded-full flex items-center gap-2 text-sm"
-                  >
-                    <Star className="w-4 h-4 text-blue-500" />
-                    {badge}
+
+
+          {/* Targets Section */}
+    <div className="mt-4">
+        <h4 className="text-md font-medium flex items-center gap-2">
+          <BarChart2 className="w-5 h-5 text-purple-600" /> Targets
+        </h4>
+        <div className="mt-2">
+          {employee.targets && employee.targets.length > 0 ? (
+            employee.targets.map((target, index) => {
+              const TargetIcon = TargetIcons[target.type] || Briefcase;
+              return (
+                <div 
+                  key={index} 
+                  onClick={openTargetModal}
+                  className="bg-gray-100 p-3 rounded-lg mb-2 cursor-pointer hover:bg-gray-200 transition"
+                >
+                  <div className="flex items-center mb-2">
+                    <TargetIcon className="w-5 h-5 mr-2 text-purple-500" />
+                    <p className="text-xs text-gray-500">Target Details</p>
                   </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">No badges earned yet</p>
-              )}
-            </div>
-          </div>
+                  <p className="text-sm text-gray-700">
+                    {target.description}
+                    <span className="ml-2 text-xs text-gray-500">
+                      Deadline: {new Date(target.deadline).toLocaleDateString()}
+                    </span>
+                  </p>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-sm text-gray-500">No targets set</p>
+          )}
         </div>
+        </div>
+      </div>
       </div>
     </div>
   );

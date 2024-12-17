@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Home,
   FileText,
@@ -11,7 +11,9 @@ import {
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
 import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
-import { AddBusiness, AdminPanelSettings } from "@mui/icons-material";
+import { AddBusiness, AdminPanelSettings, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2 } from "@mui/icons-material";
+import { Badge } from "@mui/material";
+import UserContext from "../context/UserContext";
 
 const usersections = [
   { route: "/home/", icon: Home, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Business" },
@@ -37,13 +39,15 @@ export default function SideBar({
 
   const [selectedSection, setSelectedSection] = useState(0);
 
+  const { employee } = useContext(UserContext);
+
   useEffect(() => {
     // check current route and set selected section accordingly
     const currentPath = window.location.pathname;
     const sectionIndex = (type == "admin" ? adminsections : usersections).findIndex((section) => section.route === currentPath);
     setSelectedSection(sectionIndex);
   }, []);
-  
+
   return (
     <div
       className={`
@@ -108,6 +112,29 @@ export default function SideBar({
         })
       }
       </ul>
+
+      {/* bottom part */}
+      <div className={"flex justify-center py-2" + (isCollapsed ? " flex-col" : " pl-3")}>
+        
+        {
+          (type != "admin" && employee && employee.id) && 
+          <Link to="/home/notifications" className="flex items-center py-2 px-4 rounded w-full text-left">
+            <Badge variant="dot" color="primary" overlap="circular" >
+              <Notifications className="hover:text-gray-300" />
+            </Badge>
+          </Link>
+        }
+        {
+          (type != "admin" && employee && employee.id) && 
+          <Link to={"/home/employees/"+employee.id} className="flex items-center py-2 px-4 rounded w-full text-left">
+            <Person2 className="hover:text-gray-300" />
+          </Link>
+        }
+        
+        <Link to="/logout" className="flex items-center py-2 px-4 rounded w-full text-left">
+            <Logout className="hover:text-gray-300" />
+        </Link>
+      </div>
     </div>
   );
 }
