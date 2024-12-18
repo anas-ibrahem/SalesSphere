@@ -39,7 +39,7 @@ export default function SideBar({
 
   const [selectedSection, setSelectedSection] = useState(0);
 
-  const { employee } = useContext(UserContext);
+  const { employee, notificationCount } = useContext(UserContext);
 
   useEffect(() => {
     // check current route and set selected section accordingly
@@ -119,7 +119,7 @@ export default function SideBar({
         {
           (type != "admin" && employee && employee.id) && 
           <Link to="/home/notifications" className="flex items-center py-2 px-4 rounded w-full text-left">
-            <Badge variant="dot" color="primary" overlap="circular" >
+            <Badge variant="dot" color="primary" overlap="circular" invisible={notificationCount === 0}>
               <Notifications className="hover:text-gray-300" />
             </Badge>
           </Link>
