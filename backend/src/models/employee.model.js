@@ -180,20 +180,26 @@ class EmployeeModel {
             // Update the employee email
             await pool.query(`
                 UPDATE employee 
-                SET email = $1
-                WHERE id = $2;
-            `, [empData.email, employeeId]);
+                SET email = $1, role = $2
+                WHERE id = $3;
+            `, [empData.email, empData.role, employeeId]);
     
             // Update the employee profile
             await pool.query(`
                 UPDATE employee_profile 
-                SET first_name = $1, last_name = $2, phone_number = $3, address = $4
-                WHERE employee_id = $5;
+                SET first_name = $1, last_name = $2, phone_number = $3, address = $4,
+                birth_date = $5,
+                hire_date = $6,
+                profile_picture_url = $7
+                WHERE employee_id = $8;
             `, [
                 empData.first_name,
                 empData.last_name,
                 empData.phone_number,
                 empData.address,
+                empData.birth_date,
+                empData.hire_date,
+                empData.profile_picture_url,
                 employeeId
             ]);
     
