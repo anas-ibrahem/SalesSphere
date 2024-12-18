@@ -209,21 +209,6 @@ class DealModel {
         }
     }
 
-    updateStatus = async (pool, dealData , employeeId) => {
-        try {
-            const result = await pool.query(`
-                UPDATE deal
-                SET status = $1, deal_executor = $2
-                WHERE id = $3
-            `, [dealData.status, employeeId , dealData.id]);
-
-            return result.rowCount > 0;
-        }
-        catch (error) {
-            console.error('Database query error:', error);
-            return false;
-        }
-    }
 
     /*
     CREATE TABLE DEAL (
