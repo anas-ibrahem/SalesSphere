@@ -128,6 +128,27 @@ class CustomerModel {
         }
     }
 
+    getTopCustomersByRevenue = async (pool, business_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT c.id, c.name, SUM(d.customer_budget - d.expenses) as total_revenue
+                FROM customer c
+                JOIN deal d
+                ON c.id = d.customer_id
+                WHERE c.business_id = $1 and d.status = 2
+                GROUP BY c.id, c.name
+                ORDER BY total_revenue DESC
+                LIMIT 5;
+            `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+
 }
 
 export default CustomerModel;
