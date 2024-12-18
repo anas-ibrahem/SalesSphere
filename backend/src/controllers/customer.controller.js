@@ -51,6 +51,20 @@ class CustomerController {
         const customers = await this.customerModel.getCustomersPerDate(req.pool, req.businessId);
         res.json(customers);
     }
+
+    update = async (req, res) => {
+        const customerData = req.body;
+        //const customerId = req.params.id;
+        //const businessId = req.businessId;
+        //customerData.business_id = businessId;
+        //customerData.id = customerId;
+        const customer = new CustomerModel(customerData);
+        const result = await customer.update(req.pool);
+        if(result == -1) {
+            return res.status(400).json({error: 'Failed to update customer'});
+        }
+        res.json(result);
+    }
 }
 
 
