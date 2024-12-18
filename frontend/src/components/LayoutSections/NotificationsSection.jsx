@@ -13,7 +13,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
-import { EmployeeRoles, NotificationPriority, NotificationTypes } from "../../utils/Enums";
+import { NotificationPriority, NotificationTypes } from "../../utils/Enums";
 import { AccessTime, MilitaryTech, NotificationsOff, Paid, Person, Notifications, CrisisAlert, BusinessCenter, PriorityHigh, DoneAll, Done } from "@mui/icons-material";
 import UserContext from "../../context/UserContext";
 
@@ -31,12 +31,13 @@ const NotificationIcons = {
 const NotificationsSection = () => {
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterType, setFilterType] = useState("All");
+  const [filterType, setFilterType] = useState(-1);
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
   const NotificationsPerPage = 10;
 
-  const {notificationCount, fetchNotificationCount} = useContext(UserContext);
+  const { notificationCount, fetchNotificationCount } = useContext(UserContext);
+
 
   // Fetch notifications from API
   useEffect(() => {
@@ -77,15 +78,10 @@ const NotificationsSection = () => {
     };
             
 
-  const getNotificationType = (typeValue) => {
-    return Object.keys(NotificationTypes).find(key => NotificationTypes[key] === typeValue) || "Unknown";
-  };
-
   // Filtering logic
   const filterNotifications = notifications.filter((notification) => {
-    const notificationType = getNotificationType(notification.type);
     return (
-      (filterType === "All" || notificationType === filterType)
+      (filterType == -1 || notification.type == filterType)
     );
   });
 
@@ -109,7 +105,7 @@ const NotificationsSection = () => {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Notifications</h1>
+              <h1 className="text-2xl font-bold mb-4">Notifications {notificationCount > 0 && <span className="font-light text-lg">- You have {notificationCount} unread notifications</span>}</h1>
                 <div className="flex space-x-2">
                   <button
                     onClick={MarkAllAsRead}
@@ -130,7 +126,7 @@ const NotificationsSection = () => {
                   onChange={(e) => setFilterType(e.target.value)}
                   className="p-2 border rounded"
                 >
-                  <option value="All">All Types</option>
+                  <option value={-1}>All Types</option>
                   {Object.entries(NotificationTypes).map(([typeName, val]) => (
                     <option key={val} value={val}>
                     {/* split name camel case */}

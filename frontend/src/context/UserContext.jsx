@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 
 const UserContext = createContext(null);
 
+
 const UserProvider = ({children, provideOther={}}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [employee, setEmployee] = useState(null);
@@ -17,7 +18,7 @@ const UserProvider = ({children, provideOther={}}) => {
       const _token = localStorage.getItem('token');
         fetchAPI('/notification/unread/count', 'GET', null, _token).then((data) => {
             console.log('Notification count:', data);
-            setNotificationCount(data.count);
+            setNotificationCount(data);
         }).catch((error) => {
             console.error('Error fetching notification count:', error);
         });

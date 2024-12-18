@@ -9,7 +9,6 @@ const notificationController = new NotificationController();
 // Define routes for /api/notification
 router.get('/', notificationController.getAllByEmployee);
 
-
 router.get('/unread/count', notificationController.getUnreadCount);
 
 // to create a new notification

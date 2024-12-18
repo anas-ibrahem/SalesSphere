@@ -60,10 +60,10 @@ function Home() {
               <Route path="/business" element={<BusinessSection />} />
               <Route path="/logs" element={<LogsSection />} />
               <Route path="/records" element={<RecordsSection />} />
+              <Route path="/notifications" element={<NotificationsSection />} />
               <Route path="/deals/*" element={<DealsSection />} />
               <Route path="/employees/*" element={<EmployeesSection />} />
               <Route path="/customers/*" element={<CustomersSection />} />
-              <Route path="/notifications/" element={<NotificationsSection />} />
               <Route path="/" element={<DefaultSection />} />
             </Routes>
         </div>
