@@ -10,7 +10,8 @@ const customerController = new CustomerController();
 // Define routes for /api/customer
 router.get('/', customerController.getAll);
 
-router.get('/metrics', customerController.getCustomersPerDate);
+router.get('/metrics/', customerController.getCustomersPerDate);
+router.get('/metrics/revenue', customerController.getTopCustomersByRevenue);
 router.get('/:id', customerController.getById);
 
 // to register a new customer
