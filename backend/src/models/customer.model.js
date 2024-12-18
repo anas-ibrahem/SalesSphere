@@ -148,6 +148,26 @@ class CustomerModel {
             return [];
         }
     }
+    update = async (pool) => {
+        try {
+            const result = await pool.query(`
+                UPDATE customer
+                SET name = $1, phone_number = $2, email = $3, address = $4, type = $5, lead_source = $6, preferred_contact_method = $7
+                WHERE id = $8
+                RETURNING id;
+            `, [this.name, this.phone_number, this.email, this.address, this.type, this.lead_source, this.preferred_contact_method, this.id]);
+
+            if(result.rows.length === 0) {
+                return {error: 'Invalid customer ID'};
+            }
+
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {error: 'Error updating customer'};
+        }
+    }
 
 }
 

@@ -19,7 +19,8 @@ router.get('/summary/:id', employeeController.getSummary);
 router.post('/', employeeController.register);
 
 // to update employee profile
-router.patch('/', employeeController.updateProfile);
-
+router.patch('/', employeeController.updateMyProfile);
+router.patch('/:id', employeeController.updateEmployeeProfile);
+// should be put instead of patch
 
 export default router;

@@ -16,7 +16,7 @@ router.get('/employee/:id', DealController.getEmployeeDeals);
 router.get('/customer/:id', DealController.getCustomerDeals);
 
 
-router.patch('/status', DealController.updateStatus);
+
 
 router.post('/', DealController.add);
 
