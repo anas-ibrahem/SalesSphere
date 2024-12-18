@@ -125,7 +125,7 @@ function DealsSection() {
                     currentDeals.map((deal) => (
                       <ListItem
                         key={deal.id}
-                        className="cursor-pointer my-4 hover:bg-gray-100 border border-gray-200"
+                        className="cursor-pointer my-2 hover:bg-gray-100 border border-gray-200"
                         onClick={() => navigate(`${deal.id}`)}
                       >
                         <div className="w-full">
