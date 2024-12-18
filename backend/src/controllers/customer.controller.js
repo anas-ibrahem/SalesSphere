@@ -52,6 +52,11 @@ class CustomerController {
         res.json(customers);
     }
 
+    getTopCustomersByRevenue = async (req, res) => {
+        console.log(req.businessId);
+        const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
+        res.json(customers);
+    }
     update = async (req, res) => {
         const customerData = req.body;
         //const customerId = req.params.id;

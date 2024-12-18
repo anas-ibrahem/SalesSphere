@@ -12,7 +12,8 @@ import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
 import { CustomerTypes } from "../../utils/Enums";
 import { LineChart } from '@mui/x-charts';
-import { BarChart } from "@mui/icons-material";
+import { BarChart as BarChartIcon } from "@mui/icons-material";
+import { BarChart } from '@mui/x-charts';
 
 const CustomersSection = () => {
   const [customers, setCustomers] = useState([]);
@@ -24,6 +25,7 @@ const CustomersSection = () => {
   const [loading, setLoading] = useState(true);
 
   const [metrics, setMetrics] = useState([]);
+  const [revenueMetrics, setRevenueMetrics] = useState([]);
   const [isBack, setIsBack] = useState(false);
   const CustomersPerPage = 4;
   const navigate = useNavigate();
@@ -45,6 +47,14 @@ const CustomersSection = () => {
     fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
       console.log(data);
       setMetrics(data);
+    }).catch((error) => {
+      console.error("Error fetching metrics:", error);
+    }
+    );
+
+    fetchAPI('/customer/metrics/revenue', 'GET', null, token).then((data) => {
+      console.log(data);
+      setRevenueMetrics(data);
     }).catch((error) => {
       console.error("Error fetching metrics:", error);
     }
@@ -90,6 +100,16 @@ const CustomersSection = () => {
           ? a.closed_won_deals_count - b.closed_won_deals_count
           : b.closed_won_deals_count - a.closed_won_deals_count;
       
+      case "closed_lost_deals":
+        return sortOrder === "asc"
+          ? a.closed_lost_deals_count - b.closed_lost_deals_count
+          : b.closed_lost_deals_count - a.closed_lost_deals_count;
+      
+      case "claimed_deals":
+        return sortOrder === "asc"
+          ? a.claimed_deals_count - b.claimed_deals_count
+          : b.claimed_deals_count - a.claimed_deals_count;
+      
       default:
         return 0;
     }
@@ -111,7 +131,7 @@ const CustomersSection = () => {
       <Route
         path="/"
         element={
-          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+          <section className="bg-white p-6 shadow-md h-screen flex flex-col max-h-screen overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">Customers</h1>
 
@@ -151,6 +171,8 @@ const CustomersSection = () => {
                   <option value="name">Name</option>
                   <option value="open_deals">Open Deals</option>
                   <option value="closed_won_deals">Closed Won Deals</option>
+                  <option value="closed_lost_deals">Closed Lost Deals</option>
+                  <option value="claimed_deals">Claimed Deals</option>
                 </select>
 
                 {/* Sort Order */}
@@ -202,7 +224,6 @@ const CustomersSection = () => {
                               color="gray"
                               className="font-normal flex justify-between"
                             >
-                              <p className="mr-28">Id: {customer.id}</p>
                               <p>{getCustomerType(customer.type)}</p>
                             </Typography>
                             <Typography
@@ -213,13 +234,6 @@ const CustomersSection = () => {
                               <p className="mr-28">
                                 Registration Date: {new Date(customer.registration_date).toLocaleDateString()}
                               </p>
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              color="gray"
-                              className="font-normal flex justify-between"
-                            >
-                              <p>Lead Source: {customer.lead_source}</p>
                             </Typography>
                             <Typography
                               variant="small"
@@ -241,26 +255,95 @@ const CustomersSection = () => {
                 )}
               </div>
               {/* Metrics Part */}
+              <div className="flex flex-col mt-2 p-2 flex-grow">
+                <h1 className="text-xl mb-2"><BarChartIcon /> Metrics</h1>
+                <div className="graph">
+                  <div className="font-bold">Total Customers</div>
+                  <LineChart
+                    dataset={metrics}
+                    margin={{
+                      left: 100,
+                      right: 0,
+                      top: 50,
+                      bottom: 50,
+                    }}
+                    series={[{
+                      dataKey: 'customers_count',
+                      name: 'Customers',
+                      label: 'Customers',
+                      color: '#8884d8',
+                    }]}
+
+                    xAxis={[{
+                      id: 'Date',
+                      dataKey: 'reg_date',
+                      label: 'Date',
+                      scaleType: 'band',
+                      valueFormatter: (v) => new Date(v).toLocaleDateString(),
+                  }]}
+                  
+                    width={600}
+                    height={300}
+                  />
+                </div>
+
+                <div className="graph">
+                  <div className="font-bold">Top 5 Customers by revenue</div>
+                  <BarChart
+                    dataset={revenueMetrics}
+                    layout="horizontal"
+                    margin={{
+                      left: 100,
+                      right: 0,
+                      top: 50,
+                      bottom: 50,
+                    }}
+
+                    series={[{
+                      dataKey: 'total_revenue',
+                      name: 'Revenue',
+                      label: 'Revenue Per Customer',
+                      color: '#8884d8',
+                    }]}
+
+                    yAxis={[{
+                      id: 'Name',
+                      dataKey: 'name',
+                      scaleType: 'band',
+                      valueFormatter: (v) => v.length > 10 ? v.substring(0, 10) + '...' : v,
+                      labelStyle: {
+                        maxWidth: 50,
+                        whiteSpace: 'break-spaces',
+                        overflowWrap: 'break-word',
+                      }
+                    }]}
+
+                    grid={
+                      {vertical: {stroke: '#e0e0e0'}}
+                    }
+                  
+                    width={600}
+                    height={300}
+                  />
+                </div>
+
               <div className="flex justify-between mt-2 p-2 flex-grow">
                 <h1><BarChart /> Metrics</h1>
                 <LineChart
                   dataset={metrics}
-
                   series={[{
                     dataKey: 'customers_count',
                     name: 'Customers',
                     label: 'Customers',
                     color: '#8884d8',
                   }]}
-
                   xAxis={[{
                     id: 'Date',
                     dataKey: 'reg_date',
                     label: 'Date',
                     scaleType: 'band',
                     valueFormatter: (v) => new Date(v).toLocaleDateString(),
-                }]}
-                 
+                  }]}
                   width={500}
                   height={300}
                 />
@@ -277,7 +360,7 @@ const CustomersSection = () => {
         }
       />
       <Route
-        path=":customerId"
+        path=":customerId/*"
         element={<CustomerProfile back={() => navigate("/home/customers")} />}
       />
       <Route
