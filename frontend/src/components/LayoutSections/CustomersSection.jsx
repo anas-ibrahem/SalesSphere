@@ -327,28 +327,8 @@ const CustomersSection = () => {
                   />
                 </div>
 
-              <div className="flex justify-between mt-2 p-2 flex-grow">
-                <h1><BarChart /> Metrics</h1>
-                <LineChart
-                  dataset={metrics}
-                  series={[{
-                    dataKey: 'customers_count',
-                    name: 'Customers',
-                    label: 'Customers',
-                    color: '#8884d8',
-                  }]}
-                  xAxis={[{
-                    id: 'Date',
-                    dataKey: 'reg_date',
-                    label: 'Date',
-                    scaleType: 'band',
-                    valueFormatter: (v) => new Date(v).toLocaleDateString(),
-                  }]}
-                  width={500}
-                  height={300}
-                />
-              </div>
             </div>
+          </div>
 
             {/* Pagination */}
             <Pagination
