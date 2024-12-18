@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import EmployeeProfile from "./EmployeeProfile";
 import {
@@ -13,8 +13,9 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import AddEmployeeForm from "../Forms/AddEmployeeForm";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
-import { EmployeeRoles, NotificationTypes } from "../../utils/Enums";
-import { AccessTime, MilitaryTech, NotificationsOff, Paid, Person, Notifications, CrisisAlert, BusinessCenter } from "@mui/icons-material";
+import { EmployeeRoles, NotificationPriority, NotificationTypes } from "../../utils/Enums";
+import { AccessTime, MilitaryTech, NotificationsOff, Paid, Person, Notifications, CrisisAlert, BusinessCenter, PriorityHigh, DoneAll, Done } from "@mui/icons-material";
+import UserContext from "../../context/UserContext";
 
 const NotificationIcons = {
     [NotificationTypes.BadgeAward]: MilitaryTech,
@@ -30,11 +31,12 @@ const NotificationIcons = {
 const NotificationsSection = () => {
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [filterType, setFilterType] = useState("All");
+  const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
   const NotificationsPerPage = 10;
-  const navigate = useNavigate();
+
+  const {notificationCount, fetchNotificationCount} = useContext(UserContext);
 
   // Fetch notifications from API
   useEffect(() => {
@@ -49,7 +51,31 @@ const NotificationsSection = () => {
         console.error("Error fetching notifications:", error);
         setLoading(false);
       });
-  }, []);
+  }, [reload]);
+
+    const MarkAsRead = (notification) => {
+        if(notification.seen) return;
+        const token = localStorage.getItem('token');
+        fetchAPI(`/notification/seen/${notification.id}`, 'PATCH', null, token).then((data) => {
+            console.log(data);
+            setReload(!reload);
+            fetchNotificationCount();
+        }).catch((error) => {
+            console.error("Error marking notification as read:", error);
+        });
+    };
+
+    const MarkAllAsRead = () => {
+        const token = localStorage.getItem('token');
+        fetchAPI(`/notification/seen/all`, 'PATCH', null, token).then((data) => {
+            console.log(data);
+            setReload(!reload);
+            fetchNotificationCount();
+        }).catch((error) => {
+            console.error("Error marking all notifications as read:", error);
+        });
+    };
+            
 
   const getNotificationType = (typeValue) => {
     return Object.keys(NotificationTypes).find(key => NotificationTypes[key] === typeValue) || "Unknown";
@@ -86,11 +112,11 @@ const NotificationsSection = () => {
               <h1 className="text-2xl font-bold mb-4">Notifications</h1>
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => navigate("add")}
-                    className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600 p-1"
+                    onClick={MarkAllAsRead}
+                    className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600 p-1 disabled:bg-gray-500" disabled={notificationCount === 0}
                   >
-                    <NotificationsOff className="mr-2" />
-                    <span className="text-lg">Mark all as read</span>
+                    {notificationCount > 0 && <Done className="mr-2" /> || <DoneAll className="mr-2" />}
+                    {notificationCount > 0 && <span className="text-lg">Mark all as read</span> || <span className="text-lg">All read</span>}
                   </button>
 
                 </div>
@@ -129,11 +155,11 @@ const NotificationsSection = () => {
                         return (
                       <ListItem
                         key={notification.id}
-                        className="cursor-default my-2 hover:bg-gray-100 border border-gray-200"
-                        onClick={() => null}
+                        className={`cursor-default my-2 hover:bg-gray-100 border border-gray-200 ${notification.priority === NotificationPriority.High ? 'bg-red-50' : ''} ${notification.seen ? 'bg-gray-100' : ''}`}
+                        onClick={() => MarkAsRead(notification)}
                       >
                         <ListItemPrefix>
-                            <Icon className="text-secondary-accent" />
+                            <Icon className={`text-secondary-accent ${notification.priority === NotificationPriority.High ? 'text-red-900' : ''}`} />
                         </ListItemPrefix>
                         <div>
                             <div className="flex items-center">
@@ -143,6 +169,11 @@ const NotificationsSection = () => {
                                 <Typography variant="small" className="ml-2 text-gray-500 text-xs">
                                     {new Date(notification.date).toLocaleString().replace(/:\d{2}\s/,' ').replace(/,/, '')}
                                 </Typography>
+                                {
+                                    notification.priority === NotificationPriority.High && <Typography variant="small" className="ml-2 text-red-900 text-xs italic">
+                                        (High Priority)
+                                </Typography>
+                                }
                             </div>
                           
                           <Typography
@@ -153,6 +184,23 @@ const NotificationsSection = () => {
                             {notification.content}
                           </Typography>
                           
+                        </div>
+
+                        <div className="ml-auto">
+                            <button
+                                disabled={notification.seen}
+                                onClick={() => MarkAsRead(notification)}
+                                className="text-blue-500 hover:text-blue-700 disabled:text-gray-500"
+                            >
+                                {
+                                    notification.seen ? <DoneAll className="mr-2" /> : <Done className="mr-2" /> 
+                                }
+
+                                {
+                                    notification.seen ? 'Seen' : 'Mark as read'
+                                }
+                                
+                            </button>
                         </div>
                       </ListItem>
                     )})

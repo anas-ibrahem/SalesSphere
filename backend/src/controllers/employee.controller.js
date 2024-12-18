@@ -83,7 +83,7 @@ class EmployeeController {
             return res.status(400).json({error: 'A numeric employee ID is required'});
         }
 
-        const result = await this.employeeModel.updateEmployeeProfile(req.pool, req.params.id, empData);
+        const result = await this.employeeModel.updateProfile(req.pool, req.params.id, empData);
         if (result) {
             res.json({message: 'Profile updated successfully'});
         } else {

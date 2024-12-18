@@ -14,10 +14,10 @@ class NotificationModel {
     getAllByEmployee = async (pool, employeeId) => {
         try {
             const result = await pool.query(`
-                SELECT *
+                SELECT *, cast(date as date) as justdate
                 FROM notification
                 WHERE recipient = $1
-                ORDER BY date, priority DESC;
+                ORDER BY justdate DESC, priority DESC;
                 `, [employeeId]);
             return result.rows;
         }
@@ -73,6 +73,23 @@ class NotificationModel {
                 SET seen = true
                 WHERE id = $1;
             `, [id]);
+
+            return true;
+
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
+        }
+    }
+
+    markAllAsRead = async (pool, employeeId) => {
+        try {
+            const result = await pool.query(`
+                UPDATE notification
+                SET seen = true
+                WHERE recipient = $1;
+            `, [employeeId]);
 
             return true;
 
