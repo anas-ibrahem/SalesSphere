@@ -13,6 +13,11 @@ class DealController {
         const emps = await this.dealModel.getEmployeeClaimedDeals(req.pool , req.employeeId);
         res.json(emps);
     }
+
+    getEmployeeClosedDeals = async (req, res) => {
+        const emps = await this.dealModel.getEmployeeClosedDeals(req.pool , req.employeeId);
+        res.json(emps);
+    }
     getAllOpenDeals = async (req, res) => {
         const emps = await this.dealModel.getAllOpenDeals(req.pool, req.businessId);
         res.json(emps);
