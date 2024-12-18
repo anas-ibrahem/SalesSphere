@@ -33,8 +33,13 @@ class NotificationController {
         res.json({success: result});
     }
 
+    markAllAsRead = async (req, res) => {
+        const result = await this.noticationModel.markAllAsRead(req.pool, req.employeeId);
+        res.json({success: result});
+    }
+
     getUnreadCount = async (req, res) => {
-        const count = await this.noticationModel.getUnreadCount(req.pool, req.employeeId);
+        const count = Number(await this.noticationModel.getUnreadCount(req.pool, req.employeeId));
         res.json(count);
     }
 

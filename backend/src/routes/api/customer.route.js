@@ -17,5 +17,9 @@ router.get('/:id', customerController.getById);
 router.post('/', customerController.add);
 
 
+// to update a customer
+router.put('/', customerController.update);
+
+
 
 export default router;

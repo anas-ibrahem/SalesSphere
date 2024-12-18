@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext , useEffect } from "react";
 import { 
   Star, Medal, UserPlus, TrendingUp, BarChart2, List, X, User, UsersRound, 
   Trophy, Target, HandCoins, DollarSign, MapPin, Calendar, Flag, BookCheck, 
-  Rocket, Clock, CheckCircle2, AlertCircle, Briefcase 
+  Rocket, Clock, CheckCircle2, AlertCircle, Briefcase , Pencil
 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Routes, Route } from "react-router-dom";
 import fetchAPI from '../../utils/fetchAPI';
 import { EmployeeRoles } from "../../utils/Enums";
 import DetailModal from "./DetailModal";
 import { BadgeIcons, TargetIcons } from "../../utils/Enums";
+import EditEmployeeForm from "../Forms/EditEmployeeForm";
+import UserContext from "../../context/UserContext";
+
 
 
 const EmployeeProfile = ({ back }) => {
@@ -16,6 +19,9 @@ const EmployeeProfile = ({ back }) => {
   const [employee, setEmployee] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
   const [modalData, setModalData] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const { employee:me } = useContext(UserContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -27,6 +33,10 @@ const EmployeeProfile = ({ back }) => {
       .catch((error) => {
         console.error("Error fetching employee details:", error);
       });
+      console.log("me" + me.id);
+      console.log("empe" + employeeId);
+
+
   }, [employeeId]);
 
   if (!employee) {
@@ -46,6 +56,7 @@ const EmployeeProfile = ({ back }) => {
     setModalData(employee.badges);
     setActiveModal('badges');
   };
+  
 
   const openTargetModal = () => {
     setModalData(employee.targets);
@@ -55,7 +66,21 @@ const EmployeeProfile = ({ back }) => {
   const profilePicture = employee.profile_picture_url || 
     `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.first_name)}+${encodeURIComponent(employee.last_name)}`;
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+    navigate('edit');
+  };
+  
+  const handleBackFromEdit = () => {
+    navigate('/home/employees/' + employeeId);
+    setIsEditing(false);
+  };
+
     return (
+      <Routes>
+      <Route
+        path="/"
+        element={
       <div className="bg-white m-0 rounded shadow-xl w-full h-screen flex flex-col overflow-hidden">
         {activeModal === 'badges' && (
           <DetailModal 
@@ -85,7 +110,20 @@ const EmployeeProfile = ({ back }) => {
         >
           Back
         </button>
-        
+        {
+        (me.role === EmployeeRoles.Manager || me.id == employeeId)&&        
+         <button
+          onClick={handleEditClick}
+          className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 
+          select-none appearance-none items-center 
+          justify-center space-x-1 rounded border border-gray-200
+          bg-white px-3 py-2 text-sm font-medium text-gray-800 transition 
+          hover:border-gray-300 active:bg-white hover:bg-gray-100"
+        >
+          <Pencil className="w-4 h-4 mr-1" /> Edit
+        </button>
+        }
+
         <div className="absolute bottom-[-45px] left-5 h-[90px] w-[90px] shadow-md rounded-full border-4 overflow-hidden border-white">
           <img
             src={profilePicture}
@@ -251,6 +289,13 @@ const EmployeeProfile = ({ back }) => {
       </div>
       </div>
     </div>
+        }
+        />
+        <Route
+          path="/edit"
+          element={<EditEmployeeForm employee={employee} onBack={handleBackFromEdit} />}
+        />
+      </Routes>
   );
 };
 

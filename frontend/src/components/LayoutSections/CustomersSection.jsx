@@ -90,6 +90,16 @@ const CustomersSection = () => {
           ? a.closed_won_deals_count - b.closed_won_deals_count
           : b.closed_won_deals_count - a.closed_won_deals_count;
       
+      case "closed_lost_deals":
+        return sortOrder === "asc"
+          ? a.closed_lost_deals_count - b.closed_lost_deals_count
+          : b.closed_lost_deals_count - a.closed_lost_deals_count;
+      
+      case "claimed_deals":
+        return sortOrder === "asc"
+          ? a.claimed_deals_count - b.claimed_deals_count
+          : b.claimed_deals_count - a.claimed_deals_count;
+      
       default:
         return 0;
     }
@@ -151,6 +161,8 @@ const CustomersSection = () => {
                   <option value="name">Name</option>
                   <option value="open_deals">Open Deals</option>
                   <option value="closed_won_deals">Closed Won Deals</option>
+                  <option value="closed_lost_deals">Closed Lost Deals</option>
+                  <option value="claimed_deals">Claimed Deals</option>
                 </select>
 
                 {/* Sort Order */}
@@ -202,7 +214,6 @@ const CustomersSection = () => {
                               color="gray"
                               className="font-normal flex justify-between"
                             >
-                              <p className="mr-28">Id: {customer.id}</p>
                               <p>{getCustomerType(customer.type)}</p>
                             </Typography>
                             <Typography
@@ -213,13 +224,6 @@ const CustomersSection = () => {
                               <p className="mr-28">
                                 Registration Date: {new Date(customer.registration_date).toLocaleDateString()}
                               </p>
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              color="gray"
-                              className="font-normal flex justify-between"
-                            >
-                              <p>Lead Source: {customer.lead_source}</p>
                             </Typography>
                             <Typography
                               variant="small"
@@ -245,22 +249,19 @@ const CustomersSection = () => {
                 <h1><BarChart /> Metrics</h1>
                 <LineChart
                   dataset={metrics}
-
                   series={[{
                     dataKey: 'customers_count',
                     name: 'Customers',
                     label: 'Customers',
                     color: '#8884d8',
                   }]}
-
                   xAxis={[{
                     id: 'Date',
                     dataKey: 'reg_date',
                     label: 'Date',
                     scaleType: 'band',
                     valueFormatter: (v) => new Date(v).toLocaleDateString(),
-                }]}
-                 
+                  }]}
                   width={500}
                   height={300}
                 />
@@ -277,7 +278,7 @@ const CustomersSection = () => {
         }
       />
       <Route
-        path=":customerId"
+        path=":customerId/*"
         element={<CustomerProfile back={() => navigate("/home/customers")} />}
       />
       <Route

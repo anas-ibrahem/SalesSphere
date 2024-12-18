@@ -91,6 +91,13 @@ const AdminPrivileges = {
   Super: 1,
 };
 
+
+const FinancialRecordTypes = {
+    Expense: 0,
+    Income: 1
+}
+
+
 // Mapping of Badge Types to Icons
 const BadgeIcons = {
   [BadgeTypes.OpenDeals]: Target,
