@@ -17,7 +17,7 @@ class NotificationModel {
                 SELECT *, cast(date as date) as justdate
                 FROM notification
                 WHERE recipient = $1
-                ORDER BY justdate DESC, priority DESC;
+                ORDER BY justdate DESC, priority DESC, seen ASC, id DESC;
                 `, [employeeId]);
             return result.rows;
         }

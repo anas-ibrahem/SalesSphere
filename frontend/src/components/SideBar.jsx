@@ -119,7 +119,7 @@ export default function SideBar({
         {
           (type != "admin" && employee && employee.id) && 
           <Link to="/home/notifications" className="flex items-center py-2 px-4 rounded w-full text-left">
-            <Badge variant="dot" color="primary" overlap="circular" invisible={notificationCount === 0}>
+            <Badge color="primary" overlap="circular" invisible={notificationCount === 0} badgeContent={notificationCount}>
               <Notifications className="hover:text-gray-300" />
             </Badge>
           </Link>
