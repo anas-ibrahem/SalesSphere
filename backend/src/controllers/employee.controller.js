@@ -79,6 +79,10 @@ class EmployeeController {
             return res.status(400).json({error: 'All fields are required'});
         }
 
+        if(!req.params.id || isNaN(req.params.id)) {
+            return res.status(400).json({error: 'A numeric employee ID is required'});
+        }
+
         const result = await this.employeeModel.updateEmployeeProfile(req.pool, req.params.id, empData);
         if (result) {
             res.json({message: 'Profile updated successfully'});
