@@ -15,7 +15,9 @@ import {
 } from '@mui/icons-material';
 import { Field } from 'formik';
 import countryList from 'react-select-country-list'
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import {BusinessTypes} from '../../utils/Enums';
 
 
 const BusinessDetails = ({ formik }) => {
@@ -28,6 +30,8 @@ const BusinessDetails = ({ formik }) => {
   } = formik;
 
   const countries = useMemo(() => countryList().getData(), []);
+
+  const [businessType, setBusinessType] = useState('selectbz');
 
     return (<Box sx={{ mt: 3 }}>
         <Grid container spacing={2}>
@@ -149,7 +153,7 @@ const BusinessDetails = ({ formik }) => {
             />
           </Grid>
           {/* Street */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <Field
               as={TextField}
               fullWidth
@@ -188,7 +192,7 @@ const BusinessDetails = ({ formik }) => {
           </Grid>
 
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={values.businessIndustry === 'Other' ? 6 : 12}>
             <Field
               as={TextField}
               fullWidth
@@ -205,18 +209,31 @@ const BusinessDetails = ({ formik }) => {
               defaultValue="selectbz"
             >
                 <MenuItem value="selectbz" disabled>Select Business Type</MenuItem>
-                <MenuItem value="retail">Retail</MenuItem>
-                <MenuItem value="services">Services</MenuItem>
-                <MenuItem value="real estate">Real Estate</MenuItem>
-                <MenuItem value="food">Food</MenuItem>
-                <MenuItem value="clothing">Clothing</MenuItem>
-                <MenuItem value="electronics">Electronics</MenuItem>
-                <MenuItem value="software">Software</MenuItem>
-                <MenuItem value="sales">Sales</MenuItem>
-                <MenuItem value="digital marketing">Digital Marketing</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
+                {BusinessTypes.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+                {/* TODO IF OTHER TEXTBOX */}
             </Field>
           </Grid>
+
+          {values.businessIndustry === 'Other' && (
+            <Grid item xs={12} sm={6}>
+              <Field
+                as={TextField}
+                fullWidth
+                name="businessIndustry"
+                label="Other Business Industry"
+                variant="outlined"
+                value={businessType}
+                onChange={(e) => setBusinessType(e.target.value)}
+                onBlur={handleBlur}
+                error={touched.businessIndustry && Boolean(errors.businessIndustry)}
+                helperText={touched.businessIndustry && errors.businessIndustry}
+              />
+            </Grid>
+          )}
         </Grid>
       </Box>);
 }

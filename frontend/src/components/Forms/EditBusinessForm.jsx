@@ -5,51 +5,86 @@ import { EmployeeRoles } from '../../utils/Enums.js';
 import { toast } from 'react-hot-toast';
 import UserContext from "../../context/UserContext";
 
-const EditEmployeeForm = ({employee, onBack}) => {
+// id SERIAL PRIMARY KEY,
+// name VARCHAR(255) NOT NULL,
+// registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// phone_number VARCHAR(255) NOT NULL,
+// email VARCHAR(255) NOT NULL UNIQUE,
+// city VARCHAR(255),
+// country VARCHAR(255) NOT NULL,
+// street VARCHAR(255),
+// website_url VARCHAR(255),
+// industry VARCHAR(255) NOT NULL,
+// -- Document URLs
+// managerid_card_url VARCHAR(255),
+// manager_personal_photo_url VARCHAR(255),
+// business_logo_url VARCHAR(255),
+
+
+const EditBusinessForm = ({onBack}) => {
     const [formValues, setFormValues] = useState({
-        id: '',
-        first_name: '',
-        last_name: '',
+        name: '',
         email: '',
-        role: '',
-        birth_date: '',
+        registration_date : '',
         phone_number: '',
-        address: '',
-        hire_date: '',
-        profile_picture_url: null
+        city: '',
+        country: '',
+        street: '',
+        website_url: '',
+        industry: '',
+        business_logo_url: ''
     });
     const [profilePreview, setProfilePreview] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const [business, setBusiness] = useState(null);
     const { employee: me } = useContext(UserContext);
     
     const cloudName = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 
     useEffect(() => {
-        if (employee) {
+        // Request to get business details of me only if i am manager
+        const token = localStorage.getItem('token');
+        fetchAPI(`/business/${me.business_id}`, 'GET' , null, token)
+            .then(data => {
+                if(data.error) {
+                    toast.error('An error occurred. Please try again.');
+                }
+                else {
+                    setBusiness(data);
+                    setFormValues(data);
+                }
+            })
+            .catch((error) => {
+                toast.error('An error occurred. Please try again.');
+            });
+    }, [me]);
+
+    useEffect(() => {     
+        if (business) {
             const formatDate = (dateString) => {
                 if (!dateString) return '';
                 return new Date(dateString).toISOString().split('T')[0];
             };
 
             setFormValues({
-                id: employee.id || '',
-                first_name: employee.first_name || '',
-                last_name: employee.last_name || '',
-                email: employee.email || '',
-                role: employee.role || '',
-                birth_date: formatDate(employee.birth_date),
-                phone_number: employee.phone_number || '',
-                address: employee.address || '',
-                hire_date: formatDate(employee.hire_date),
-                profile_picture_url: employee.profile_picture_url || null
+                name: business.name || '',
+                email: business.email || '',
+                registration_date: formatDate(business.registration_date) || '',
+                phone_number: business.phone_number || '',
+                city: business.city || '',
+                country: business.country || '',
+                street: business.street || '',
+                website_url: business.website_url || '',
+                industry: business.industry || '',
+                business_logo_url: business.business_logo_url || ''
             });
 
             // Set initial profile picture preview if exists
-            if (employee.profile_picture_url) {
-                setProfilePreview(employee.profile_picture_url);
+            if (business.business_logo_url) {
+                setProfilePreview(business.business_logo_url);
             }
         }
-    }, [employee]);
+    }, [business]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -59,7 +94,7 @@ const EditEmployeeForm = ({employee, onBack}) => {
         });
     };
     
-    const handleProfilePictureChange = async (e) => {
+    const handleLogoChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
             // Validate file type and size
@@ -145,11 +180,10 @@ const EditEmployeeForm = ({employee, onBack}) => {
             >
                 <FaArrowLeft className="mr-2" /> Back
             </button>}
-            <h2 className="text-center font-extrabold text-xl text-blue-800 mb-1">Edit {me.id === employee.id ? 'Profile' : 'Employee'}</h2>
+            <h2 className="text-center font-extrabold text-xl text-blue-800 mb-1">Edit Business</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                {/* Profile Picture Upload */}
-                {me.id === employee.id &&
+                {/* Business Logo Upload */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="w-32 h-32 mb-4 relative">
                         {profilePreview ? (
@@ -169,9 +203,9 @@ const EditEmployeeForm = ({employee, onBack}) => {
                         <FaUpload className="mr-2" /> {uploading ? 'Uploading...' : 'Upload Profile Picture'}
                         <input 
                             type="file" 
-                            name="profile_picture"
+                            name="logo_picture"
                             accept="image/jpeg,image/png"
-                            onChange={handleProfilePictureChange}
+                            onChange={handleLogoChange}
                             className="hidden"
                             disabled={uploading}
                         />
@@ -180,31 +214,80 @@ const EditEmployeeForm = ({employee, onBack}) => {
                         Max 5MB (JPEG, PNG)
                     </p>
                 </div>
-                }
+                
 
-                    <label htmlFor="first_name" className="block mb-1 text-gray-600">First Name *</label>
+                    <label htmlFor="name" className="block mb-1 text-gray-600">Name *</label>
                     <input
                         type="text"
-                        id="first_name"
-                        name="first_name"
-                        value={formValues.first_name}
+                        id="name"
+                        name="name"
+                        value={formValues.name}
                         onChange={handleChange}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="last_name" className="block mb-1 text-gray-600">Last Name *</label>
+                    <label htmlFor="city" className="block mb-1 text-gray-600">City *</label>
                     <input
                         type="text"
-                        id="last_name"
-                        name="last_name"
-                        value={formValues.last_name}
+                        id="city"
+                        name="city"
+                        value={formValues.city}
                         onChange={handleChange}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
+                <div className="mb-4">
+                    <label htmlFor="country" className="block mb-1 text-gray-600">Country *</label>
+                    <input
+                        type="text"
+                        id="country"
+                        name="country"
+                        value={formValues.country}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="street" className="block mb-1 text-gray-600">Street *</label>
+                    <input
+                        type="text"
+                        id="street"
+                        name="street"
+                        value={formValues.street}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="industry" className="block mb-1 text-gray-600">Industry *</label>
+                    <input
+                        type="text"
+                        id="industry"
+                        name="industry"
+                        value={formValues.industry}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="website_url" className="block mb-1 text-gray-600">Website URL *</label>
+                    <input
+                        type="text"
+                        id="website_url"
+                        name="website_url"
+                        value={formValues.website_url}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
+                    />
+                </div>
+
                 <div className="mb-4">
                     <label htmlFor="email" className="block mb-1 text-gray-600">Email *</label>
                     <input
@@ -217,35 +300,21 @@ const EditEmployeeForm = ({employee, onBack}) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
+
                 <div className="mb-4">
-                    <label htmlFor="role" className="block mb-1 text-gray-600">Role *</label>
-                    <select
-                        id="role"
-                        name="role"
-                        value={formValues.role}
-                        onChange={handleChange}
-                        required
-                        disabled={me.role !== EmployeeRoles.Manager || (me.id === employee.id)}
-                        className={`w-full p-2 border border-gray-300 rounded-md text-lg ${me.role !== EmployeeRoles.Manager ? 'bg-gray-100 cursor-not-allowed' : ''}`}
-                    >
-                        <option value={EmployeeRoles.DealExecutor}>Deal Executor</option>
-                        <option value={EmployeeRoles.DealOpener}>Deal Opener</option>
-                        {employee.role === EmployeeRoles.Manager  && <option value={EmployeeRoles.Manager}>Manager</option>}
-                    </select>
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="birth_date" className="block mb-1 text-gray-600">Birth Date *</label>
+                    <label htmlFor="reg" className="block mb-1 text-gray-600">Registration Date *</label>
                     <input
                         type="date"
-                        id="birth_date"
-                        name="birth_date"
-                        value={formValues.birth_date}
+                        id="registration_date"
+                        name="registration_date"
+                        value={formValues.registration_date}
                         onChange={handleChange}
                         required
-                        disabled={me.role !== EmployeeRoles.Manager || (me.id === employee.id
-                            && me.role !== EmployeeRoles.Manager)}   className={`w-full p-2 border border-gray-300 rounded-md text-lg ${me.role !== EmployeeRoles.Manager ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                        className={`w-full p-2 border border-gray-300 rounded-md text-lg `}
                     />
                 </div>
+
+                
                 <div className="mb-4">
                     <label htmlFor="phone_number" className="block mb-1 text-gray-600">Phone Number *</label>
                     <input
@@ -264,29 +333,8 @@ const EditEmployeeForm = ({employee, onBack}) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="address" className="block mb-1 text-gray-600">Address (Optional)</label>
-                    <textarea
-                        id="address"
-                        name="address"
-                        value={formValues.address}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded-md text-lg"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="hire_date" className="block mb-1 text-gray-600">Hire Date *</label>
-                    <input
-                        type="date"
-                        id="hire_date"
-                        name="hire_date"
-                        value={formValues.hire_date}
-                        onChange={handleChange}
-                        required
-                        disabled={me.role !== EmployeeRoles.Manager || (me.id === employee.id
-                            && me.role !== EmployeeRoles.Manager)}   className={`w-full p-2 border border-gray-300 rounded-md text-lg ${me.role !== EmployeeRoles.Manager ? 'bg-gray-100 cursor-not-allowed' : ''}`}
-                    />
-                </div>
+
+
                 <div className="text-center mt-5">
                     <button
                         type="submit"
@@ -300,4 +348,4 @@ const EditEmployeeForm = ({employee, onBack}) => {
     );
 };
 
-export default EditEmployeeForm;
+export default EditBusinessForm;
