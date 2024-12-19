@@ -237,7 +237,6 @@ const BusinessRegistration = () => {
             managerID: '',
             managerPhoto: '',
             businessLogo: '',
-            businessRegistrationDoc: ''
           }}
           validationSchema={
             activeStep === 0 

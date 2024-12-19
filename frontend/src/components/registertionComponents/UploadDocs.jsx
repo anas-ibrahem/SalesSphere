@@ -36,10 +36,6 @@ const UploadDocs = ({ formik, handleFileUpload, selectedFiles }) => {
             { 
               name: 'businessLogo', 
               label: 'Business Logo' 
-            },
-            { 
-              name: 'businessRegistrationDoc', 
-              label: 'Business Registration Document' 
             }
           ].map((file) => (
             <Grid item xs={12} key={file.name} >

@@ -11,7 +11,7 @@ import {
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
 import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
-import { AddBusiness, AdminPanelSettings, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2 } from "@mui/icons-material";
+import { AddBusiness, AdminPanelSettings, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2, Settings } from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
 
@@ -131,6 +131,13 @@ export default function SideBar({
           </Link>
         }
         
+        {
+          (type != "admin" && employee && employee.id) && 
+          <Link to={"/home/settings/"} className="flex items-center py-2 px-4 rounded w-full text-left">
+            <Settings className="hover:text-gray-300" />
+          </Link>
+        }
+
         <Link to="/logout" className="flex items-center py-2 px-4 rounded w-full text-left">
             <Logout className="hover:text-gray-300" />
         </Link>

@@ -52,7 +52,7 @@ class EmployeeModel {
         }
     }
 
-    getById = async (pool, id) => {
+    getByIdForAuth = async (pool, id) => {
         try {
             const result = await pool.query(`
                 SELECT *
@@ -68,10 +68,6 @@ class EmployeeModel {
 
             const results = result.rows[0];
             // clean up the result object
-            if(results['hashed_password']) {
-                delete results['hashed_password'];
-            }
-
             if(results['employee_id']) {
                 delete results['employee_id'];
             }
@@ -83,6 +79,17 @@ class EmployeeModel {
             console.error('Database query error:', error);
             return {};
         }
+    }
+
+    getById = async (pool, id) => {
+        const emp = await this.getByIdForAuth(pool, id);
+        if(emp) {
+            if(emp['hashed_password']) {
+                delete emp['hashed_password'];
+            }
+        }
+
+        return emp;
     }
 
     getByEmailForAuth = async (pool, email) => {
@@ -132,7 +139,7 @@ class EmployeeModel {
             await pool.query('BEGIN');
             const result = await pool.query(`
                 INSERT INTO employee (role, email, hashed_password, business_id, verified)
-                VALUES ($1, $2, $3, $4)
+                VALUES ($1, $2, $3, $4, $5)
                 ON CONFLICT (email) DO NOTHING
                 RETURNING id;
             `, [this.role, this.email, this.hashed_password, this.business_id, verified]);
@@ -143,6 +150,10 @@ class EmployeeModel {
             }
 
             const employeeId = result.rows[0].id;
+
+            if(!this.hire_date) {
+                this.hire_date = new Date();
+            }
 
             await pool.query(`
                 INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date, hire_date)
@@ -347,6 +358,19 @@ class EmployeeModel {
         catch (error) {
             console.error('Database query error:', error);
             return [];
+        }
+    }
+
+    updatePassword = async (pool, employeeId, hashedPassword) => {
+        try {
+            await pool.query(`
+                UPDATE employee
+                SET hashed_password = $1
+                WHERE id = $2;
+            `, [hashedPassword, employeeId]);
+        }
+        catch (error) {
+            console.error('Database query error:', error);
         }
     }
     
