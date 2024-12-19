@@ -5,12 +5,24 @@ import toast from 'react-hot-toast';
 
 const UserContext = createContext(null);
 
+
 const UserProvider = ({children, provideOther={}}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [employee, setEmployee] = useState(null);
     const [tokenExpired, setTokenExpired] = useState(false);
     const [token, setToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [notificationCount, setNotificationCount] = useState(0);
+
+    const fetchNotificationCount = () => {
+      const _token = localStorage.getItem('token');
+        fetchAPI('/notification/unread/count', 'GET', null, _token).then((data) => {
+            console.log('Notification count:', data);
+            setNotificationCount(data);
+        }).catch((error) => {
+            console.error('Error fetching notification count:', error);
+        });
+    }
 
     useEffect(() => {
         const _token = localStorage.getItem('token');
@@ -22,6 +34,7 @@ const UserProvider = ({children, provideOther={}}) => {
             if(data.id) {
               setIsAuthenticated(true);
               setEmployee(data);
+              fetchNotificationCount();
             }
             else if(data.error) {
               if(data.session_end) {
@@ -53,7 +66,7 @@ const UserProvider = ({children, provideOther={}}) => {
     }
 
     return (
-        <UserContext.Provider value={{isLoading, setIsLoading, isAuthenticated, setIsAuthenticated, employee, setEmployee, tokenExpired, setTokenExpired, token, setToken, ...provideOther}}>
+        <UserContext.Provider value={{isLoading, setIsLoading, isAuthenticated, setIsAuthenticated, employee, setEmployee, tokenExpired, setTokenExpired, token, setToken, notificationCount, fetchNotificationCount, ...provideOther}}>
             {children}
         </UserContext.Provider>
     );

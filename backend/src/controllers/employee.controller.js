@@ -58,7 +58,7 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address) {
+        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address || !empData.hire_date || !empData.birth_date || !empData.role) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -75,7 +75,7 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address) {
+        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address || !empData.hire_date || !empData.birth_date || !empData.role) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -83,7 +83,7 @@ class EmployeeController {
             return res.status(400).json({error: 'A numeric employee ID is required'});
         }
 
-        const result = await this.employeeModel.updateEmployeeProfile(req.pool, req.params.id, empData);
+        const result = await this.employeeModel.updateProfile(req.pool, req.params.id, empData);
         if (result) {
             res.json({message: 'Profile updated successfully'});
         } else {

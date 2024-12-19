@@ -180,20 +180,26 @@ class EmployeeModel {
             // Update the employee email
             await pool.query(`
                 UPDATE employee 
-                SET email = $1
-                WHERE id = $2;
-            `, [empData.email, employeeId]);
+                SET email = $1, role = $2
+                WHERE id = $3;
+            `, [empData.email, empData.role, employeeId]);
     
             // Update the employee profile
             await pool.query(`
                 UPDATE employee_profile 
-                SET first_name = $1, last_name = $2, phone_number = $3, address = $4
-                WHERE employee_id = $5;
+                SET first_name = $1, last_name = $2, phone_number = $3, address = $4,
+                birth_date = $5,
+                hire_date = $6,
+                profile_picture_url = $7
+                WHERE employee_id = $8;
             `, [
                 empData.first_name,
                 empData.last_name,
                 empData.phone_number,
                 empData.address,
+                empData.birth_date,
+                empData.hire_date,
+                empData.profile_picture_url,
                 employeeId
             ]);
     
@@ -241,24 +247,38 @@ class EmployeeModel {
                 WHERE e.id = $1;
             `, [employee_id]);
 
-            const deals_result = await pool.query(`
-                SELECT e.id as employee_id,
-                CAST(COUNT(od.id) AS INT) as open_deals_count,
-                CAST(COUNT(cd.id) AS INT) as claimed_deals_count,
-                CAST(COUNT(cw.id) AS INT) as closed_won_deals_count,
-                CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
-                FROM employee e
-                LEFT JOIN deal od
-                ON e.id = od.deal_opener AND od.status = 0
-                LEFT JOIN deal cd
-                ON e.id = cd.deal_executor AND cd.status = 1
-                LEFT JOIN deal cw
-                ON e.id = cw.deal_executor AND cw.status = 2
-                LEFT JOIN deal cl
-                ON e.id = cl.deal_executor AND cl.status = 3
-                WHERE e.id = $1
-                GROUP BY e.id;
+            const open_deals_result = await pool.query(`
+                SELECT CAST(COUNT(od.id) AS INT) as open_deals_count
+                FROM deal od
+                WHERE od.deal_opener = $1 AND od.status = 0;
             `, [employee_id]);
+
+            const claimed_deals_result = await pool.query(`
+                SELECT CAST(COUNT(cd.id) AS INT) as claimed_deals_count
+                FROM deal cd
+                WHERE cd.deal_executor = $1 AND cd.status = 1;
+            `, [employee_id]);
+
+            const closed_won_deals_result = await pool.query(`
+                SELECT 
+                    CAST(COUNT(cw.id) AS INT) as closed_won_deals_count
+                FROM deal cw
+                WHERE cw.deal_executor = $1 AND cw.status = 2;
+            `, [employee_id]);
+
+            const closed_lost_deals_result = await pool.query(`
+                SELECT 
+                    CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
+                FROM deal cl
+                WHERE cl.deal_executor = $1 AND cl.status = 3;
+            `, [employee_id]);
+
+            const deals_result = {
+                open_deals_count: open_deals_result.rows[0]?.open_deals_count || 0,
+                claimed_deals_count: claimed_deals_result.rows[0]?.claimed_deals_count || 0,
+                closed_won_deals_count: closed_won_deals_result.rows[0]?.closed_won_deals_count || 0,
+                closed_lost_deals_count: closed_lost_deals_result.rows[0]?.closed_lost_deals_count || 0
+            };
 
             const customers_result = await pool.query(`
                 SELECT CAST(COUNT(c.id) as int) as customers_count
@@ -274,7 +294,7 @@ class EmployeeModel {
             `, [employee_id]);
 
             results.badges = badges_result.rows;
-            results.deals = deals_result.rows.length && deals_result.rows[0];
+            results.deals = deals_result;
             results.customers = customers_result.rows.length && customers_result.rows[0];
             results.targets = targets_result.rows;
 

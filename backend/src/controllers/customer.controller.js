@@ -52,12 +52,25 @@ class CustomerController {
         res.json(customers);
     }
 
+    getTopCustomersByRevenue = async (req, res) => {
+        console.log(req.businessId);
+        const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
+        res.json(customers);
+    }
     update = async (req, res) => {
         const customerData = req.body;
         //const customerId = req.params.id;
         //const businessId = req.businessId;
         //customerData.business_id = businessId;
         //customerData.id = customerId;
+        if(!customerData.email || !validator.isEmail(customerData.email)) {
+            return res.status(400).json({error: 'Invalid email address'});
+        }
+
+        if(!customerData.name || !customerData.phone_number || !customerData.type || !customerData.lead_source || !customerData.preferred_contact_method) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+        
         const customer = new CustomerModel(customerData);
         const result = await customer.update(req.pool);
         if(result == -1) {
