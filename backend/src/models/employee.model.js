@@ -139,7 +139,7 @@ class EmployeeModel {
             await pool.query('BEGIN');
             const result = await pool.query(`
                 INSERT INTO employee (role, email, hashed_password, business_id, verified)
-                VALUES ($1, $2, $3, $4)
+                VALUES ($1, $2, $3, $4, $5)
                 ON CONFLICT (email) DO NOTHING
                 RETURNING id;
             `, [this.role, this.email, this.hashed_password, this.business_id, verified]);
@@ -150,6 +150,10 @@ class EmployeeModel {
             }
 
             const employeeId = result.rows[0].id;
+
+            if(!this.hire_date) {
+                this.hire_date = new Date();
+            }
 
             await pool.query(`
                 INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date, hire_date)
