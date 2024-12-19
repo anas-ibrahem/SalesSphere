@@ -220,7 +220,7 @@ const EmployeesSection = () => {
                             variant="circular"
                             alt={`${employee.first_name} ${employee.last_name}'s profile`}
                             src={employee.profile_picture_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(employee.first_name)}+${encodeURIComponent(employee.last_name)}`}
-                            className="w-20 h-20"
+                            className="w-20 h-20 mr-2"
                           />
                         </ListItemPrefix>
                         <div>
