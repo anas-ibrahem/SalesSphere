@@ -13,6 +13,7 @@ import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { Navigate , Route , Routes } from "react-router-dom";
 import NotificationsSection from "../components/LayoutSections/NotificationsSection";
+import SettingsSection from "../components/LayoutSections/SettingsSection";
 
 
 function Home() {
@@ -61,6 +62,7 @@ function Home() {
               <Route path="/logs" element={<LogsSection />} />
               <Route path="/records" element={<RecordsSection />} />
               <Route path="/notifications" element={<NotificationsSection />} />
+              <Route path="/settings" element={<SettingsSection />} />
               <Route path="/deals/*" element={<DealsSection />} />
               <Route path="/employees/*" element={<EmployeesSection />} />
               <Route path="/customers/*" element={<CustomersSection />} />

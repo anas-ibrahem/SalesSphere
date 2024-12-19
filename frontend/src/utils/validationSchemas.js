@@ -31,6 +31,21 @@ const PersonalInfoSchema = Yup.object().shape({
     address: Yup.string().required('Address is required'),
 
   });
+
+  const ChangePasswordSchema = Yup.object({
+          currentPassword: Yup.string()
+              .required('Current password is required'),
+          newPassword: Yup.string()
+          .required('Password is required')
+          .min(8, 'Password must be at least 8 characters')
+          .matches(/(?=.*[0-9])/, 'Password must contain a number')
+          .matches(/(?=.*[A-Z])/, 'Password must contain an uppercase letter')
+          .matches(/(?=.*[a-z])/, 'Password must contain a lowercase letter')
+          .matches(/(?=.*[!@#$%^&*])/, 'Password must contain a special character'),
+          confirmPassword: Yup.string()
+              .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+              .required('Please confirm your new password'),
+      });
   
   const BusinessInfoSchema = Yup.object().shape({
     businessName: Yup.string().required('Business Name is required'),
@@ -63,4 +78,4 @@ const PersonalInfoSchema = Yup.object().shape({
     businessRegistrationDoc: Yup.mixed().required('Business Registration Document is required').test('fileSize', 'File size must be less than 2MB', value => validateFile(value)),
   });
 
-export { PersonalInfoSchema, BusinessInfoSchema, DocumentUploadSchema, validateFile };
+export { PersonalInfoSchema, ChangePasswordSchema, BusinessInfoSchema, DocumentUploadSchema, validateFile };

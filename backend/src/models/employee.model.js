@@ -52,7 +52,7 @@ class EmployeeModel {
         }
     }
 
-    getById = async (pool, id) => {
+    getByIdForAuth = async (pool, id) => {
         try {
             const result = await pool.query(`
                 SELECT *
@@ -68,10 +68,6 @@ class EmployeeModel {
 
             const results = result.rows[0];
             // clean up the result object
-            if(results['hashed_password']) {
-                delete results['hashed_password'];
-            }
-
             if(results['employee_id']) {
                 delete results['employee_id'];
             }
@@ -83,6 +79,17 @@ class EmployeeModel {
             console.error('Database query error:', error);
             return {};
         }
+    }
+
+    getById = async (pool, id) => {
+        const emp = await this.getByIdForAuth(pool, id);
+        if(emp) {
+            if(emp['hashed_password']) {
+                delete emp['hashed_password'];
+            }
+        }
+
+        return emp;
     }
 
     getByEmailForAuth = async (pool, email) => {
@@ -132,7 +139,7 @@ class EmployeeModel {
             await pool.query('BEGIN');
             const result = await pool.query(`
                 INSERT INTO employee (role, email, hashed_password, business_id, verified)
-                VALUES ($1, $2, $3, $4)
+                VALUES ($1, $2, $3, $4, $5)
                 ON CONFLICT (email) DO NOTHING
                 RETURNING id;
             `, [this.role, this.email, this.hashed_password, this.business_id, verified]);
@@ -143,6 +150,10 @@ class EmployeeModel {
             }
 
             const employeeId = result.rows[0].id;
+
+            if(!this.hire_date) {
+                this.hire_date = new Date();
+            }
 
             await pool.query(`
                 INSERT INTO employee_profile (employee_id, first_name, last_name, phone_number, address, birth_date, hire_date)
@@ -247,24 +258,38 @@ class EmployeeModel {
                 WHERE e.id = $1;
             `, [employee_id]);
 
-            const deals_result = await pool.query(`
-                SELECT e.id as employee_id,
-                CAST(COUNT(od.id) AS INT) as open_deals_count,
-                CAST(COUNT(cd.id) AS INT) as claimed_deals_count,
-                CAST(COUNT(cw.id) AS INT) as closed_won_deals_count,
-                CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
-                FROM employee e
-                LEFT JOIN deal od
-                ON e.id = od.deal_opener AND od.status = 0
-                LEFT JOIN deal cd
-                ON e.id = cd.deal_executor AND cd.status = 1
-                LEFT JOIN deal cw
-                ON e.id = cw.deal_executor AND cw.status = 2
-                LEFT JOIN deal cl
-                ON e.id = cl.deal_executor AND cl.status = 3
-                WHERE e.id = $1
-                GROUP BY e.id;
+            const open_deals_result = await pool.query(`
+                SELECT CAST(COUNT(od.id) AS INT) as open_deals_count
+                FROM deal od
+                WHERE od.deal_opener = $1 AND od.status = 0;
             `, [employee_id]);
+
+            const claimed_deals_result = await pool.query(`
+                SELECT CAST(COUNT(cd.id) AS INT) as claimed_deals_count
+                FROM deal cd
+                WHERE cd.deal_executor = $1 AND cd.status = 1;
+            `, [employee_id]);
+
+            const closed_won_deals_result = await pool.query(`
+                SELECT 
+                    CAST(COUNT(cw.id) AS INT) as closed_won_deals_count
+                FROM deal cw
+                WHERE cw.deal_executor = $1 AND cw.status = 2;
+            `, [employee_id]);
+
+            const closed_lost_deals_result = await pool.query(`
+                SELECT 
+                    CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
+                FROM deal cl
+                WHERE cl.deal_executor = $1 AND cl.status = 3;
+            `, [employee_id]);
+
+            const deals_result = {
+                open_deals_count: open_deals_result.rows[0]?.open_deals_count || 0,
+                claimed_deals_count: claimed_deals_result.rows[0]?.claimed_deals_count || 0,
+                closed_won_deals_count: closed_won_deals_result.rows[0]?.closed_won_deals_count || 0,
+                closed_lost_deals_count: closed_lost_deals_result.rows[0]?.closed_lost_deals_count || 0
+            };
 
             const customers_result = await pool.query(`
                 SELECT CAST(COUNT(c.id) as int) as customers_count
@@ -280,7 +305,7 @@ class EmployeeModel {
             `, [employee_id]);
 
             results.badges = badges_result.rows;
-            results.deals = deals_result.rows.length && deals_result.rows[0];
+            results.deals = deals_result;
             results.customers = customers_result.rows.length && customers_result.rows[0];
             results.targets = targets_result.rows;
 
@@ -333,6 +358,19 @@ class EmployeeModel {
         catch (error) {
             console.error('Database query error:', error);
             return [];
+        }
+    }
+
+    updatePassword = async (pool, employeeId, hashedPassword) => {
+        try {
+            await pool.query(`
+                UPDATE employee
+                SET hashed_password = $1
+                WHERE id = $2;
+            `, [hashedPassword, employeeId]);
+        }
+        catch (error) {
+            console.error('Database query error:', error);
         }
     }
     

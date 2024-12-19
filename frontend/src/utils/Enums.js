@@ -116,6 +116,19 @@ const TargetIcons = {
   [TargetTypes.Revenue]: DollarSign,
 };
 
+const BusinessTypes = [
+  "Retail",
+  "Services",
+  "Real Estate",
+  "Food",
+  "Clothing",
+  "Electronics",
+  "Software",
+  "Sales",
+  "Digital Marketing",
+  "Other",
+];
+
 // Export all enums
 export {
   NotificationTypes,
@@ -131,4 +144,5 @@ export {
   BadgeTypes,
   TargetTypes,
   TargetIcons,
+  BusinessTypes
 };
