@@ -12,7 +12,7 @@ router.get('/', businessController.getAll);
 
 router.get('/:id', businessController.getById);
 
-router.patch('/:id', businessController.update);
+router.patch('/', businessController.update);
 
 
 export default router;
