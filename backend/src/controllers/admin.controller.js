@@ -2,11 +2,13 @@ import AdminModel from "../models/admin.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
+import LogsModel from "../models/logs.model.js";
 
 
 class AdminController {
     constructor() {
         this.adminModel = new AdminModel({});
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -142,12 +144,30 @@ class AdminController {
     acceptBusinessRequest = async (req, res) => {
         const requestId = req.params.id;
         const request = await this.adminModel.acceptBusinessRequest(req.pool, requestId);
+        if(request) {
+            const logData = {
+                business_id: requestId,
+                type: 0,
+                content: 'Business registration request accepted'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(request);
     }
 
     rejectBusinessRequest = async (req, res) => {
         const requestId = req.params.id;
         const request = await this.adminModel.rejectBusinessRequest(req.pool, requestId);
+    
+        if(request) {
+            const logData = {
+                business_id: requestId,
+                type: 0,
+                content: 'Business registration request rejected'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+        
         res.json(request);
     }
 
