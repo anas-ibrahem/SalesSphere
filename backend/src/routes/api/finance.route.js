@@ -11,8 +11,8 @@ router.get('/', financeController.getAll);
 router.get('/expenses', financeController.getAllExpenses);
 router.get('/profits', financeController.getAllProfits);
 
-router.get('/deal/:id', financeController.getByDealId);
 router.get('/deal/summary/:id', financeController.getByDealIdSummary);
+router.get('/deal/:id', financeController.getByDealId);
 
 router.get('/:id', financeController.getById);
 

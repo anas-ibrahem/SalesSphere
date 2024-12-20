@@ -3,8 +3,9 @@ class FinanceModel {
     getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM FINANCIAL_RECORD
+                SELECT fr.*, d.title as deal_title
+                FROM FINANCIAL_RECORD fr
+                LEFT JOIN DEAL d ON fr.deal_id = d.id
                 WHERE business_id = $1;
             `, [business_id]);
 
@@ -18,8 +19,9 @@ class FinanceModel {
     getAllExpenses = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM FINANCIAL_RECORD
+                SELECT fr.*, d.title as deal_title
+                FROM FINANCIAL_RECORD fr
+                LEFT JOIN DEAL d ON fr.deal_id = d.id
                 WHERE business_id = $1 AND type = 0;
             `, [business_id]);
 
@@ -33,8 +35,9 @@ class FinanceModel {
     getAllProfits = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM FINANCIAL_RECORD
+                SELECT fr.*, d.title as deal_title
+                FROM FINANCIAL_RECORD fr
+                LEFT JOIN DEAL d ON fr.deal_id = d.id
                 WHERE business_id = $1 AND type = 1;
             `, [business_id]);
 
@@ -48,9 +51,10 @@ class FinanceModel {
     getById = async (pool, id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM FINANCIAL_RECORD
-                WHERE id = $1;
+                SELECT fr.*, d.title as deal_title
+                FROM FINANCIAL_RECORD fr
+                LEFT JOIN DEAL d ON fr.deal_id = d.id
+                WHERE fr.id = $1;
             `, [id]);
 
             if(result.rows.length === 0) {
@@ -70,8 +74,9 @@ class FinanceModel {
     getByDealId = async (pool, deal_id) => {
         try {
             const result = await pool.query(`
-                SELECT *
-                FROM FINANCIAL_RECORD
+                SELECT fr.*, d.title as deal_title
+                FROM FINANCIAL_RECORD fr
+                LEFT JOIN DEAL d ON fr.deal_id = d.id
                 WHERE deal_id = $1;
             `, [deal_id]);
 
