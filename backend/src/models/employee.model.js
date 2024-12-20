@@ -394,7 +394,7 @@ class EmployeeModel {
     getPwdResetCode = async (pool, employee_id) => {
         try {
             const result = await pool.query(`
-                SELECT code, expiry
+                SELECT code, expiry, cast(NOW() > expiry as bool) as is_expired
                 FROM forgot_password
                 WHERE employee_id = $1;
             `, [employee_id]);
@@ -404,9 +404,8 @@ class EmployeeModel {
             }
 
             const code = result.rows[0];
-            const is_expired = new Date() > code.expiry;
 
-            return {code, is_expired};
+            return {code: code.code, is_expired:code.is_expired};
         }
         catch (error) {
             console.error('Database query error:', error);

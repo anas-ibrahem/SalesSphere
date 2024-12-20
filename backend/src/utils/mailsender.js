@@ -24,7 +24,6 @@ const sendMail = async (email, subject, text) => {
       
       mailerSend.email
           .send(emailParams)
-        .then((response) => console.log(response))
         .catch((error) => console.log(error));
 
 }

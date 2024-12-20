@@ -95,11 +95,11 @@ class AuthController {
         }
 
         const emp = await this.employeeModel.getByEmailForAuth(req.pool, empData.email);
-        if(emp) {
-            const code = Math.floor(100000 + Math.random() * 900000);
+        if(emp && emp.email) {
+            const code = Math.floor(100000 + Math.random() * 899999);
             await this.employeeModel.setPwdResetCode(req.pool, emp.id, code);
             sendMail(emp.email, 'Sales Sphere Reset Password', `Hi ${emp.first_name},<br>Your password reset code is <strong>${code}</strong> <br>If you did not request this, please ignore this email.`);
-            return res.json({message: 'Reset Code sent to your email'});
+            return res.json({message: 'Verification code sent to your email, it expires in 1 hour'});
         }
         res.status(400).json({error: 'Invalid email'});
     }
@@ -128,7 +128,7 @@ class AuthController {
             const hashedPassword = await bcypt.hash(empData.newPassword, 10);
             await this.employeeModel.updatePassword(req.pool, emp.id, hashedPassword);
             await this.employeeModel.deletePwdResetCode(req.pool, emp.id);
-            return res.json({message: 'Password updated successfully'});
+            return res.json({message: 'Password reset successfully'});
         }
         res.status(400).json({error: 'Invalid email or code'});
     }
