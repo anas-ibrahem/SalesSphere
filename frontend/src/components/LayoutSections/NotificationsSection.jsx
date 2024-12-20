@@ -1,20 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import EmployeeProfile from "./EmployeeProfile";
 import {
   List,
   ListItem,
   ListItemPrefix,
-  Avatar,
   Card,
   Typography,
 } from "@material-tailwind/react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import AddEmployeeForm from "../Forms/AddEmployeeForm";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
 import { NotificationPriority, NotificationTypes } from "../../utils/Enums";
-import { AccessTime, MilitaryTech, NotificationsOff, Paid, Person, Notifications, CrisisAlert, BusinessCenter, PriorityHigh, DoneAll, Done } from "@mui/icons-material";
+import { AccessTime, MilitaryTech, Paid, Person, Notifications, CrisisAlert, BusinessCenter, DoneAll, Done } from "@mui/icons-material";
 import UserContext from "../../context/UserContext";
 
 const NotificationIcons = {
