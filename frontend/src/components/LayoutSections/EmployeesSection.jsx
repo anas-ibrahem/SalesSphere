@@ -152,7 +152,7 @@ const EmployeesSection = () => {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Employees</h1>
+              <h1 className="text-2xl font-bold mb-4">Business' Employees</h1>
 
               {manager && (
                 <div className="flex space-x-2">

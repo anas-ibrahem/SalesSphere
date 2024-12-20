@@ -69,7 +69,7 @@ const LogsSection = () => {
 
   return (<section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Activity Logs</h1>
+              <h1 className="text-2xl font-bold mb-4">Business' Activity Logs</h1>
             </div>
 
             {/* Filter and Sort Controls */}

@@ -19,20 +19,26 @@ const CustomersSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [loading, setLoading] = useState(true);
-
   const [metrics, setMetrics] = useState([]);
   const [revenueMetrics, setRevenueMetrics] = useState([]);
   const [reload, setReload] = useState(false);
   const CustomersPerPage = 4;
   const navigate = useNavigate();
-  const {employee : me} = useContext(UserContext);
+  const { employee: me } = useContext(UserContext);
   const canAddCustomer = (me.role === EmployeeRoles.DealOpener);
-  // Fetch customers from API
+
+  // Deal status styles matching the deals section
+  const dealStatusStyles = {
+    open: "text-blue-500",
+    claimed: "text-yellow-500",
+    closedWon: "text-green-500",
+    closedLost: "text-red-500"
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetchAPI("/customer", "GET", null, token)
       .then((data) => {
-        console.log(data);
         setCustomers(data);
         setLoading(false);
       })
@@ -43,7 +49,6 @@ const CustomersSection = () => {
 
     fetchAPI("/customer/metrics", "GET", null, token)
       .then((data) => {
-        console.log(data);
         setMetrics(data);
       })
       .catch((error) => {
@@ -52,7 +57,6 @@ const CustomersSection = () => {
 
     fetchAPI("/customer/metrics/revenue", "GET", null, token)
       .then((data) => {
-        console.log(data);
         setRevenueMetrics(data);
       })
       .catch((error) => {
@@ -61,14 +65,11 @@ const CustomersSection = () => {
   }, [reload]);
 
   const getCustomerType = (typeValue) => {
-    return (
-      Object.keys(CustomerTypes).find(
-        (key) => CustomerTypes[key] === typeValue
-      ) || "Unknown"
-    );
+    return Object.keys(CustomerTypes).find(
+      (key) => CustomerTypes[key] === typeValue
+    ) || "Unknown";
   };
 
-  // Filtering logic
   const filterCustomers = customers.filter((customer) => {
     const customerType = getCustomerType(customer.type);
     return (
@@ -78,6 +79,7 @@ const CustomersSection = () => {
         customer.email.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
+
   function handleOnBack() {
     setSearchQuery("");
     setFilterType("All");
@@ -88,45 +90,37 @@ const CustomersSection = () => {
     navigate("/home/customers");
   }
 
-  // Sorting logic
   const sortedCustomers = [...filterCustomers].sort((a, b) => {
     switch (sortField) {
       case "registration_date":
-        const aDate = new Date(a.registration_date);
-        const bDate = new Date(b.registration_date);
-        return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-
+        return sortOrder === "asc"
+          ? new Date(a.registration_date) - new Date(b.registration_date)
+          : new Date(b.registration_date) - new Date(a.registration_date);
       case "name":
         return sortOrder === "asc"
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
-
       case "open_deals":
         return sortOrder === "asc"
           ? a.open_deals_count - b.open_deals_count
           : b.open_deals_count - a.open_deals_count;
-
       case "closed_won_deals":
         return sortOrder === "asc"
           ? a.closed_won_deals_count - b.closed_won_deals_count
           : b.closed_won_deals_count - a.closed_won_deals_count;
-
       case "closed_lost_deals":
         return sortOrder === "asc"
           ? a.closed_lost_deals_count - b.closed_lost_deals_count
           : b.closed_lost_deals_count - a.closed_lost_deals_count;
-
       case "claimed_deals":
         return sortOrder === "asc"
           ? a.claimed_deals_count - b.claimed_deals_count
           : b.claimed_deals_count - a.claimed_deals_count;
-
       default:
         return 0;
     }
   });
 
-  // Pagination logic
   const indexOfLastCustomer = currentPage * CustomersPerPage;
   const indexOfFirstCustomer = indexOfLastCustomer - CustomersPerPage;
   const currentCustomers = sortedCustomers.slice(
@@ -134,7 +128,6 @@ const CustomersSection = () => {
     indexOfLastCustomer
   );
   const totalPages = Math.ceil(sortedCustomers.length / CustomersPerPage);
-  const manager = true;
 
   return (
     <Routes>
@@ -143,7 +136,11 @@ const CustomersSection = () => {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col max-h-screen overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Customers</h1>
+              <h1 className="text-2xl font-bold mb-4">
+                {me.role !== EmployeeRoles.Manager && <span>Your </span>}
+                {me.role === EmployeeRoles.Manager && <span>Business' </span>}
+                Customers
+              </h1>
 
               {canAddCustomer && (
                 <button
@@ -156,10 +153,8 @@ const CustomersSection = () => {
               )}
             </div>
 
-            {/* Filter and Sort Controls */}
             <div className="flex justify-between mb-4">
               <div className="flex space-x-4">
-                {/* Customer Type Filter */}
                 <select
                   onChange={(e) => setFilterType(e.target.value)}
                   className="p-2 border rounded"
@@ -172,7 +167,6 @@ const CustomersSection = () => {
                   ))}
                 </select>
 
-                {/* Sort Field */}
                 <select
                   onChange={(e) => setSortField(e.target.value)}
                   className="p-2 border rounded"
@@ -185,7 +179,6 @@ const CustomersSection = () => {
                   <option value="claimed_deals">Claimed Deals</option>
                 </select>
 
-                {/* Sort Order */}
                 <select
                   onChange={(e) => setSortOrder(e.target.value)}
                   className="p-2 border rounded"
@@ -194,7 +187,6 @@ const CustomersSection = () => {
                   <option value="desc">Descending</option>
                 </select>
 
-                {/* Search Input */}
                 <input
                   type="text"
                   placeholder="Search customers..."
@@ -204,7 +196,6 @@ const CustomersSection = () => {
               </div>
             </div>
 
-            {/* Customers Table */}
             <div className="flex">
               <div className="flex-grow overflow-y-auto">
                 {loading ? (
@@ -243,32 +234,25 @@ const CustomersSection = () => {
                             >
                               <p className="mr-28">
                                 Registration Date:{" "}
-                                {new Date(
-                                  customer.registration_date
-                                ).toLocaleDateString()}
+                                {new Date(customer.registration_date).toLocaleDateString()}
                               </p>
                             </Typography>
-                            <Typography
-                              variant="small"
-                              color="gray"
-                              className="font-normal flex justify-between mt-2"
-                            >
-                              <div className="flex space-x-4">
-                                <span>
-                                  Open Deals: {customer.open_deals_count}
-                                </span>
-                                <span>
-                                  Claimed Deals: {customer.claimed_deals_count}
-                                </span>
-                                <span>
-                                  Closed Won: {customer.closed_won_deals_count}
-                                </span>
-                                <span>
-                                  Closed Lost:{" "}
-                                  {customer.closed_lost_deals_count}
-                                </span>
-                              </div>
-                            </Typography>
+                            
+                            {/* Deals summary with consistent colors */}
+                            <div className="flex space-x-6 mt-2 font-medium">
+                              <span className={dealStatusStyles.open}>
+                                Open Deals: {customer.open_deals_count}
+                              </span>
+                              <span className={dealStatusStyles.claimed}>
+                                Claimed Deals: {customer.claimed_deals_count}
+                              </span>
+                              <span className={dealStatusStyles.closedWon}>
+                                Closed Won: {customer.closed_won_deals_count}
+                              </span>
+                              <span className={dealStatusStyles.closedLost}>
+                                Closed Lost: {customer.closed_lost_deals_count}
+                              </span>
+                            </div>
                           </div>
                         </ListItem>
                       ))}
@@ -276,7 +260,7 @@ const CustomersSection = () => {
                   </Card>
                 )}
               </div>
-              {/* Metrics Part */}
+
               <div className="flex flex-col mt-2 p-2 flex-grow">
                 <h1 className="text-xl mb-2">
                   <BarChartIcon /> Metrics
@@ -354,7 +338,6 @@ const CustomersSection = () => {
               </div>
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
