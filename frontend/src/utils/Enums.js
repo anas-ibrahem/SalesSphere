@@ -148,6 +148,7 @@ export {
   ContactTypes,
   DealStatus,
   PaymentMethods,
+  FinancialRecordTypes,
   NotificationPriority,
   AdminPrivileges,
   BadgeTypes,
