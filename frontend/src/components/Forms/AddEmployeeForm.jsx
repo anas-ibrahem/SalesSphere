@@ -39,7 +39,7 @@ const AddEmployeeForm = ({ onBack }) => {
       .then((data) => {
         console.log(data);
         toast.success("Employee added successfully");
-        navigate(-1);
+        onBack();
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");

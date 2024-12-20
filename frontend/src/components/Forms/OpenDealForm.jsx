@@ -71,7 +71,7 @@ const OpenDealForm = ({ onBack }) => {
     fetchAPI("/deal", "POST", formValues, token)
       .then((data) => {
         toast.success("Deal added successfully");
-        navigate(-1);
+        onBack();
         // Optional: Reset form or navigate away
       })
       .catch((error) => {
@@ -192,7 +192,6 @@ const OpenDealForm = ({ onBack }) => {
                       key={customer.id}
                       onClick={() => handleCustomerSelect(customer)}
                       className="p-2 hover:bg-gray-100 cursor-pointer"
-
                     >
                       {customer.name} - {customer.email}
                     </li>

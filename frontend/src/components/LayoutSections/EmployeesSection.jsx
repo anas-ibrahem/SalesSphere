@@ -17,6 +17,7 @@ import { EmployeeRoles } from "../../utils/Enums";
 import AddTarget from "../Forms/AddTarget";
 
 const EmployeesSection = () => {
+  const [reload, setReload] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
@@ -41,7 +42,7 @@ const EmployeesSection = () => {
         console.error("Error fetching employees:", error);
         setLoading(false);
       });
-  }, []);
+  }, [reload]);
 
   const getRoleType = (typeValue) => {
     return (
@@ -51,6 +52,15 @@ const EmployeesSection = () => {
     );
   };
 
+  function handleOnBack() {
+    setSearchQuery("");
+    setSortOrder("asc");
+    setFilterType("All");
+    setSortField("account_creation_date");
+    setCurrentPage(1);
+    setReload(!reload);
+    navigate("/home/employees");
+  }
   // Filtering logic
   const filterEmployees = employees.filter((employee) => {
     const roleType = getRoleType(employee.role);
@@ -344,16 +354,10 @@ const EmployeesSection = () => {
       />
       <Route
         path=":employeeId/*"
-        element={<EmployeeProfile back={() => navigate("/home/employees")} />}
+        element={<EmployeeProfile back={handleOnBack} />}
       />
-      <Route
-        path="add"
-        element={<AddEmployeeForm onBack={() => navigate("/home/employees")} />}
-      />
-      <Route
-        path="addTarget"
-        element={<AddTarget onBack={() => navigate("/home/employees")} />}
-      />
+      <Route path="add" element={<AddEmployeeForm onBack={handleOnBack} />} />
+      <Route path="addTarget" element={<AddTarget onBack={handleOnBack} />} />
     </Routes>
   );
 };
