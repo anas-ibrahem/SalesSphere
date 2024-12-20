@@ -4,6 +4,7 @@ import fetchAPI from '../../utils/fetchAPI';
 import { EmployeeRoles } from '../../utils/Enums.js';
 import { toast } from 'react-hot-toast';
 import UserContext from "../../context/UserContext";
+import { useNavigate } from 'react-router-dom';
 
 const EditEmployeeForm = ({employee, onBack}) => {
     const [formValues, setFormValues] = useState({
@@ -21,6 +22,7 @@ const EditEmployeeForm = ({employee, onBack}) => {
     const [profilePreview, setProfilePreview] = useState(null);
     const [uploading, setUploading] = useState(false);
     const { employee: me } = useContext(UserContext);
+    const navigate = useNavigate();
     
     const cloudName = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 
@@ -129,7 +131,10 @@ const EditEmployeeForm = ({employee, onBack}) => {
             if(data.error) {
             toast.error('An error occurred. Please try again.');
             }
-            else  toast.success('Profile updated successfully');
+            else {
+                toast.success('Profile updated successfully');
+                navigate(-1);
+            }  
         } catch (error) {
             toast.error('An error occurred. Please try again.');
             console.error(error);

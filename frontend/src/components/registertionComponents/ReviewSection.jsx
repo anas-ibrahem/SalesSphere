@@ -1,28 +1,5 @@
-/*
-initialValues={{
-            firstName: '',
-            lastName: '',
-            birthdate: '',
-            address: '',
-            email: '',
-            phone: '',
-            password: '',
-            confirmPassword: '',
-            businessName: '',
-            businessEmail: '',
-            businessPhone: '',
-            businessCountry: '',
-            businessCity: '',
-            businessStreet: '',
-            businessWebsite: '',
-            businessIndustry: '',
-            managerID: '',
-            managerPhoto: '',
-            businessLogo: '',
-            businessRegistrationDoc: ''
-          }}
-*/
 import { Box, Grid, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const ReviewSection = ({ formik }) => {
 
@@ -88,16 +65,13 @@ const ReviewSection = ({ formik }) => {
                         Documents
                     </Typography>
                     <Typography variant="body1">
-                        <strong>Business Manager's ID: </strong>{values.managerID.name}
+                        <strong>Business Manager's ID: </strong><Link to={values.managerID} target="_blank" rel="noreferrer" className='text-blue-700'>Click Here</Link>
                     </Typography>
                     <Typography variant="body1">
-                        <strong>Business Manager's Photo: </strong>{values.managerPhoto.name}
+                        <strong>Business Manager's Photo: </strong><Link to={values.managerPhoto} target="_blank" rel="noreferrer" className='text-blue-700'>Click Here</Link>
                     </Typography>
                     <Typography variant="body1">
-                        <strong>Business Logo: </strong>{values.businessLogo.name}
-                    </Typography>
-                    <Typography variant="body1">
-                        <strong>Business Registration Document: </strong>{values.businessRegistrationDoc.name}
+                        <strong>Business Logo: </strong><Link to={values.businessLogo} target="_blank" rel="noreferrer" className='text-blue-700'>Click Here</Link>
                     </Typography>
                 </Grid>
             </Grid>

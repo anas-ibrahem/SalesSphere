@@ -82,7 +82,7 @@ CREATE TABLE FINANCIAL_RECORD (
     id SERIAL PRIMARY KEY,
     amount DECIMAL NOT NULL,
     transaction_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    type INT NOT NULL, -- Income 0 or Expense 1
+    type INT NOT NULL, -- Income 1 or Expense 0
     description TEXT,
     payment_method INT NOT NULL, -- Cash 0, Credit Card 1, Bank Transfer 2, Electronic Payment 3, Other 4
 

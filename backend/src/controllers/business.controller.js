@@ -41,6 +41,10 @@ class BusinessController {
             return res.status(400).json({error: 'Business: All fields are required'});
         }
 
+        if(!businessData.business_logo_url || !businessData.managerid_card_url || !businessData.manager_personal_photo_url) {
+            return res.status(400).json({error: 'Business: All files are required'});
+        }
+
         if(!empData.email || !validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Employee: Email is required'});
         }
@@ -64,7 +68,7 @@ class BusinessController {
         }
         else {
             const logData = {
-                business_id: result.id,
+                business_id: result.businessId,
                 type: 0,
                 content: 'Business registered'
             }

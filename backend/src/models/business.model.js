@@ -1,7 +1,7 @@
 //import EmployeeModel from "./employee.model";
 
 class BusinessModel {
-    constructor({id, name, registration_date, phone_number, email, city, country, street, website_url, industry}, business_manager) {
+    constructor({id, name, registration_date, phone_number, email, city, country, street, website_url, industry, business_logo_url, managerid_card_url, manager_personal_photo_url}, business_manager) {
         this.id = id;
         this.business_manager = business_manager;
         this.name = name;
@@ -13,6 +13,9 @@ class BusinessModel {
         this.street = street;
         this.website_url = website_url;
         this.industry = industry;
+        this.business_logo_url = business_logo_url;
+        this.managerid_card_url = managerid_card_url;
+        this.manager_personal_photo_url = manager_personal_photo_url;
     }
 
     getAll = async (pool) => {
@@ -61,11 +64,11 @@ class BusinessModel {
 
             await pool.query('BEGIN');
             const bresult = await pool.query(`
-                INSERT INTO business (name, phone_number, email, city, country, street, website_url, industry)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                INSERT INTO business (name, phone_number, email, city, country, street, website_url, industry, business_logo_url, managerid_card_url, manager_personal_photo_url)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                 ON CONFLICT (email) DO NOTHING
                 RETURNING id;
-            `, [this.name, this.phone_number, this.email, this.city, this.country, this.street, this.website_url, this.industry]);
+            `, [this.name, this.phone_number, this.email, this.city, this.country, this.street, this.website_url, this.industry, this.business_logo_url, this.managerid_card_url, this.manager_personal_photo_url]);
 
             if(bresult.rows.length === 0) {
                 return {error: 'Business Email already exists'};

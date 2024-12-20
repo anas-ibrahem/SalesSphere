@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, User, Minus, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowLeft, User, Minus, TrendingUp, TrendingDown, Save, X } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -10,6 +10,7 @@ import AddFinancialRecord from "../Forms/AddFinancialRecord";
 import { PaymentMethods } from "../../utils/Enums";
 import DealCloseModal from "./DealCloseModal";
 import { FinancialRecordTypes } from "../../utils/Enums";
+
 function getPaymentMethod(paymentMethod) {
   switch (paymentMethod) {
     case PaymentMethods.Cash:
@@ -30,7 +31,9 @@ function getPaymentMethod(paymentMethod) {
 function DealDetails({ onBack = () => {} }) {
   const { dealId } = useParams();
   const [deal, setDeal] = useState({});
-  const [financialRecords, setFinancialRecords] = useState([]); // Initialize as empty array
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDeal, setEditedDeal] = useState({});
+  const [financialRecords, setFinancialRecords] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [dealStatus, setDealStatus] = useState(0);
@@ -58,6 +61,18 @@ function DealDetails({ onBack = () => {} }) {
     id = dealId,
   } = deal;
 
+  useEffect(() => {
+    if (deal) {
+      setEditedDeal({
+        title: deal.title || '',
+        description: deal.description || '',
+        due_date: deal.due_date ? new Date(deal.due_date).toISOString().split('.')[0] : '',
+        customer_budget: deal.customer_budget || 0,
+        expenses: deal.expenses || 0,
+      });
+    }
+  }, [deal]);
+  
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
       .then(() => {
@@ -130,6 +145,18 @@ function DealDetails({ onBack = () => {} }) {
 
   const handleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      await fetchAPI(`/deal/${dealId}`, "PUT", editedDeal, token);
+      setDeal({ ...deal, ...editedDeal });
+      setIsEditing(false);
+      toast.success("Deal updated successfully");
+    } catch (error) {
+      console.error("Error updating deal:", error);
+      toast.error("Error updating deal");
+    }
   };
 
   const renderFinancialRecords = () => {
@@ -269,6 +296,115 @@ function DealDetails({ onBack = () => {} }) {
     </div>
   );
 
+  const renderDealInformation = () => (
+    <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">Deal Information</h2>
+        {dealStatus === 0 && (
+          <div>
+            {isEditing ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSaveChanges}
+                  className="flex items-center px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Save
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="flex items-center px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="space-y-3">
+        {isEditing ? (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <input
+                type="text"
+                value={editedDeal.title}
+                onChange={(e) => setEditedDeal({ ...editedDeal, title: e.target.value })}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                value={editedDeal.description}
+                onChange={(e) => setEditedDeal({ ...editedDeal, description: e.target.value })}
+                className="w-full p-2 border rounded"
+                rows="3"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+              <input
+                type="datetime-local"
+                value={editedDeal.due_date}
+                onChange={(e) => setEditedDeal({ ...editedDeal, due_date: e.target.value })}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Customer Budget</label>
+              <input
+                type="number"
+                value={editedDeal.customer_budget}
+                onChange={(e) => setEditedDeal({ ...editedDeal, customer_budget: parseFloat(e.target.value) })}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Expenses</label>
+              <input
+                type="number"
+                value={editedDeal.expenses}
+                onChange={(e) => setEditedDeal({ ...editedDeal, expenses: parseFloat(e.target.value) })}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-gray-700">
+              <span className="font-medium">Description:</span> {deal.description}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Opened:</span> {new Date(deal.date_opened).toLocaleString()}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Due Date:</span> {new Date(deal.due_date).toLocaleString()}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Customer Budget *:</span> ${deal.customer_budget}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">Expenses *:</span> -${deal.expenses}
+            </p>
+            <p className="text-gray-800">
+              <span className="text-sm">* Initial Data By Deal Opener</span>
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -333,48 +469,28 @@ function DealDetails({ onBack = () => {} }) {
               </div>
             </div>
 
-            {/* Title and Status */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold mb-2">{title}</h1>
+                       {/* Title and Status */}
+                       <div className="mb-8">
+              <h1 className="text-3xl font-bold mb-2">
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedDeal.title}
+                    onChange={(e) => setEditedDeal({ ...editedDeal, title: e.target.value })}
+                    className="w-full p-2 border rounded text-3xl font-bold"
+                  />
+                ) : (
+                  deal.title
+                )}
+              </h1>
               <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                {DealStatus[status]}
+                {DealStatus[dealStatus]}
               </span>
             </div>
 
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {/* Deal Information Card */}
-              <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4">Deal Information</h2>
-                <div className="space-y-3">
-                  <p className="text-gray-700">
-                    <span className="font-medium">Description:</span>{" "}
-                    {description}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Opened:</span>{" "}
-                    {new Date(date_opened).toLocaleString()}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Due Date:</span>{" "}
-                    {new Date(due_date).toLocaleString()}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Customer Budget *:</span> $
-                    {deal.customer_budget}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-medium">Expenses *:</span> -$
-                    {deal.expenses}
-                  </p>
-                  <p className="text-gray-800">
-                    <span className="text-sm">
-                      * Initial Data By Deal Opener
-                    </span>
-                  </p>
-                </div>
-              </div>
-
+              {renderDealInformation()}
               {renderFinancialSummary()}
             </div>
 
