@@ -8,7 +8,7 @@ import ProfileModal from "./ProfileModal";
 import fetchAPI from "../../utils/fetchAPI";
 import AddFinancialRecord from "../Forms/AddFinancialRecord";
 import { PaymentMethods } from "../../utils/Enums";
-import  DealCloseModal  from "./DealCloseModal";
+import DealCloseModal from "./DealCloseModal";
 import { FinancialRecordTypes } from "../../utils/Enums";
 function getPaymentMethod(paymentMethod) {
   switch (paymentMethod) {
@@ -27,9 +27,7 @@ function getPaymentMethod(paymentMethod) {
   }
 }
 
-
 function DealDetails({ onBack = () => {} }) {
-  const [selectedProfile, setSelectedProfile] = useState(null);
   const { dealId } = useParams();
   const [deal, setDeal] = useState({});
   const [financialRecords, setFinancialRecords] = useState([]); // Initialize as empty array
@@ -59,7 +57,7 @@ function DealDetails({ onBack = () => {} }) {
     deal_opener = null,
     id = dealId,
   } = deal;
- 
+
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
       .then(() => {
@@ -69,15 +67,15 @@ function DealDetails({ onBack = () => {} }) {
       .catch(() => toast.error("Error claiming deal"));
   }
 
-function handelCloseDeal() {
-  setIsCloseModalOpen(false);
-  fetchAPI(`/deal/close`, "POST", { id, status: closingDealStatus }, token)
-    .then(() => {
-      setDealStatus(closingDealStatus);
-      toast.success("Deal closed successfully");
-    })
-    .catch(() => toast.error("Error closing deal"));
-}
+  function handelCloseDeal() {
+    setIsCloseModalOpen(false);
+    fetchAPI(`/deal/close`, "POST", { id, status: closingDealStatus }, token)
+      .then(() => {
+        setDealStatus(closingDealStatus);
+        toast.success("Deal closed successfully");
+      })
+      .catch(() => toast.error("Error closing deal"));
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,16 +85,28 @@ function handelCloseDeal() {
         setDeal(dealData);
         setDealStatus(dealData.status);
 
-        const financialData = await fetchAPI(`/finance/deal/${dealId}`, "GET", null, token);
-        const summary = await fetchAPI(`/finance/deal/summary/${dealId}`, "GET", null, token);
+        const financialData = await fetchAPI(
+          `/finance/deal/${dealId}`,
+          "GET",
+          null,
+          token
+        );
+        const summary = await fetchAPI(
+          `/finance/deal/summary/${dealId}`,
+          "GET",
+          null,
+          token
+        );
 
         const records = Array.isArray(financialData) ? financialData : [];
-        console.log("Records fetched:", records); 
+        console.log("Records fetched:", records);
         // Sort records by date and time in descending order
-        records.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
+        records.sort(
+          (a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)
+        );
         setFinancialRecords(records);
         console.log(summary);
-        
+
         setTotalExpenses(-summary.total_spent || -0);
         setTotalIncome(summary.total_earned || 0);
       } catch (error) {
@@ -112,9 +122,9 @@ function handelCloseDeal() {
   }, [dealId, dealStatus, token]);
 
   // Format currency with sign
-  const formatCurrency = ( type , amount) => {
+  const formatCurrency = (type, amount) => {
     const absAmount = Math.abs(amount);
-    const sign = type === FinancialRecordTypes.Expense ? '-' : '+';
+    const sign = type === FinancialRecordTypes.Expense ? "-" : "+";
     return `${sign}$${absAmount.toLocaleString()}`;
   };
 
@@ -126,7 +136,10 @@ function handelCloseDeal() {
     if (!Array.isArray(financialRecords) || financialRecords.length === 0) {
       return (
         <tr>
-          <td colSpan="4" className="px-6 py-4 text-sm text-gray-500 text-center">
+          <td
+            colSpan="4"
+            className="px-6 py-4 text-sm text-gray-500 text-center"
+          >
             No financial records found
           </td>
         </tr>
@@ -135,31 +148,37 @@ function handelCloseDeal() {
 
     return financialRecords.map((record, index) => (
       <React.Fragment key={index}>
-        <tr 
-          className="hover:bg-gray-50 cursor-pointer transition-colors" 
+        <tr
+          className="hover:bg-gray-50 cursor-pointer transition-colors"
           onClick={() => handleExpand(record.id)}
         >
           <td className="px-6 py-4 text-sm">
-            <span className={record.type === FinancialRecordTypes.Income ? 'text-green-600' : 'text-red-600'}>
-              {formatCurrency(record.type , record.amount)}
+            <span
+              className={
+                record.type === FinancialRecordTypes.Income
+                  ? "text-green-600"
+                  : "text-red-600"
+              }
+            >
+              {formatCurrency(record.type, record.amount)}
             </span>
           </td>
           <td className="px-6 py-4 text-sm text-gray-500">
             {new Date(record.transaction_date).toLocaleString()}
           </td>
           <td className="px-6 py-4 text-sm">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              record.type === FinancialRecordTypes.Income
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}>
-              {           
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                 record.type === FinancialRecordTypes.Income
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {record.type === FinancialRecordTypes.Income
                 ? "Income"
-                : "Expense"
-                }
+                : "Expense"}
             </span>
-          </td>          
+          </td>
           <td className="px-6 py-4 text-sm text-gray-500 capitalize">
             {getPaymentMethod(record.payment_method)}
           </td>
@@ -201,7 +220,15 @@ function handelCloseDeal() {
             -${(-totalExpenses).toLocaleString()}
           </p>
         </div>
-        <div className={`p-4 rounded-lg ${totalIncome + totalExpenses > 0 ? 'bg-green-50' : totalIncome + totalExpenses < 0 ? 'bg-red-50' : 'bg-gray-50'} col-span-2`}>
+        <div
+          className={`p-4 rounded-lg ${
+            totalIncome + totalExpenses > 0
+              ? "bg-green-50"
+              : totalIncome + totalExpenses < 0
+              ? "bg-red-50"
+              : "bg-gray-50"
+          } col-span-2`}
+        >
           <div className="flex items-center mb-2">
             {totalIncome + totalExpenses > 0 ? (
               <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
@@ -210,10 +237,32 @@ function handelCloseDeal() {
             ) : (
               <Minus className="w-5 h-5 text-gray-600 mr-2" />
             )}
-            <span className={`font-medium ${totalIncome + totalExpenses > 0 ? 'text-green-600' : totalIncome + totalExpenses < 0 ? 'text-red-600' : 'text-gray-600'}`}>Net Balance</span>
+            <span
+              className={`font-medium ${
+                totalIncome + totalExpenses > 0
+                  ? "text-green-600"
+                  : totalIncome + totalExpenses < 0
+                  ? "text-red-600"
+                  : "text-gray-600"
+              }`}
+            >
+              Net Balance
+            </span>
           </div>
-          <p className={`text-2xl font-bold ${totalIncome + totalExpenses > 0 ? 'text-green-600' : totalIncome + totalExpenses < 0 ? 'text-red-600' : 'text-gray-600'}`}>
-            {totalIncome + totalExpenses > 0 ? `+$${((totalIncome + totalExpenses)).toLocaleString()}` : totalIncome + totalExpenses < 0 ? `-$${(-(totalIncome + totalExpenses)).toLocaleString()}` : `$${(totalIncome + totalExpenses).toLocaleString()}`}
+          <p
+            className={`text-2xl font-bold ${
+              totalIncome + totalExpenses > 0
+                ? "text-green-600"
+                : totalIncome + totalExpenses < 0
+                ? "text-red-600"
+                : "text-gray-600"
+            }`}
+          >
+            {totalIncome + totalExpenses > 0
+              ? `+$${(totalIncome + totalExpenses).toLocaleString()}`
+              : totalIncome + totalExpenses < 0
+              ? `-$${(-(totalIncome + totalExpenses)).toLocaleString()}`
+              : `$${(totalIncome + totalExpenses).toLocaleString()}`}
           </p>
         </div>
       </div>
@@ -233,32 +282,24 @@ function handelCloseDeal() {
       <Route
         path="/"
         element={
-          
           <div className="p-6 max-w-7xl mx-auto">
-            {selectedProfile && (
-              <ProfileModal
-                profile={selectedProfile}
-                onClose={() => setSelectedProfile(null)}
-              />
-            )}
+            <DealCloseModal
+              isOpen={isCloseModalOpen}
+              onClose={() => setIsCloseModalOpen(false)}
+              onConfirm={handelCloseDeal}
+              dealStatus={closingDealStatus}
+            />
 
-          <DealCloseModal
-            isOpen={isCloseModalOpen}
-            onClose={() => setIsCloseModalOpen(false)}
-            onConfirm={handelCloseDeal}
-            dealStatus={closingDealStatus}
-          />
-            
             {/* Header Section */}
             <div className="flex justify-between items-center mb-1">
-              <button 
-                  type="button" 
-                  onClick={onBack} 
-                  className="text-blue-500 text-lg cursor-pointer flex items-center mb-5"
+              <button
+                type="button"
+                onClick={onBack}
+                className="text-blue-500 text-lg cursor-pointer flex items-center mb-5"
               >
-                  <ArrowLeft className="mr-2" /> Back
+                <ArrowLeft className="mr-2" /> Back
               </button>
-  
+
               <div className="flex space-x-3">
                 {executer && deal.status === 0 && (
                   <button
@@ -268,12 +309,14 @@ function handelCloseDeal() {
                     Claim Deal
                   </button>
                 )}
-                
+
                 {executer && deal.status === 1 && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
-                      onChange={(e) => setClosingDealStatus(Number(e.target.value))}
+                      onChange={(e) =>
+                        setClosingDealStatus(Number(e.target.value))
+                      }
                       value={closingDealStatus}
                     >
                       <option value={2}>Closed Won</option>
@@ -304,7 +347,10 @@ function handelCloseDeal() {
               <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                 <h2 className="text-xl font-semibold mb-4">Deal Information</h2>
                 <div className="space-y-3">
-                  <p className="text-gray-700"><span className="font-medium">Description:</span> {description}</p>
+                  <p className="text-gray-700">
+                    <span className="font-medium">Description:</span>{" "}
+                    {description}
+                  </p>
                   <p className="text-gray-700">
                     <span className="font-medium">Opened:</span>{" "}
                     {new Date(date_opened).toLocaleString()}
@@ -314,30 +360,36 @@ function handelCloseDeal() {
                     {new Date(due_date).toLocaleString()}
                   </p>
                   <p className="text-gray-700">
-                    <span className="font-medium">Customer Budget *:</span>{" "}
-                    ${deal.customer_budget}
+                    <span className="font-medium">Customer Budget *:</span> $
+                    {deal.customer_budget}
                   </p>
                   <p className="text-gray-700">
-                    <span className="font-medium">Expenses *:</span>{" "}
-                    -${deal.expenses}
+                    <span className="font-medium">Expenses *:</span> -$
+                    {deal.expenses}
                   </p>
                   <p className="text-gray-800">
-                    <span className="text-sm">* Initial Data By Deal Opener</span>
+                    <span className="text-sm">
+                      * Initial Data By Deal Opener
+                    </span>
                   </p>
                 </div>
               </div>
 
-                {renderFinancialSummary()}
-              </div>
-
+              {renderFinancialSummary()}
+            </div>
 
             {/* Team Members Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* Deal Opener */}
               <div
-                onClick={() => deal_opener?.id && navigate(`/home/employees/${deal_opener.id}`)}
+                onClick={() =>
+                  deal_opener?.id &&
+                  navigate(`/home/employees/${deal_opener.id}`)
+                }
                 className={`bg-white rounded-lg shadow-sm p-6 border border-gray-200 ${
-                  deal_opener?.id ? 'hover:shadow-md transition cursor-pointer' : ''
+                  deal_opener?.id
+                    ? "hover:shadow-md transition cursor-pointer"
+                    : ""
                 }`}
               >
                 <div className="flex items-center space-x-4">
@@ -355,7 +407,9 @@ function handelCloseDeal() {
                   <div>
                     <h3 className="font-semibold text-gray-900">Deal Opener</h3>
                     <p className="text-gray-600">
-                      {deal_opener ? `${deal_opener.first_name} ${deal_opener.last_name}` : 'Not Assigned'}
+                      {deal_opener
+                        ? `${deal_opener.first_name} ${deal_opener.last_name}`
+                        : "Not Assigned"}
                     </p>
                   </div>
                 </div>
@@ -368,9 +422,14 @@ function handelCloseDeal() {
                 </div>
               ) : (
                 <div
-                  onClick={() => deal_executor?.id && navigate(`/home/employees/${deal_executor.id}`)}
+                  onClick={() =>
+                    deal_executor?.id &&
+                    navigate(`/home/employees/${deal_executor.id}`)
+                  }
                   className={`bg-white rounded-lg shadow-sm p-6 border border-gray-200 ${
-                    deal_executor?.id ? 'hover:shadow-md transition cursor-pointer' : ''
+                    deal_executor?.id
+                      ? "hover:shadow-md transition cursor-pointer"
+                      : ""
                   }`}
                 >
                   <div className="flex items-center space-x-4">
@@ -386,9 +445,13 @@ function handelCloseDeal() {
                       </div>
                     )}
                     <div>
-                      <h3 className="font-semibold text-gray-900">Deal Executor</h3>
+                      <h3 className="font-semibold text-gray-900">
+                        Deal Executor
+                      </h3>
                       <p className="text-gray-600">
-                        {deal_executor ? `${deal_executor.first_name} ${deal_executor.last_name}` : 'Not Assigned'}
+                        {deal_executor
+                          ? `${deal_executor.first_name} ${deal_executor.last_name}`
+                          : "Not Assigned"}
                       </p>
                     </div>
                   </div>
@@ -397,9 +460,13 @@ function handelCloseDeal() {
 
               {/* Customer */}
               <div
-                onClick={() => customer?.id && navigate(`/home/customers/${customer.id}`)}
+                onClick={() =>
+                  customer?.id && navigate(`/home/customers/${customer.id}`)
+                }
                 className={`bg-white rounded-lg shadow-sm p-6 border border-gray-200 ${
-                  customer?.id ? 'hover:shadow-md transition cursor-pointer' : ''
+                  customer?.id
+                    ? "hover:shadow-md transition cursor-pointer"
+                    : ""
                 }`}
               >
                 <div className="flex items-center space-x-4">
@@ -408,7 +475,9 @@ function handelCloseDeal() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900">Customer</h3>
-                    <p className="text-gray-600">{customer?.name || 'Not Assigned'}</p>
+                    <p className="text-gray-600">
+                      {customer?.name || "Not Assigned"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -420,45 +489,58 @@ function handelCloseDeal() {
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
                   {executer && deal.status === 1 && (
-                    <button onClick={() => navigate(`new-record`)}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    <button
+                      onClick={() => navigate(`new-record`)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                    >
                       Add Financial Record
                     </button>
                   )}
                 </div>
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Amount</th>
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Date & Time</th>
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Type</th>
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Payment Method</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                        Date & Time
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                        Type
+                      </th>
+                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                        Payment Method
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {renderFinancialRecords()}
                   </tbody>
-                  {Array.isArray(financialRecords) && financialRecords.length > 0 && (
-                    <tfoot className="bg-gray-50">
-                      <tr>
-                        <td colSpan="4" className="px-6 py-4">
-                          <div className="flex justify-between text-sm">
-                            <span className="font-medium">Total Records: {financialRecords.length}</span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tfoot>
-                  )}
+                  {Array.isArray(financialRecords) &&
+                    financialRecords.length > 0 && (
+                      <tfoot className="bg-gray-50">
+                        <tr>
+                          <td colSpan="4" className="px-6 py-4">
+                            <div className="flex justify-between text-sm">
+                              <span className="font-medium">
+                                Total Records: {financialRecords.length}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    )}
                 </table>
               </div>
             </div>
           </div>
         }
       />
-        <Route path="/new-record" element={<AddFinancialRecord deal = {deal} />} />
+      <Route path="/new-record" element={<AddFinancialRecord deal={deal} />} />
     </Routes>
   );
 }
