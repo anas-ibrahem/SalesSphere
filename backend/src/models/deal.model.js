@@ -441,6 +441,38 @@ class DealModel {
 
     }
 
+    update = async (pool, dealData) => {
+        // only edit the title, description, due_date, expenses, customer_budget
+        try {
+            const result = await pool.query(`
+                UPDATE deal
+                SET title = $1, description = $2, due_date = $3, expenses = $4, customer_budget = $5
+                WHERE id = $6
+            `, [dealData.title, dealData.description, dealData.due_date, dealData.expenses, dealData.customer_budget, dealData.id]);
+
+            return result.rowCount > 0;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
+        }
+    }
+
+    delete = async (pool, id) => {
+        try {
+            const result = await pool.query(`
+                DELETE FROM deal
+                WHERE id = $1
+            `, [id]);
+
+            return result.rowCount > 0;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
+        }
+    }
+
 }
 
 export default DealModel;

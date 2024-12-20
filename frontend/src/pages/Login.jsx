@@ -223,7 +223,7 @@ import toast from 'react-hot-toast';
                       mt: 2 
                     }}
                   >
-                    <Link href="#" variant="body2" disabled={isSubmitting}>
+                    <Link href="/forgot-password" variant="body2" disabled={isSubmitting}>
                       Forgot password?
                     </Link>
                   </Box>

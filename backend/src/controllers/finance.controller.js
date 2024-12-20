@@ -40,6 +40,9 @@ class FinanceController {
         if(financeData.amount === undefined || financeData.description === undefined || financeData.deal_id === undefined || financeData.type === undefined || financeData.payment_method === undefined) {
             return res.status(400).json({error: 'All data are required'});
         }
+        if(financeData.amount <= 0) {
+            return res.status(400).json({error: 'Amount must be greater than 0, and specify the type.'});
+        }
         financeData.business_id = req.businessId;
 
         const result = await this.financeModel.add(req.pool, financeData);
@@ -49,7 +52,7 @@ class FinanceController {
                 employee_id: req.employeeId,
                 deal_id: financeData.deal_id,
                 type: 5,
-                content: 'A new finance record has been added ('+(financeData.amount < 0 ? '-' : '+')+'$' + financeData.amount + ')'
+                content: 'A new financial record has been added ('+(financeData.type == 0 ? '-' : '+')+'$' + financeData.amount + ')'
             }
             this.logsModel.add(req.pool, logData);
         }
