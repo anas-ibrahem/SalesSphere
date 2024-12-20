@@ -156,5 +156,4 @@ export {
   TargetIcons,
   BusinessTypes,
   LogTypes,
-  FinancialRecordTypes
 };
