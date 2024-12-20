@@ -48,7 +48,7 @@ class FinanceController {
         const result = await this.financeModel.add(req.pool, financeData);
 
         if (!result)
-            return res.status(400).json({ error: 'Oops! Something went wrong. Please try again.' });
+            return res.status(400).json({ error: 'Something unexpected went wrong!' });
 
         const logData = {
             business_id: req.businessId,
