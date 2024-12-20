@@ -16,7 +16,7 @@ import EditBusinessForm from '../Forms/EditBusinessForm';
 const SettingsSection = () => {
   const { employee } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("Profile");
-
+  const isManager = 2 === EmployeeRoles.Manager; // TODO - Replace with actual user role
 
   const BusinessSettings = () => (
     <div className="w-full max-w-3xl mx-auto space-y-6">
@@ -97,17 +97,17 @@ const SettingsSection = () => {
     <div className="min-h-screen bg-gray-50">
       <div className=" bg-white w-full overflow-hidden">
         <div className="p-4 sm:p-6">
-          <Typography variant="h4" color="blue-gray" className="font-medium mb-2">
+          <Typography variant="h4" color="blue-gray" className="font-bold mb-2">
             Settings
           </Typography>
           <Typography color="gray" className="font-normal">
-            Manage your account settings and preferences
+            Manage settings and info
           </Typography>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex flex-col sm:flex-row border-b">
-          {['Profile', 'Business', 'Password'].map(tab => (
+          {['Profile', 'Password'].map(tab => (
             <button
               key={tab}
               className={`w-full sm:flex-1 py-3 font-semibold uppercase tracking-wider text-sm 
@@ -119,6 +119,17 @@ const SettingsSection = () => {
               {tab}
             </button>
           ))}
+          {isManager && (
+            <button
+              className={`w-full sm:flex-1 py-3 font-semibold uppercase tracking-wider text-sm 
+                ${activeTab === 'Business' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              onClick={() => setActiveTab('Business')}
+            >
+              Business
+            </button>
+          )}
         </div>
 
         {/* Content Area */}

@@ -106,13 +106,13 @@ CREATE TABLE ACTIVITY_LOG (
     type INT NOT NULL, -- 0 for business, 1 for employee, 2 for customer, 3 for deal, 4 for target, 5 for finance
 
     employee_id INT, -- Optional
-    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id),
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id) ON DELETE SET NULL ON UPDATE CASCADE,
     customer_id INT, -- Optional
-    FOREIGN KEY (customer_id) REFERENCES CUSTOMER(id),
+    FOREIGN KEY (customer_id) REFERENCES CUSTOMER(id) ON DELETE SET NULL ON UPDATE CASCADE,
     deal_id INT, -- Optional
-    FOREIGN KEY (deal_id) REFERENCES DEAL(id),
+    FOREIGN KEY (deal_id) REFERENCES DEAL(id) ON DELETE SET NULL ON UPDATE CASCADE,
     target_id INT, -- Optional
-    FOREIGN KEY (target_id) REFERENCES TARGET(id),
+    FOREIGN KEY (target_id) REFERENCES TARGET(id) ON DELETE SET NULL ON UPDATE CASCADE,
     -- Relationships
     business_id INT NOT NULL,
     FOREIGN KEY (business_id) REFERENCES BUSINESS(id)

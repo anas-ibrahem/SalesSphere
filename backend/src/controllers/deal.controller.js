@@ -117,6 +117,61 @@ class DealController {
         res.json(deals);
     }
 
+    update = async (req, res) => {
+        const dealData = req.body;
+        if(!dealData.id) {
+            return res.status(400).json({error: 'Deal ID is required'});
+        }
+
+        if(!dealData.title || !dealData.description || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
+            return res.status(400).json({error: 'Deal title, description, due_date, expenses and customer_budget are required'});
+        }
+
+        const result = await this.dealModel.update(req.pool, dealData);
+        if(!result) {
+            return res.status(400).json({error: 'Something unexpected went wrong'});
+        }
+        else {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                deal_id: dealData.id,
+                type: 3,
+                content: 'Deal updated'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+        res.json(result);
+    }
+
+    delete = async (req, res) => {
+        const deal_id = req.params.id;
+        if(!deal_id) {
+            return res.status(400).json({error: 'Deal ID is required'});
+        }
+
+        const deal = await this.dealModel.getById(req.pool, deal_id);
+
+        if(!deal.id) {
+            return res.status(400).json({error: 'Deal not found'});
+        }
+
+        const result = await this.dealModel.delete(req.pool, deal_id);
+        if(!result) {
+            return res.status(400).json({error: 'Something unexpected went wrong'});
+        }
+        else {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                type: 3,
+                content: `Deal ${deal.title} (ID: ${deal_id}) was deleted`
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+        res.json(result);
+    }
+
 }
 
 

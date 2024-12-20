@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Search, Clock, ArrowUpDown } from "lucide-react";
 import Pagination from '../Pagination';
+import fetchAPI from "../../utils/fetchAPI";
+import { PaymentMethods } from "../../utils/Enums";
+import {FinancialRecordTypes} from "../../utils/Enums";
 
-// Generate dummy financial records
-const generateDummyData = () => {
-  const dummyRecords = [];
-  const dealNames = ["Deal Alpha", "Deal Beta", "Deal Gamma", "Deal Delta"];
-  for (let i = 1; i <= 50; i++) {
-    dummyRecords.push({
-      id: i,
-      amount: (Math.random() * 1000 + 100).toFixed(2),
-      transaction_date: new Date(2024, 10, i % 30 + 1).toISOString(),
-      type: i % 2 === 0 ? "Income" : "Expense",
-      description: `Description of transaction ${i}`,
-      payment_method: i % 3 === 0 ? "Bank Transfer" : i % 3 === 1 ? "Credit Card" : "Cash",
-      deal_name: dealNames[i % dealNames.length],
-    });
-  }
-  return dummyRecords;
+const getTypeString = (type) => {
+  return type === FinancialRecordTypes.Income ? "Income" : "Expense";
 };
 
-const dummyData = generateDummyData();
+const getPaymentMethodString = (paymentMethod) => {
+  switch (paymentMethod) {
+    case PaymentMethods.Cash:
+      return "Cash";
+    case PaymentMethods.Card:
+      return "Card";
+    case PaymentMethods.BankTransfer:
+      return "Bank Transfer";
+    case PaymentMethods.ElectronicPayment:
+      return "Electronic Payment";
+    case PaymentMethods.Other:
+      return "Other";
+    default:
+      return "Unknown";
+  }
+};
 
 function RecordsSection() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,41 +34,40 @@ function RecordsSection() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Calculate items per page based on screen height
+  const [records, setRecords] = useState([]); 
+
   useEffect(() => {
-    const calculateItemsPerPage = () => {
-      const headerHeight = 200;
-      const paginationHeight = 60;
-      const itemHeight = 40;
-      const availableHeight = window.innerHeight - headerHeight - paginationHeight;
-      const calculatedItemsPerPage = Math.floor(availableHeight / itemHeight);
-      setItemsPerPage(Math.max(calculatedItemsPerPage, 5));
+    const fetchRecords = async () => {
+      try {
+        const data = await fetchAPI('/finance', 'GET', null, localStorage.getItem("token"));
+        setRecords(data);
+        console.log("Records fetched:", data);
+      } catch (error) {
+        console.error("Error fetching records:", error);
+      }
     };
 
-    calculateItemsPerPage();
-    window.addEventListener('resize', calculateItemsPerPage);
-    return () => window.removeEventListener('resize', calculateItemsPerPage);
+    fetchRecords();
   }, []);
 
+  // Reset to first page when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   // Filtering and search logic
-  const filteredRecords = dummyData.filter((record) => {
-    const matchesType = filterType === "All" || record.type === filterType;
-    const matchesSearch = record.deal_name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredRecords = records.filter((record) => {
+    const matchesType = filterType === "All" || getTypeString(record.type) === filterType;
+    const matchesSearch = record.deal_title?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesType && matchesSearch;
   });
 
   // Sorting logic
-  const sortedRecords = [...filteredRecords].sort((a, b) => {
+  const sortedRecords = filteredRecords.sort((a, b) => {
     if (sortField === "amount") {
-      return sortOrder === "asc" 
-        ? parseFloat(a.amount) - parseFloat(b.amount) 
-        : parseFloat(b.amount) - parseFloat(a.amount);
-    } else {
-      return sortOrder === "asc"
-        ? new Date(a.transaction_date) - new Date(b.transaction_date)
-        : new Date(b.transaction_date) - new Date(a.transaction_date);
+      return (sortOrder === "asc" ? 1 : -1) * (parseFloat(a.amount) - parseFloat(b.amount));
     }
+    return (sortOrder === "asc" ? 1 : -1) * (new Date(a.transaction_date) - new Date(b.transaction_date));
   });
 
   // Pagination logic
@@ -74,6 +77,7 @@ function RecordsSection() {
     currentPage * itemsPerPage
   );
 
+ 
   const handleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
@@ -89,6 +93,7 @@ function RecordsSection() {
       hour12: true
     }).format(date);
   };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-6">
@@ -145,7 +150,6 @@ function RecordsSection() {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">ID</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">Amount</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
                     <div className="flex items-center gap-2">
@@ -165,14 +169,13 @@ function RecordsSection() {
                       className="hover:bg-gray-50 cursor-pointer transition-colors" 
                       onClick={() => handleExpand(record.id)}
                     >
-                      <td className="px-6 py-4 text-sm text-gray-900">#{record.id}</td>
                       <td className="px-6 py-4 text-sm">
                         <span className={
-                          record.type === "Income" 
+                          getTypeString(record.type) === "Income" 
                             ? "text-green-600 font-medium"
                             : "text-red-600 font-medium"
                         }>
-                          {record.type === "Income" ? "+" : "-"}${record.amount}
+                          {getTypeString(record.type) === "Income" ? "+" : "-"}${record.amount}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
@@ -180,19 +183,19 @@ function RecordsSection() {
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          record.type === "Income" 
+                          getTypeString(record.type) === "Income" 
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {record.type}
+                          {getTypeString(record.type)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{record.payment_method}</td>
-                      <td className="px-6 py-4 text-sm text-gray-900">{record.deal_name}</td>
+                      <td className="px-6 py-4 text-sm max-w-1 text-gray-500">{getPaymentMethodString(record.payment_method)}</td>
+                      <td className="px-6 py-4 text-sm max-w-1 text-gray-900">{record.deal_title}</td>
                     </tr>
                     {expandedId === record.id && (
                       <tr className="bg-gray-50">
-                        <td colSpan="6" className="px-6 py-4">
+                        <td colSpan="5" className="px-6 py-4">
                           <div className="text-sm text-gray-700">
                             <strong className="font-medium">Description:</strong>
                             <p className="mt-1">{record.description}</p>
@@ -212,7 +215,7 @@ function RecordsSection() {
               <span>Showing {currentRecords.length} of {filteredRecords.length} records</span>
               <span>
                 Total: {currentRecords.reduce((sum, record) => sum + (
-                  record.type === "Income" 
+                  Number(record.type) === FinancialRecordTypes.Income
                     ? parseFloat(record.amount) 
                     : -parseFloat(record.amount)
                 ), 0).toLocaleString('en-US', { 
@@ -226,10 +229,10 @@ function RecordsSection() {
 
         {/* Pagination */}
         <div className="mt-6">
-          <Pagination
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalPages={totalPages}
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
           />
         </div>
       </div>
