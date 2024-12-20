@@ -11,8 +11,9 @@ import {
 import { useParams } from "react-router-dom";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { DealStatus } from "../../utils/Enums";
-import ProfileModal from "./ProfileModal";
+import { DealStatus, EmployeeRoles } from "../../utils/Enums";
+import { useContext } from "react";
+import UserContext from "../../context/UserContext";
 import fetchAPI from "../../utils/fetchAPI";
 import AddFinancialRecord from "../Forms/AddFinancialRecord";
 import { PaymentMethods } from "../../utils/Enums";
@@ -52,9 +53,8 @@ function DealDetails({ onBack = () => {} }) {
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { employee: me } = useContext(UserContext);
 
-  const executer = true; // TODO - Replace with actual user role
-  const opener = true; // TODO - Replace with actual user role
   const {
     title = "Untitled Deal",
     status = 0,
@@ -68,7 +68,7 @@ function DealDetails({ onBack = () => {} }) {
     deal_opener = null,
     id = dealId,
   } = deal;
-
+  
   useEffect(() => {
     if (deal) {
       setEditedDeal({
@@ -81,7 +81,15 @@ function DealDetails({ onBack = () => {} }) {
         expenses: deal.expenses || 0,
       });
     }
+    console.log("Me" , me)
+    console.log("Deal" , deal)
   }, [deal]);
+
+  
+  const executer = me.role === EmployeeRoles.DealExecutor; 
+  const opener = me.role === EmployeeRoles.DealOpener;
+  const canEdit = opener && me.id === deal.deal_opener.id;
+
 
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
@@ -320,7 +328,7 @@ function DealDetails({ onBack = () => {} }) {
     <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Deal Information</h2>
-        {dealStatus === 0 && (
+        {canEdit && deal.status === 0 && (
           <div>
             {isEditing ? (
               <div className="flex gap-2">

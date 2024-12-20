@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import EmployeeProfile from "./EmployeeProfile";
 import {
@@ -15,6 +15,7 @@ import Pagination from "../Pagination";
 import fetchAPI from "../../utils/fetchAPI";
 import { EmployeeRoles } from "../../utils/Enums";
 import AddTarget from "../Forms/AddTarget";
+import UserContext from "../../context/UserContext";
 
 const EmployeesSection = () => {
   const [reload, setReload] = useState(false);
@@ -141,8 +142,8 @@ const EmployeesSection = () => {
     indexOfLastEmployee
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
-
-  const manager = true;
+  const {employee : me } = useContext(UserContext);
+  const manager = me.role === EmployeeRoles.Manager;
 
   return (
     <Routes>
