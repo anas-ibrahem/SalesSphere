@@ -6,7 +6,8 @@ class FinanceModel {
                 SELECT fr.*, d.title as deal_title
                 FROM FINANCIAL_RECORD fr
                 LEFT JOIN DEAL d ON fr.deal_id = d.id
-                WHERE business_id = $1;
+                WHERE business_id = $1
+                ORDER BY fr.transaction_date DESC;
             `, [business_id]);
 
             return result.rows;
@@ -22,7 +23,8 @@ class FinanceModel {
                 SELECT fr.*, d.title as deal_title
                 FROM FINANCIAL_RECORD fr
                 LEFT JOIN DEAL d ON fr.deal_id = d.id
-                WHERE business_id = $1 AND type = 0;
+                WHERE business_id = $1 AND type = 0
+                ORDER BY fr.transaction_date DESC;
             `, [business_id]);
 
             return result.rows;
@@ -38,7 +40,8 @@ class FinanceModel {
                 SELECT fr.*, d.title as deal_title
                 FROM FINANCIAL_RECORD fr
                 LEFT JOIN DEAL d ON fr.deal_id = d.id
-                WHERE business_id = $1 AND type = 1;
+                WHERE business_id = $1 AND type = 1
+                ORDER BY fr.transaction_date DESC;
             `, [business_id]);
 
             return result.rows;
@@ -77,7 +80,8 @@ class FinanceModel {
                 SELECT fr.*, d.title as deal_title
                 FROM FINANCIAL_RECORD fr
                 LEFT JOIN DEAL d ON fr.deal_id = d.id
-                WHERE deal_id = $1;
+                WHERE deal_id = $1
+                ORDER BY fr.transaction_date DESC;
             `, [deal_id]);
 
             return result.rows;
@@ -109,7 +113,7 @@ class FinanceModel {
             return {
                 total_spent,
                 total_earned,
-                profit: total_earned + total_spent
+                profit: total_earned - total_spent
             };
         }
         catch (error) {
