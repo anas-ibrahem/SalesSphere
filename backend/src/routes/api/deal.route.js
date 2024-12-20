@@ -25,4 +25,8 @@ router.post('/claim', DealController.claim);
 
 router.post('/close', DealController.close);
 
+router.put('/', DealController.update);
+
+router.delete('/:id', DealController.delete);
+
 export default router;

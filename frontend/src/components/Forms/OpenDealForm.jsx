@@ -192,6 +192,7 @@ const OpenDealForm = ({ onBack }) => {
                       key={customer.id}
                       onClick={() => handleCustomerSelect(customer)}
                       className="p-2 hover:bg-gray-100 cursor-pointer"
+
                     >
                       {customer.name} - {customer.email}
                     </li>

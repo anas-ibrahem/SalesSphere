@@ -11,6 +11,7 @@ import UserContext, { UserProvider } from './context/UserContext';
 import fetchAPI from "./utils/fetchAPI";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminApp from "./pages/admin/AdminApp";
+import ForgotPassword from "./pages/ForgotPassword";
 
 
 function Logout() {
@@ -43,6 +44,7 @@ function App() {
           <Route path="/home/*" element={<Home />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/business-registration" element={<BusinessRegistration />} />
           {/* admin */}
           <Route path="/admin/*" element={<AdminApp />} />
