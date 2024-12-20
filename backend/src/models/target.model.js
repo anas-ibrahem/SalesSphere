@@ -2,7 +2,7 @@ class TargetModel {
     getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *
+                SELECT t.*
                 FROM TARGET t
                 JOIN employee e ON t.employee_id = e.id
                 WHERE e.business_id = $1;
@@ -18,11 +18,13 @@ class TargetModel {
     getAllActive = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *, (t.deadline - CURRENT_TIMESTAMP) as time_left
+                SELECT t.*, (t.deadline - CURRENT_TIMESTAMP) as time_left
                 FROM TARGET t
                 JOIN employee e ON t.employee_id = e.id
                 WHERE e.business_id = $1 AND t.deadline > CURRENT_TIMESTAMP AND t.start_date < CURRENT_TIMESTAMP;
             `, [business_id]);
+
+            return result.rows;
         }
         catch (error) {
             console.error('Database query error:', error);
@@ -33,11 +35,30 @@ class TargetModel {
     getAllUpcoming = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT *, (t.deadline - CURRENT_TIMESTAMP) as time_left
+                SELECT t.*, (t.deadline - CURRENT_TIMESTAMP) as time_left
                 FROM TARGET t
                 JOIN employee e ON t.employee_id = e.id
                 WHERE e.business_id = $1 AND t.start_date > CURRENT_TIMESTAMP;
             `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+
+    getAllFinished = async (pool, business_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT t.*, (CURRENT_TIMESTAMP - t.deadline) as time_passed
+                FROM TARGET t
+                JOIN employee e ON t.employee_id = e.id
+                WHERE e.business_id = $1 AND t.deadline < CURRENT_TIMESTAMP;
+            `, [business_id]);
+
+            return result.rows;
         }
         catch (error) {
             console.error('Database query error:', error);
@@ -93,6 +114,22 @@ class TargetModel {
         }
     }
 
+    getAllByEmployeeFinished = async (pool, employee_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT *, (CURRENT_TIMESTAMP - deadline) as time_passed
+                FROM TARGET
+                WHERE employee_id = $1 AND deadline < CURRENT_TIMESTAMP;
+            `, [employee_id]);
+            
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+
     getById = async (pool, id) => {
         try {
             const result = await pool.query(`
@@ -112,7 +149,7 @@ class TargetModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Failed to get target'};
         }
     }
 
@@ -128,13 +165,13 @@ class TargetModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Failed to add target'};
         }
     }
 
     addForMultipleEmployees = async (pool, targetData) => {
         try {
-            const values = targetData.employee_ids.map((employee_id) => `(${targetData.type}, ${targetData.goal}, '${targetData.deadline}', '${targetData.description}', ${employee_id}, ${targetData.start_date})`).join(', ');
+            const values = targetData.employee_ids.map((employee_id) => `(${targetData.type}, ${targetData.goal}, '${targetData.deadline}', '${targetData.description}', ${employee_id}, '${targetData.start_date}')`).join(', ');
 
             const result = await pool.query(`
                 INSERT INTO TARGET (type, goal, deadline, description, employee_id, start_date)
@@ -163,7 +200,7 @@ class TargetModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Failed to edit target'};
         }
     }
 

@@ -11,10 +11,12 @@ const targetController = new TargetController();
 router.get('/', targetController.getAll);
 router.get('/active', targetController.getAllActive);
 router.get('/upcoming', targetController.getAllUpcoming);
+router.get('/finished', targetController.getAllFinished);
 
-router.get('/employee/:id', targetController.getByEmployee);
+router.get('/employee/:id', targetController.getAllByEmployee);
 router.get('/employee/:id/active', targetController.getAllByEmployeeActive);
 router.get('/employee/:id/upcoming', targetController.getAllByEmployeeUpcoming);
+router.get('/employee/:id/finished', targetController.getAllByEmployeeFinished);
 
 router.get('/:id', targetController.getById);
 router.post('/', targetController.add);

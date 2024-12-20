@@ -23,8 +23,8 @@ class TargetController {
         res.json(targets);
     }
 
-    getByEmployee = async (req, res) => {
-        const targets = await this.targetModel.getByEmployee(req.pool, req.params.id);
+    getAllFinished = async (req, res) => {
+        const targets = await this.targetModel.getAllFinished(req.pool, req.businessId);
         res.json(targets);
     }
 
@@ -43,6 +43,11 @@ class TargetController {
         res.json(targets);
     }
 
+    getAllByEmployeeFinished = async (req, res) => {
+        const targets = await this.targetModel.getAllByEmployeeFinished(req.pool, req.params.id);
+        res.json(targets);
+    }
+    
     getById = async (req, res) => {
         const target = await this.targetModel.getById(req.pool, req.params.id);
         res.json(target);
@@ -56,7 +61,7 @@ class TargetController {
         }
 
         const result = await this.targetModel.add(req.pool, targetData);
-        res.json({success: result});
+        res.json(result);
     }
 
     addForMultipleEmployees = async (req, res) => {
@@ -71,7 +76,7 @@ class TargetController {
         }
 
         const result = await this.targetModel.addForMultipleEmployees(req.pool, targetData);
-        res.json({success: result});
+        res.json(result);
     }
 
     edit = async (req, res) => {
@@ -85,7 +90,7 @@ class TargetController {
         }
 
         const result = await this.targetModel.edit(req.pool, targetData);
-        res.json({success: result});
+        res.json(result);
     }
 
 }
