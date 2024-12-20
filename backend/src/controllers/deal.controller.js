@@ -66,7 +66,7 @@ class DealController {
 
         const result = await this.dealModel.claim(req.pool, dealData.id , req.employeeId);
         if (!result)
-            return res.status(400).json({error: 'Something unexpected went wrong'});
+            return res.status(400).json({error: 'Oops! Something went wrong. Please try again.'});
         else {
             const logData = {
                 business_id: req.businessId,
@@ -92,7 +92,7 @@ class DealController {
 
         const result = await this.dealModel.close(req.pool, dealData.id , dealData.status);
         if (!result)
-            return res.status(400).json({error: 'Something unexpected went wrong'});
+            return res.status(400).json({error: 'Oops! Something went wrong. Please try again.'});
         else {
             const logData = {
                 business_id: req.businessId,

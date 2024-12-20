@@ -60,7 +60,7 @@ class FinanceModel {
                 WHERE fr.id = $1;
             `, [id]);
 
-            if(result.rows.length === 0) {
+            if (result.rows.length === 0) {
                 return {};
             }
 
@@ -123,8 +123,11 @@ class FinanceModel {
     add = async (pool, financial_record) => {
         const { amount, type, description, payment_method, business_id, deal_id } = financial_record;
         try {
-            const result = await pool.query(`INSERT INTO FINANCIAL_RECORD (amount, type, description, payment_method, business_id, deal_id) VALUES ($1, $2, $3, $4, $5, $6);`, [amount, type, description, payment_method, business_id, deal_id]);
-            return true;
+            const result = await pool.query(`
+                INSERT INTO FINANCIAL_RECORD (amount, type, description, payment_method, business_id, deal_id) 
+                VALUES ($1, $2, $3, $4, $5, $6);`
+                , [amount, type, description, payment_method, business_id, deal_id]);
+            return result.rows[0];
         }
         catch (error) {
             console.error('Database query error:', error);

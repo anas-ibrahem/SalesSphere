@@ -172,7 +172,53 @@ class EmployeeModel {
         }
     }
 
-    updateProfile = async (pool, employeeId, empData) => {
+    updateMyProfile = async (pool, employeeId, empData) => {
+        try {
+            await pool.query('BEGIN');
+            
+            // Check if the email already exists for another employee
+            const emailCheck = await pool.query(`
+                SELECT id 
+                FROM employee 
+                WHERE email = $1 AND id != $2;
+            `, [empData.email, employeeId]);
+    
+            if (emailCheck.rows.length > 0) {
+                await pool.query('ROLLBACK');
+                return false; // Email already exists
+            }
+    
+            // Update the employee email
+            await pool.query(`
+                UPDATE employee 
+                SET email = $1
+                WHERE id = $2;
+            `, [empData.email, employeeId]);
+    
+            // Update the employee profile
+            await pool.query(`
+                UPDATE employee_profile 
+                SET first_name = $1, last_name = $2, phone_number = $3, address = $4 , profile_picture_url = $5
+                WHERE employee_id = $6;
+            `, [
+                empData.first_name,
+                empData.last_name,
+                empData.phone_number,
+                empData.address,
+                empData.profile_picture_url,
+                employeeId
+            ]);
+    
+            await pool.query('COMMIT');
+            return true; // Update successful
+        } catch (error) {
+            await pool.query('ROLLBACK');
+            console.error('Database query error:', error);
+            return false; // Error occurred
+        }
+    }
+
+    updateEmployeeProfile = async (pool, employeeId, empData) => {
         try {
             await pool.query('BEGIN');
             

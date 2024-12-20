@@ -46,24 +46,27 @@ class FinanceController {
         financeData.business_id = req.businessId;
 
         const result = await this.financeModel.add(req.pool, financeData);
-        if(result) {
-            const logData = {
-                business_id: req.businessId,
-                employee_id: req.employeeId,
-                deal_id: financeData.deal_id,
-                type: 5,
-                content: 'A new financial record has been added ('+(financeData.type == 0 ? '-' : '+')+'$' + financeData.amount + ')'
-            }
-            this.logsModel.add(req.pool, logData);
+
+        if (!result)
+            return res.status(400).json({ error: 'Oops! Something went wrong. Please try again.' });
+
+        const logData = {
+            business_id: req.businessId,
+            employee_id: req.employeeId,
+            deal_id: financeData.deal_id,
+            type: 5,
+            content: 'A new financial record has been added (' + (financeData.type == 0 ? '-' : '+') + '$' + financeData.amount + ')'
         }
-        res.json({success: result});
+        this.logsModel.add(req.pool, logData);
+
+        res.json(result);
     }
 
     getByDealIdSummary = async (req, res) => {
         const finances = await this.financeModel.getByDealIdSummary(req.pool, req.params.id);
         res.json(finances);
     }
-    
+
 
 }
 
