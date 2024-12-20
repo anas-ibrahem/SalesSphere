@@ -4,6 +4,7 @@ import fetchAPI from "../../utils/fetchAPI";
 import { toast } from "react-hot-toast";
 import { TargetTypes } from "../../utils/Enums.js";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 
 const AddTarget = ({ onBack }) => {
   const [isLoading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const AddTarget = ({ onBack }) => {
     employee_ids: [],
     start_date: "",
   });
-
+  const navigate = useNavigate();
   const [isExecuter, setIsExecuter] = useState(false);
   const [employees, setEmployees] = useState([]);
 
@@ -52,7 +53,8 @@ const AddTarget = ({ onBack }) => {
     fetchAPI("/target/multiple", "POST", formValues, token)
       .then((data) => {
         console.log(data);
-        toast.success("Employee added successfully");
+        toast.success("Target added successfully");
+        navigate(-1);
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");

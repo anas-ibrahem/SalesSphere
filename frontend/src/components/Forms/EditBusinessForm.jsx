@@ -4,6 +4,7 @@ import fetchAPI from '../../utils/fetchAPI';
 import { EmployeeRoles } from '../../utils/Enums.js';
 import { toast } from 'react-hot-toast';
 import UserContext from "../../context/UserContext";
+import { useNavigate } from 'react-router-dom';
 
 const EditBusinessForm = ({onBack}) => {
     const [formValues, setFormValues] = useState({
@@ -22,7 +23,7 @@ const EditBusinessForm = ({onBack}) => {
     const [uploading, setUploading] = useState(false);
     const [business, setBusiness] = useState(null);
     const { employee: me } = useContext(UserContext);
-    
+    const navigate = useNavigate();
     const cloudName = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 
     useEffect(() => {
@@ -144,8 +145,10 @@ const EditBusinessForm = ({onBack}) => {
             const data = await fetchAPI('/business' ,'PATCH', formData , token);
             if(data.error) 
                 toast.error('An error occurred. Please try again.');
-            else  
+            else  {
                 toast.success('Business updated successfully');
+                navigate(-1);
+            }
 
         } catch (error) {
             toast.error('An error occurred. Please try again.');

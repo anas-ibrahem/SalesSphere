@@ -48,31 +48,33 @@ export default function NavBar() {
       <div className="flex items-center space-x-4">
         {/* Authentication Buttons */}
         <div className="hidden lg:flex space-x-4">
-          {
-            isAuthenticated && employee ? (
-              <NavLink to="/home" className="btn btn-accent flex items-center justify-center px-4 py-2 bg-primary-accent text-white rounded-lg">
-                <Dashboard className="mr-2" /> Dashboard
-              </NavLink>
-            ) : <NavLink to="/login">
-                <button className="btn btn-accent flex items-center justify-center px-4 py-2">
-                  <LuLogIn className="mr-2" /> Log In
-                </button>
-              </NavLink>
-          }
-          {
-            !isAuthenticated || !employee ? (
-              <NavLink to="/business-registration">
-            <button className="btn btn-primary flex items-center justify-center px-4 py-2">
-              <IoMdPersonAdd className="mr-2" /> Sign Up
-            </button>
-          </NavLink>
-            ) : <NavLink to="/logout">
-            <button className="btn btn-primary flex items-center justify-center px-4 py-2">
-              <Logout className="mr-2" /> Logout
-            </button>
-          </NavLink>
-          }
-          
+          {isAuthenticated && employee ? (
+            <NavLink
+              to="/home"
+              className="btn btn-accent flex items-center justify-center px-4 py-2 bg-primary-accent text-white rounded-lg"
+            >
+              <Dashboard className="mr-2" /> Dashboard
+            </NavLink>
+          ) : (
+            <NavLink to="/login">
+              <button className="btn btn-accent flex items-center justify-center px-4 py-2">
+                <LuLogIn className="mr-2" /> Log In
+              </button>
+            </NavLink>
+          )}
+          {!isAuthenticated || !employee ? (
+            <NavLink to="/business-registration">
+              <button className="btn btn-primary flex items-center justify-center px-4 py-2">
+                <IoMdPersonAdd className="mr-2" /> Sign Up
+              </button>
+            </NavLink>
+          ) : (
+            <NavLink to="/logout">
+              <button className="btn btn-primary flex items-center justify-center px-4 py-2">
+                <Logout className="mr-2" /> Logout
+              </button>
+            </NavLink>
+          )}
         </div>
 
         {/* Hamburger Menu Button (Visible on Mobile) */}
@@ -100,7 +102,7 @@ export default function NavBar() {
 
         {/* Mobile Navigation Links */}
         <ul className="flex flex-col mt-20 space-y-6 px-8">
-          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
+          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
             <Link
               to="About"
               smooth={true}
@@ -111,7 +113,7 @@ export default function NavBar() {
               About
             </Link>
           </li>
-          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
+          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
             <Link
               to="Benefits"
               smooth={true}
@@ -122,7 +124,7 @@ export default function NavBar() {
               Benefits
             </Link>
           </li>
-          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-red-200 cursor-pointer">
+          <li className="font-semibold text-lg text-gray-800 hover:text-gray-900 transition-colors duration-200 ease-in-out px-3 py-2 rounded-lg hover:bg-blue-200 cursor-pointer">
             <Link
               to="Mobile"
               smooth={true}
