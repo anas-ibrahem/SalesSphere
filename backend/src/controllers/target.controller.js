@@ -1,9 +1,11 @@
 import TargetModel from "../models/target.model.js";
+import LogsModel from "../models/logs.model.js";
 
 
 class TargetController {
     constructor() {
         this.targetModel = new TargetModel();
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -47,7 +49,7 @@ class TargetController {
         const targets = await this.targetModel.getAllByEmployeeFinished(req.pool, req.params.id);
         res.json(targets);
     }
-    
+
     getById = async (req, res) => {
         const target = await this.targetModel.getById(req.pool, req.params.id);
         res.json(target);
@@ -61,6 +63,16 @@ class TargetController {
         }
 
         const result = await this.targetModel.add(req.pool, targetData);
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: targetData.employee_id,
+                target_id: result.id,
+                type: 4,
+                content: 'A new target has been assigned'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(result);
     }
 
@@ -76,6 +88,17 @@ class TargetController {
         }
 
         const result = await this.targetModel.addForMultipleEmployees(req.pool, targetData);
+        
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                target_id: result.id,
+                type: 4,
+                content: 'A new target has been assigned to multiple employees'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+
         res.json(result);
     }
 
@@ -90,6 +113,16 @@ class TargetController {
         }
 
         const result = await this.targetModel.edit(req.pool, targetData);
+
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                target_id: targetData.id,
+                type: 4,
+                content: 'Target has been updated'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(result);
     }
 

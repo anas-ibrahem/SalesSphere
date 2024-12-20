@@ -88,22 +88,17 @@ const NotificationsSection = () => {
 
 
   // Pagination logic
-  const indexOfLastEmployee = currentPage * NotificationsPerPage;
-  const indexOfFirstEmployee = indexOfLastEmployee - NotificationsPerPage;
+  const indexOfLastNotification = currentPage * NotificationsPerPage;
+  const indexOfFirstNotification = indexOfLastNotification - NotificationsPerPage;
   const currentNotifications = filterNotifications.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
+    indexOfFirstNotification,
+    indexOfLastNotification
   );
   const totalPages = Math.ceil(filterNotifications.length / NotificationsPerPage);
 
   const manager = true;
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+  return (<section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">Notifications {notificationCount > 0 && <span className="font-light text-lg">- You have {notificationCount} unread notifications</span>}</h1>
                 <div className="flex space-x-2">
@@ -155,7 +150,7 @@ const NotificationsSection = () => {
                         onClick={() => MarkAsRead(notification)}
                       >
                         <ListItemPrefix>
-                            <Icon className={`text-secondary-accent ${notification.priority === NotificationPriority.High ? 'text-red-900' : ''}`} />
+                            <Icon className={`text-secondary-accent m-2 ${notification.priority === NotificationPriority.High ? 'text-red-900' : ''}`} />
                         </ListItemPrefix>
                         <div>
                             <div className="flex items-center">
@@ -212,24 +207,7 @@ const NotificationsSection = () => {
               onPageChange={setCurrentPage}
             />
           </section>
-        }
-      />
-      <Route
-        path=":employeeId"
-        element={<EmployeeProfile back={() => navigate("/home/Notifications")} />}
-      />
-      <Route
-        path="add"
-        element={
-          <AddEmployeeForm onBack={() => navigate("/home/Notifications")} />
-        }
-      />
-      <Route
-        path="addtarget"
-        element={<AddEmployeeForm onBack={() => navigate("/home/Notifications")} />}
-      />
-    </Routes>
-  );
+        );
 }
 
 export default NotificationsSection;

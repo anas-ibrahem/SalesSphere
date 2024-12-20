@@ -14,6 +14,7 @@ import customerRouter from './api/customer.route.js';
 import adminRouter from './api/admin.route.js';
 import financeRouter from './api/finance.route.js';
 import targetRouter from './api/target.route.js';
+import logsRouter from './api/logs.route.js';
 
 const authController = new AuthController();
 const businessController = new BusinessController();
@@ -35,6 +36,7 @@ router.use('/notification', notificationRouter);
 router.use('/customer', customerRouter);
 router.use('/finance', financeRouter);
 router.use('/target', targetRouter);
+router.use('/logs', logsRouter);
 
 // Export the router
 export default router;

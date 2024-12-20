@@ -1,9 +1,12 @@
+import e from "express";
 import DealModel from "../models/deal.model.js";
+import LogsModel from "../models/logs.model.js";
 
 
 class DealController {
     constructor() {
         this.dealModel = new DealModel();
+        this.logsModel = new LogsModel();
     }
     getAll = async (req, res) => {
         const emps = await this.dealModel.getAll(req.pool, req.businessId);
@@ -41,6 +44,17 @@ class DealController {
         }
 
         const result = await this.dealModel.add(req.pool, dealData, req.employeeId);
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                deal_id: result.id,
+                customer_id: dealData.customer_id,
+                type: 3,
+                content: 'A new deal was opened'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(result);
     }
 
@@ -53,6 +67,16 @@ class DealController {
         const result = await this.dealModel.claim(req.pool, dealData.id , req.employeeId);
         if (!result)
             return res.status(400).json({error: 'Something unexpected went wrong'});
+        else {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                deal_id: dealData.id,
+                type: 3,
+                content: 'Deal claimed'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json({message : 'Deal claimed successfully'});
     }
 
@@ -69,6 +93,16 @@ class DealController {
         const result = await this.dealModel.close(req.pool, dealData.id , dealData.status);
         if (!result)
             return res.status(400).json({error: 'Something unexpected went wrong'});
+        else {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                deal_id: dealData.id,
+                type: 3,
+                content: 'Deal closed'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
 
         res.json({status : dealData.status});
     }
