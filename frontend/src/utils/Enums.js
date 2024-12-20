@@ -91,21 +91,19 @@ const AdminPrivileges = {
   Super: 1,
 };
 
-
 const FinancialRecordTypes = {
-    Expense: 0,
-    Income: 1
-}
+  Expense: 0,
+  Income: 1,
+};
 
 const LogTypes = {
-    Business: 0,
-    Employee: 1,
-    Customer: 2,
-    Deal: 3,
-    Target: 4,
-    Finances: 5
-}
-
+  Business: 0,
+  Employee: 1,
+  Customer: 2,
+  Deal: 3,
+  Target: 4,
+  Finances: 5,
+};
 
 // Mapping of Badge Types to Icons
 const BadgeIcons = {
