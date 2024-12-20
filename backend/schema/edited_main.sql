@@ -180,7 +180,7 @@ CREATE TABLE EMPLOYEE_PROFILE (
     hire_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- Relationships
-    employee_id INT NOT NULL,
+    employee_id INT PRIMARY KEY,
     FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
 );
 
