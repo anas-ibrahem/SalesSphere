@@ -11,32 +11,80 @@ import {
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
 import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
-import { AddBusiness, AdminPanelSettings, BusinessCenter, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2, Settings } from "@mui/icons-material";
+import {
+  AddBusiness,
+  AdminPanelSettings,
+  BusinessCenter,
+  Logout,
+  NotificationAddRounded,
+  NotificationImportant,
+  Notifications,
+  Person2,
+  Settings,
+} from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
 
 const usersections = [
-  { route: "/home/", icon: Home, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Business" },
-  { route: "/home/deals", icon: BusinessCenter, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Deals" },
-  { route: "/home/records", icon: DollarSign, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Financial Records" },
-  { route: "/home/employees", icon: Users, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Employees" },
-  { route: "/home/customers", icon: UsersRound, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Customers" },
-  { route: "/home/logs", icon: FileText, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Logs" },
+  {
+    route: "/home/business",
+    icon: Home,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Business",
+  },
+  {
+    route: "/home/deals",
+    icon: BusinessCenter,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Deals",
+  },
+  {
+    route: "/home/records",
+    icon: DollarSign,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Financial Records",
+  },
+  {
+    route: "/home/employees",
+    icon: Users,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Employees",
+  },
+  {
+    route: "/home/customers",
+    icon: UsersRound,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Customers",
+  },
+  {
+    route: "/home/logs",
+    icon: FileText,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Logs",
+  },
 ];
 
 const adminsections = [
-  { route: "/admin/", icon: AddBusiness, roles: [AdminPrivileges.Normal, AdminPrivileges.Super], title: "Business Requests" },
-  { route: "/admin/admins", icon: AdminPanelSettings, roles: [AdminPrivileges.Normal, AdminPrivileges.Super], title: "Manage Admins" },
- 
+  {
+    route: "/admin/",
+    icon: AddBusiness,
+    roles: [AdminPrivileges.Normal, AdminPrivileges.Super],
+    title: "Business Requests",
+  },
+  {
+    route: "/admin/admins",
+    icon: AdminPanelSettings,
+    roles: [AdminPrivileges.Normal, AdminPrivileges.Super],
+    title: "Manage Admins",
+  },
 ];
 
 export default function SideBar({
   onSectionChange,
   isCollapsed,
   toggleSidebar,
-  type="user",
+  type = "user",
 }) {
-
   const [selectedSection, setSelectedSection] = useState(0);
 
   const { employee, notificationCount } = useContext(UserContext);
@@ -44,7 +92,9 @@ export default function SideBar({
   useEffect(() => {
     // check current route and set selected section accordingly
     const currentPath = window.location.pathname;
-    const sectionIndex = (type == "admin" ? adminsections : usersections).findIndex((section) => section.route === currentPath);
+    const sectionIndex = (
+      type == "admin" ? adminsections : usersections
+    ).findIndex((section) => section.route === currentPath);
     setSelectedSection(sectionIndex);
   }, []);
 
@@ -61,8 +111,9 @@ export default function SideBar({
       <div className="flex items-center justify-center h-20 ml-2 border-b border-gray-700">
         <Logo logoChoice={2} size="h-[48px] w-[48px]" />
         {!isCollapsed && (
-          <Link to={'/'}
-            //onClick={() => onSectionChange("default")} 
+          <Link
+            to={"/"}
+            //onClick={() => onSectionChange("default")}
             className="self-center text-xl font-semibold whitespace-nowrap ml-2 text-white hover:text-gray-400 "
           >
             Sales Sphere
@@ -85,14 +136,15 @@ export default function SideBar({
       </div>
 
       {/* Navigation Links */}
-      
+
       <ul className="flex-grow space-y-2 px-2">
-      {
-        (type == "admin" ? adminsections : usersections).map((section, index) => {
-          //if (section.roles.length === 0 || section.roles.includes(EmployeeRoles.DealExecutor)) {
+        {(type == "admin" ? adminsections : usersections).map(
+          (section, index) => {
+            //if (section.roles.length === 0 || section.roles.includes(EmployeeRoles.DealExecutor)) {
             return (
               <li key={index}>
-                <Link to={`${section.route}`}
+                <Link
+                  to={`${section.route}`}
                   onClick={() => {
                     setSelectedSection(index);
                   }}
@@ -103,43 +155,62 @@ export default function SideBar({
                 rounded hover:bg-gray-700 w-full text-left
                   `}
                 >
-                  <section.icon className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`} />
+                  <section.icon
+                    className={`h-5 w-5 mr-3 ${isCollapsed ? "ml-3" : " "}`}
+                  />
                   {!isCollapsed && <span>{section.title}</span>}
                 </Link>
               </li>
             );
-          //}
-        })
-      }
+            //}
+          }
+        )}
       </ul>
 
       {/* bottom part */}
-      <div className={"flex justify-center py-2" + (isCollapsed ? " flex-col" : " pl-3")}>
-        
-        {
-          (type != "admin" && employee && employee.id) && 
-          <Link to="/home/notifications" className="flex items-center py-2 px-4 rounded w-full text-left">
-            <Badge color="primary" overlap="circular" invisible={notificationCount === 0} badgeContent={notificationCount}>
+      <div
+        className={
+          "flex justify-center py-2" + (isCollapsed ? " flex-col" : " pl-3")
+        }
+      >
+        {type != "admin" && employee && employee.id && (
+          <Link
+            to="/home/notifications"
+            className="flex items-center py-2 px-4 rounded w-full text-left"
+          >
+            <Badge
+              color="primary"
+              overlap="circular"
+              invisible={notificationCount === 0}
+              badgeContent={notificationCount}
+            >
               <Notifications className="hover:text-gray-300" />
             </Badge>
           </Link>
-        }
-        {
-          (type != "admin" && employee && employee.id) && 
-          <Link to={"/home/employees/"+employee.id} className="flex items-center py-2 px-4 rounded w-full text-left">
+        )}
+        {type != "admin" && employee && employee.id && (
+          <Link
+            to={"/home/employees/" + employee.id}
+            className="flex items-center py-2 px-4 rounded w-full text-left"
+          >
             <Person2 className="hover:text-gray-300" />
           </Link>
-        }
-        
-        {
-          (type != "admin" && employee && employee.id) && 
-          <Link to={"/home/settings/"} className="flex items-center py-2 px-4 rounded w-full text-left">
+        )}
+
+        {type != "admin" && employee && employee.id && (
+          <Link
+            to={"/home/settings/"}
+            className="flex items-center py-2 px-4 rounded w-full text-left"
+          >
             <Settings className="hover:text-gray-300" />
           </Link>
-        }
+        )}
 
-        <Link to="/logout" className="flex items-center py-2 px-4 rounded w-full text-left">
-            <Logout className="hover:text-gray-300" />
+        <Link
+          to="/logout"
+          className="flex items-center py-2 px-4 rounded w-full text-left"
+        >
+          <Logout className="hover:text-gray-300" />
         </Link>
       </div>
     </div>

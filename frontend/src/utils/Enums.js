@@ -148,6 +148,7 @@ export {
   ContactTypes,
   DealStatus,
   PaymentMethods,
+  FinancialRecordTypes,
   NotificationPriority,
   AdminPrivileges,
   BadgeTypes,
@@ -155,5 +156,4 @@ export {
   TargetIcons,
   BusinessTypes,
   LogTypes,
-  FinancialRecordTypes
 };

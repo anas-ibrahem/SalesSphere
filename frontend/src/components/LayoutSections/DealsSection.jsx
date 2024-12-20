@@ -14,6 +14,7 @@ function DealsSection() {
   const [DealsData, setDealsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState("asc");
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -34,9 +35,11 @@ function DealsSection() {
   }, []);
 
   // Filtering logic
-  const filteredAndSortedDeals = DealsData.filter(
-    (deal) => filterStatus === "all" || DealStatus[deal.status] === filterStatus
-  ).sort((a, b) => {
+  const filteredAndSortedDeals = DealsData.filter(deal => {
+    const matchesStatus = filterStatus === "all" || DealStatus[deal.status] === filterStatus;
+    const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  }).sort((a, b) => {
     if (sortBy === "due_date") {
       return (
         (sortOrder === "asc" ? 1 : -1) *
@@ -47,6 +50,11 @@ function DealsSection() {
       return (sortOrder === "asc" ? 1 : -1) * (a.expenses - b.expenses);
     }
   });
+
+  // Reset to first page when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredAndSortedDeals.length / itemsPerPage);
@@ -76,9 +84,17 @@ function DealsSection() {
               )}
             </div>
 
-            {/* Filters */}
+            {/* Search and Filters */}
             <div className="flex justify-between mb-4">
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 items-center">
+                {/* Search Input */}
+                <input
+                  type="text"
+                  placeholder="Search deals..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="p-2 border rounded w-64"
+                />
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
@@ -98,7 +114,6 @@ function DealsSection() {
                   <option value="due_date">Sort by Date</option>
                   <option value="expenses">Sort by Expenses</option>
                 </select>
-                {/* Sort Order */}
                 <select
                   onChange={(e) => setSortOrder(e.target.value)}
                   className="p-2 border rounded"
@@ -120,6 +135,14 @@ function DealsSection() {
                       className="text-center"
                     >
                       Loading...
+                    </Typography>
+                  ) : currentDeals.length === 0 ? (
+                    <Typography
+                      variant="h6"
+                      color="blue-gray"
+                      className="text-center py-4"
+                    >
+                      No deals found
                     </Typography>
                   ) : (
                     currentDeals.map((deal) => (
@@ -172,13 +195,11 @@ function DealsSection() {
         }
       />
 
-      {/* Route for individual deal details */}
       <Route
-        path=":dealId"
+        path=":dealId/*"
         element={<DealDetails onBack={() => navigate("/home/deals")} />}
       />
 
-      {/* Route for adding a new deal */}
       <Route
         path="add"
         element={<OpenDealForm onBack={() => navigate("/home/deals")} />}

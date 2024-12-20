@@ -2,14 +2,6 @@ import React from "react";
 import { useState } from "react";
 // TODO delete this file
 
-export const BusinessSection = () => (
-  <section className="bg-white p-6 shadow-md h-screen">
-    <h1 className="text-2xl font-bold mb-4">Business Overview</h1>
-    <p>Detailed business insights and analytics.</p>
-    {/* Add more business-related content */}
-  </section>
-);
-
 export const DefaultSection = () => (
   <section className="bg-white p-6 shadow-md h-screen">
     <h1 className="text-2xl font-bold mb-4">Welcome to SalesSphere</h1>
