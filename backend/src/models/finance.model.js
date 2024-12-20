@@ -97,7 +97,7 @@ class FinanceModel {
             const result = await pool.query(`
                 SELECT SUM(amount) AS total_spent
                 FROM FINANCIAL_RECORD
-                WHERE deal_id = $1 AND type = 1;
+                WHERE deal_id = $1 AND type = 0;
             `, [deal_id]);
 
             const total_spent = result.rows[0].total_spent;
@@ -105,7 +105,7 @@ class FinanceModel {
             const result2 = await pool.query(`
                 SELECT SUM(amount) AS total_earned
                 FROM FINANCIAL_RECORD
-                WHERE deal_id = $1 AND type = 0;
+                WHERE deal_id = $1 AND type = 1;
             `, [deal_id]);
 
             const total_earned = result2.rows[0].total_earned;
@@ -113,7 +113,6 @@ class FinanceModel {
             return {
                 total_spent,
                 total_earned,
-                profit: total_earned - total_spent
             };
         }
         catch (error) {

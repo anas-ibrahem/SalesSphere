@@ -3,6 +3,7 @@ import bcypt from 'bcryptjs';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
 import { hash } from "crypto";
+import sendMail from "../utils/mailsender.js";
 
 class AuthController {
     constructor() {
@@ -86,6 +87,52 @@ class AuthController {
             return res.status(400).json({error: 'Account suspended', status: 2});
         res.json(emp);
     }
+
+    forgotPassword = async (req, res) => {
+        const empData = req.body;
+        if(!empData.email) {
+            return res.status(400).json({error: 'Email is required'});
+        }
+
+        const emp = await this.employeeModel.getByEmailForAuth(req.pool, empData.email);
+        if(emp) {
+            const code = Math.floor(100000 + Math.random() * 900000);
+            await this.employeeModel.setPwdResetCode(req.pool, emp.id, code);
+            sendMail(emp.email, 'Sales Sphere Reset Password', `Hi ${emp.first_name},<br>Your password reset code is <strong>${code}</strong> <br>If you did not request this, please ignore this email.`);
+            return res.json({message: 'Reset Code sent to your email'});
+        }
+        res.status(400).json({error: 'Invalid email'});
+    }
+
+    resetPassword = async (req, res) => {
+        const empData = req.body;
+        if(!empData.email || !empData.code || !empData.newPassword || !empData.confirmPassword) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(empData.newPassword !== empData.confirmPassword) {
+            return res.status(400).json({error: 'Passwords do not match'});
+        }
+
+        const emp = await this.employeeModel.getByEmailForAuth(req.pool, empData.email);
+        const reset_code = await this.employeeModel.getPwdResetCode(req.pool, emp.id);
+
+        if(!reset_code.code || reset_code.code !== empData.code) {
+            return res.status(400).json({error: 'Invalid reset code'});
+        }
+        if(reset_code.is_expired) {
+            return res.status(400).json({error: 'Reset code expired, please request a new one'});
+        }
+
+        if(emp && reset_code.code === empData.code) {
+            const hashedPassword = await bcypt.hash(empData.newPassword, 10);
+            await this.employeeModel.updatePassword(req.pool, emp.id, hashedPassword);
+            await this.employeeModel.deletePwdResetCode(req.pool, emp.id);
+            return res.json({message: 'Password updated successfully'});
+        }
+        res.status(400).json({error: 'Invalid email or code'});
+    }
+
 }
 
 

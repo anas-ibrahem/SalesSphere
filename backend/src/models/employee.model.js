@@ -368,9 +368,63 @@ class EmployeeModel {
                 SET hashed_password = $1
                 WHERE id = $2;
             `, [hashedPassword, employeeId]);
+            return true;
         }
         catch (error) {
             console.error('Database query error:', error);
+            return false;
+        }
+    }
+
+    setPwdResetCode = async (pool, employee_id, code) => {
+        try {
+            await pool.query(`
+                INSERT INTO forgot_password (employee_id, code, expiry)
+                VALUES ($1, $2, NOW() + INTERVAL '1 hour')
+                ON CONFLICT (employee_id) DO UPDATE SET code = $2, expiry = NOW() + INTERVAL '1 hour';
+            `, [employee_id, code]);
+            return true;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
+        }
+    }
+
+    getPwdResetCode = async (pool, employee_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT code, expiry
+                FROM forgot_password
+                WHERE employee_id = $1;
+            `, [employee_id]);
+
+            if(result.rows.length === 0) {
+                return {};
+            }
+
+            const code = result.rows[0];
+            const is_expired = new Date() > code.expiry;
+
+            return {code, is_expired};
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {};
+        }
+    }
+
+    deletePwdResetCode = async (pool, employee_id) => {
+        try {
+            await pool.query(`
+                DELETE FROM forgot_password
+                WHERE employee_id = $1;
+            `, [employee_id]);
+            return true;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return false;
         }
     }
     

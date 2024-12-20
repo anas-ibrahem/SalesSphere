@@ -52,7 +52,7 @@ class FinanceController {
                 employee_id: req.employeeId,
                 deal_id: financeData.deal_id,
                 type: 5,
-                content: 'A new finance record has been added ('+(financeData.amount < 0 ? '-' : '+')+'$' + financeData.amount + ')'
+                content: 'A new financial record has been added ('+(financeData.amount < 0 ? '-' : '+')+'$' + financeData.amount + ')'
             }
             this.logsModel.add(req.pool, logData);
         }
