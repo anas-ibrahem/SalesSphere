@@ -5,29 +5,13 @@ import { EmployeeRoles } from '../../utils/Enums.js';
 import { toast } from 'react-hot-toast';
 import UserContext from "../../context/UserContext";
 
-// id SERIAL PRIMARY KEY,
-// name VARCHAR(255) NOT NULL,
-// registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-// phone_number VARCHAR(255) NOT NULL,
-// email VARCHAR(255) NOT NULL UNIQUE,
-// city VARCHAR(255),
-// country VARCHAR(255) NOT NULL,
-// street VARCHAR(255),
-// website_url VARCHAR(255),
-// industry VARCHAR(255) NOT NULL,
-// -- Document URLs
-// managerid_card_url VARCHAR(255),
-// manager_personal_photo_url VARCHAR(255),
-// business_logo_url VARCHAR(255),
-
-
 const EditBusinessForm = ({onBack}) => {
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
         registration_date : '',
         phone_number: '',
-        city: '',
+        city: '', 
         country: '',
         street: '',
         website_url: '',
@@ -42,7 +26,6 @@ const EditBusinessForm = ({onBack}) => {
     const cloudName = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 
     useEffect(() => {
-        // Request to get business details of me only if i am manager
         const token = localStorage.getItem('token');
         fetchAPI(`/business/${me.business_id}`, 'GET' , null, token)
             .then(data => {
@@ -79,7 +62,6 @@ const EditBusinessForm = ({onBack}) => {
                 business_logo_url: business.business_logo_url || ''
             });
 
-            // Set initial profile picture preview if exists
             if (business.business_logo_url) {
                 setProfilePreview(business.business_logo_url);
             }
@@ -97,7 +79,6 @@ const EditBusinessForm = ({onBack}) => {
     const handleLogoChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Validate file type and size
             const validTypes = ['image/jpeg', 'image/png'];
             const maxSize = 5 * 1024 * 1024; // 5MB
     
@@ -136,15 +117,15 @@ const EditBusinessForm = ({onBack}) => {
                     setProfilePreview(data.secure_url);
                     setFormValues((prevValues) => ({
                         ...prevValues,
-                        profile_picture_url: data.secure_url,
+                        business_logo_url: data.secure_url,
                     }));
                     console.log(data.secure_url);
-                    toast.success('Profile picture uploaded successfully.');
+                    toast.success('Logo uploaded successfully.');
                 } else {
-                    toast.error('Failed to upload profile picture.');
+                    toast.error('Failed to upload Logo.');
                 }
             } catch (error) {
-                toast.error('An error occurred while uploading the profile picture.');
+                toast.error('An error occurred while uploading the Logo .');
                 console.error(error);
             } finally {
                 setUploading(false);
@@ -160,11 +141,12 @@ const EditBusinessForm = ({onBack}) => {
         const token = localStorage.getItem('token');
         console.log(formData);
         try {
-            const data = await fetchAPI('/employee/' + employee.id, 'PATCH', formData, token);
-            if(data.error) {
-            toast.error('An error occurred. Please try again.');
-            }
-            else  toast.success('Profile updated successfully');
+            const data = await fetchAPI('/business' ,'PATCH', formData , token);
+            if(data.error) 
+                toast.error('An error occurred. Please try again.');
+            else  
+                toast.success('Business updated successfully');
+
         } catch (error) {
             toast.error('An error occurred. Please try again.');
             console.error(error);
@@ -173,6 +155,7 @@ const EditBusinessForm = ({onBack}) => {
 
     return (
         <div className="bg-white p-6 shadow-md">
+
             {onBack && <button 
                 type="button" 
                 onClick={onBack} 
@@ -180,10 +163,10 @@ const EditBusinessForm = ({onBack}) => {
             >
                 <FaArrowLeft className="mr-2" /> Back
             </button>}
+
             <h2 className="text-center font-extrabold text-xl text-blue-800 mb-1">Edit Business</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                {/* Business Logo Upload */}
                 <div className="mb-4 flex flex-col items-center">
                     <div className="w-32 h-32 mb-4 relative">
                         {profilePreview ? (
@@ -200,7 +183,7 @@ const EditBusinessForm = ({onBack}) => {
                     </div>
                     
                     <label className={`bg-blue-500 text-white py-2 px-4 rounded-md text-lg shadow-md flex items-center cursor-pointer ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        <FaUpload className="mr-2" /> {uploading ? 'Uploading...' : 'Upload Profile Picture'}
+                        <FaUpload className="mr-2" /> {uploading ? 'Uploading...' : 'Upload Logo'}
                         <input 
                             type="file" 
                             name="logo_picture"
@@ -224,6 +207,7 @@ const EditBusinessForm = ({onBack}) => {
                         value={formValues.name}
                         onChange={handleChange}
                         required
+                        disabled = {true}
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
@@ -247,9 +231,11 @@ const EditBusinessForm = ({onBack}) => {
                         name="country"
                         value={formValues.country}
                         onChange={handleChange}
+                        disabled = {true}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
+
                 </div>
                 <div className="mb-4">
                     <label htmlFor="street" className="block mb-1 text-gray-600">Street *</label>
@@ -272,6 +258,7 @@ const EditBusinessForm = ({onBack}) => {
                         value={formValues.industry}
                         onChange={handleChange}
                         required
+                        disabled = {true}
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
@@ -296,6 +283,7 @@ const EditBusinessForm = ({onBack}) => {
                         name="email"
                         value={formValues.email}
                         onChange={handleChange}
+                        disabled = {true}
                         required
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
@@ -308,6 +296,7 @@ const EditBusinessForm = ({onBack}) => {
                         id="registration_date"
                         name="registration_date"
                         value={formValues.registration_date}
+                        disabled = {true}
                         onChange={handleChange}
                         required
                         className={`w-full p-2 border border-gray-300 rounded-md text-lg `}
@@ -333,9 +322,12 @@ const EditBusinessForm = ({onBack}) => {
                         className="w-full p-2 border border-gray-300 rounded-md text-lg"
                     />
                 </div>
-
-
+                
+                <p className="text-sm text-gray-500 mt-2">
+                        To edit uneditable fields, please contact <a href="mailto:salessphere@support.mail" className="text-blue-500">salessphere@support.mail</a>
+                    </p>
                 <div className="text-center mt-5">
+                    
                     <button
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md text-lg shadow-md"
