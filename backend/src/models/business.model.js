@@ -95,6 +95,25 @@ class BusinessModel {
             return {error: 'Error registering business'};
         }
     }
+
+    update = async (pool, businessId, businessData) => {
+        // only update phone_number, city, website_url, street, business_logo_url
+        try {
+            const result = await pool.query(`
+                UPDATE BUSINESS
+                SET phone_number = $1, city = $2, website_url = $3, street = $4, business_logo_url = $5
+                WHERE id = $6
+                RETURNING *;
+            `, [businessData.phone_number, businessData.city, businessData.website_url, businessData.street, businessData.business_logo_url, businessId]);
+
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {};
+        }
+
+    }
 }
 
 export default BusinessModel;

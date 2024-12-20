@@ -35,9 +35,10 @@ class FinanceController {
 
     add = async (req, res) => {
         const financeData = req.body;
-        if(!financeData.business_id || !financeData.amount || !financeData.description || !financeData.deal_id || !financeData.type || !financeData.payment_method) {
+        if(financeData.amount === undefined || financeData.description === undefined || financeData.deal_id === undefined || financeData.type === undefined || financeData.payment_method === undefined) {
             return res.status(400).json({error: 'All data are required'});
         }
+        financeData.business_id = req.businessId;
 
         const result = await this.financeModel.add(req.pool, financeData);
         res.json({success: result});

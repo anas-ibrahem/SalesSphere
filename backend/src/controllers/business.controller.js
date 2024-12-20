@@ -62,6 +62,18 @@ class BusinessController {
         }
         res.json(result);
     }
+
+    update = async (req, res) => {
+        // only update phone_number, city, website_url, street, business_logo_url
+        const businessData = req.body;
+
+        if(!businessData.phone_number || !businessData.city || !businessData.street || !businessData.website_url || !businessData.business_logo_url) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        const result = await this.BusinessModel.update(req.pool, req.businessId, businessData);
+        res.json(result);
+    }
 }
 
 
