@@ -14,7 +14,9 @@ import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
 import {
   AddBusiness,
   AdminPanelSettings,
+  Business,
   BusinessCenter,
+  Leaderboard,
   Logout,
   NotificationAddRounded,
   NotificationImportant,
@@ -27,10 +29,16 @@ import UserContext from "../context/UserContext";
 
 const usersections = [
   {
+    route: "/home/",
+    icon: Leaderboard,
+    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener, EmployeeRoles.Manager],
+    title: "Overview",
+  },
+  {
     route: "/home/business",
-    icon: Home,
+    icon: Business,
     roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
-    title: "Business",
+    title: "Business Profile",
   },
   {
     route: "/home/deals",

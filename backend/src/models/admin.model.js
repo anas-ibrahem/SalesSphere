@@ -1,3 +1,5 @@
+import e from "express";
+
 class AdminModel {
     constructor({id, email, username, hashed_password, privilege}) {
         this.id = id;
@@ -42,7 +44,7 @@ class AdminModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Admin not found'};
             }
 
             const results = result.rows[0];
@@ -56,7 +58,7 @@ class AdminModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Admin not found'};
         }
     }
 
@@ -84,7 +86,7 @@ class AdminModel {
             `, [email]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Admin not found'};
             }
 
             const results = result.rows[0];
@@ -99,7 +101,7 @@ class AdminModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Admin not found'};
         }
     }
 
@@ -122,7 +124,7 @@ class AdminModel {
             `, [admin.email, admin.username, admin.hashed_password]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Email/Username already exists'};
             }
 
             const results = result.rows[0];
@@ -159,7 +161,7 @@ class AdminModel {
             `, [admin.email, admin.id]);
             }
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Admin not found'};
             }
 
             const results = result.rows[0];
@@ -172,7 +174,7 @@ class AdminModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Admin not found'};
         }
     }
 

@@ -12,6 +12,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import NotificationsSection from "../components/LayoutSections/NotificationsSection";
 import SettingsSection from "../components/LayoutSections/SettingsSection";
 import BusinessSection from "../components/LayoutSections/BusinessSection";
+import OverviewSection from "../components/LayoutSections/OverviewSection";
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -63,7 +64,7 @@ function Home() {
             <Route path="/deals/*" element={<DealsSection />} />
             <Route path="/employees/*" element={<EmployeesSection />} />
             <Route path="/customers/*" element={<CustomersSection />} />
-            <Route path="/" element={<DefaultSection />} />
+            <Route path="/" element={<OverviewSection />} />
           </Routes>
         </div>
       </div>

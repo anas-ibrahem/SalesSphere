@@ -63,7 +63,7 @@ class EmployeeModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Employee not found'};
             }
 
             const results = result.rows[0];
@@ -77,7 +77,7 @@ class EmployeeModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Employee not found'};
         }
     }
 
@@ -103,7 +103,7 @@ class EmployeeModel {
             `, [email]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Employee not found'};
             }
 
             const results = result.rows[0];
@@ -118,7 +118,7 @@ class EmployeeModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Employee not found'};
         }
     }
 
@@ -280,7 +280,7 @@ class EmployeeModel {
             `, [employee_id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Employee not found'};
             }
 
             const results = result.rows[0];
@@ -347,7 +347,8 @@ class EmployeeModel {
             const targets_result = await pool.query(`
                 SELECT *
                 FROM target t
-                WHERE t.employee_id = $1;
+                JOIN employee_target et ON t.id = et.target_id
+                WHERE et.employee_id = $1;
             `, [employee_id]);
 
             results.badges = badges_result.rows;
@@ -360,7 +361,7 @@ class EmployeeModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Employee not found'};
         }
     }
 
@@ -446,7 +447,7 @@ class EmployeeModel {
             `, [employee_id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Invalid reset code'};
             }
 
             const code = result.rows[0];
@@ -455,7 +456,7 @@ class EmployeeModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Invalid reset code'};
         }
     }
 

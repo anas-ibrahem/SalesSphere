@@ -61,7 +61,7 @@ class FinanceModel {
             `, [id]);
 
             if (result.rows.length === 0) {
-                return {};
+                return {error: 'Financial record not found'};
             }
 
             const results = result.rows[0];
@@ -71,7 +71,7 @@ class FinanceModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Financial record not found'};
         }
     }
     getByDealId = async (pool, deal_id) => {
@@ -117,7 +117,7 @@ class FinanceModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Financial record not found'};
         }
     }
     add = async (pool, financial_record) => {

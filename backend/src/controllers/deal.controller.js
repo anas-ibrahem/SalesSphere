@@ -1,12 +1,14 @@
 import e from "express";
 import DealModel from "../models/deal.model.js";
 import LogsModel from "../models/logs.model.js";
+import TargetModel from "../models/target.model.js";
 
 
 class DealController {
     constructor() {
         this.dealModel = new DealModel();
         this.logsModel = new LogsModel();
+        this.targetModel = new TargetModel();
     }
     getAll = async (req, res) => {
         const emps = await this.dealModel.getAll(req.pool, req.businessId);
@@ -54,6 +56,7 @@ class DealController {
                 content: 'A new deal was opened'
             }
             this.logsModel.add(req.pool, logData);
+            this.targetModel.addProgress(req.pool, req.employeeId, 0);
         }
         res.json(result);
     }
@@ -102,6 +105,9 @@ class DealController {
                 content: 'Deal closed'
             }
             this.logsModel.add(req.pool, logData);
+            if(dealData.status === 2) {
+                this.targetModel.addProgress(req.pool, req.employeeId, 1);
+            }
         }
 
         res.json({status : dealData.status});

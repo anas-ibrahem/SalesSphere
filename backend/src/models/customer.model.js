@@ -69,7 +69,7 @@ class CustomerModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Customer not found'};
             }
             const results = result.rows[0];
 
@@ -86,7 +86,7 @@ class CustomerModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Customer not found'};
         }
     }
 

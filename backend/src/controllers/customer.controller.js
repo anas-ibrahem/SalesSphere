@@ -2,12 +2,14 @@ import CustomerModel from "../models/customer.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
 import LogsModel from "../models/logs.model.js";
+import TargetModel from "../models/target.model.js";
 
 
 class CustomerController {
     constructor() {
         this.customerModel = new CustomerModel({});
         this.logsModel = new LogsModel();
+        this.targetModel = new TargetModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -50,6 +52,7 @@ class CustomerController {
                 content: 'A new customer has been added'
             }
             this.logsModel.add(req.pool, logData);
+            this.targetModel.addProgress(req.pool, req.employeeId, 2);
         }
         res.json(result);
     }

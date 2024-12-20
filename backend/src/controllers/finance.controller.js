@@ -1,11 +1,13 @@
 import FinanceModel from "../models/finance.model.js";
 import LogsModel from "../models/logs.model.js";
+import TargetModel from "../models/target.model.js";
 
 
 class FinanceController {
     constructor() {
         this.financeModel = new FinanceModel();
         this.logsModel = new LogsModel();
+        this.targetModel = new TargetModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -58,6 +60,8 @@ class FinanceController {
             content: 'A new financial record has been added (' + (financeData.type == 0 ? '-' : '+') + '$' + financeData.amount + ')'
         }
         this.logsModel.add(req.pool, logData);
+
+        this.targetModel.addProgress(req.pool, req.employeeId, 3);
 
         res.json(result);
     }
