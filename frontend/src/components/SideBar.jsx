@@ -16,6 +16,7 @@ import {
   AdminPanelSettings,
   BusinessCenter,
   Logout,
+  Dashboard,
   NotificationAddRounded,
   NotificationImportant,
   Notifications,
@@ -27,39 +28,45 @@ import UserContext from "../context/UserContext";
 
 const usersections = [
   {
+    route: "/home/dashboard",
+    icon: Dashboard,
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    title: "Dashboard",
+  },
+  {
     route: "/home/business",
     icon: Home,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Business",
   },
   {
     route: "/home/deals",
     icon: BusinessCenter,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
     title: "Deals",
   },
   {
     route: "/home/records",
     icon: DollarSign,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor],
     title: "Financial Records",
   },
   {
     route: "/home/employees",
     icon: Users,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Employees",
   },
   {
     route: "/home/customers",
     icon: UsersRound,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.DealOpener , EmployeeRoles.Manager],
     title: "Customers",
   },
   {
     route: "/home/logs",
     icon: FileText,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Logs",
   },
 ];
@@ -140,7 +147,7 @@ export default function SideBar({
       <ul className="flex-grow space-y-2 px-2">
         {(type == "admin" ? adminsections : usersections).map(
           (section, index) => {
-            //if (section.roles.length === 0 || section.roles.includes(EmployeeRoles.DealExecutor)) {
+            if (section.roles.length === 0 || section.roles.includes(employee.role)) {
             return (
               <li key={index}>
                 <Link
@@ -162,7 +169,7 @@ export default function SideBar({
                 </Link>
               </li>
             );
-            //}
+            }
           }
         )}
       </ul>

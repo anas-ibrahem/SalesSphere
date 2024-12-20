@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { List, ListItem, Card, Typography } from "@material-tailwind/react";
 import AddCustomerForm from "../Forms/AddCustomerForm";
 import CustomerProfile from "./CustomerProfile";
 import Pagination from "../Pagination";
 import fetchAPI from "../../utils/fetchAPI";
-import { CustomerTypes } from "../../utils/Enums";
+import { CustomerTypes, EmployeeRoles } from "../../utils/Enums";
 import { LineChart } from "@mui/x-charts";
 import { BarChart as BarChartIcon, Token } from "@mui/icons-material";
 import { BarChart } from "@mui/x-charts";
+import UserContext from "../../context/UserContext";
 
 const CustomersSection = () => {
   const [customers, setCustomers] = useState([]);
@@ -24,7 +25,8 @@ const CustomersSection = () => {
   const [reload, setReload] = useState(false);
   const CustomersPerPage = 4;
   const navigate = useNavigate();
-
+  const {employee : me} = useContext(UserContext);
+  const canAddCustomer = (me.role === EmployeeRoles.DealOpener);
   // Fetch customers from API
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -132,7 +134,6 @@ const CustomersSection = () => {
     indexOfLastCustomer
   );
   const totalPages = Math.ceil(sortedCustomers.length / CustomersPerPage);
-
   const manager = true;
 
   return (
@@ -144,7 +145,7 @@ const CustomersSection = () => {
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">Customers</h1>
 
-              {manager && (
+              {canAddCustomer && (
                 <button
                   onClick={() => navigate("add")}
                   className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"

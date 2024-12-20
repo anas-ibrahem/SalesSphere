@@ -12,6 +12,15 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import NotificationsSection from "../components/LayoutSections/NotificationsSection";
 import SettingsSection from "../components/LayoutSections/SettingsSection";
 import BusinessSection from "../components/LayoutSections/BusinessSection";
+import { Dashboard } from "@mui/icons-material";
+
+function DashBoardOverView() {
+  return (
+    <div>
+      <h1>OverView</h1>
+    </div>
+  );
+}
 
 function Home() {
   const [activeSection, setActiveSection] = useState("default");
@@ -55,6 +64,7 @@ function Home() {
       >
         <div className="max-h-full overflow-y-auto ">
           <Routes>
+            <Route path="/dashboard" element={<DashBoardOverView />} />
             <Route path="/business" element={<BusinessSection />} />
             <Route path="/logs" element={<LogsSection />} />
             <Route path="/records" element={<RecordsSection />} />

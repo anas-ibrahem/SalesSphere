@@ -57,7 +57,7 @@ const CustomerProfile = ({ back }) => {
   const [customer, setCustomer] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const { employee:me } = useContext(UserContext);
-
+  const canEditCustomer = (me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -110,7 +110,7 @@ const CustomerProfile = ({ back }) => {
                 >
                   Back
                 </button>
-                {(me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id) && 
+                {canEditCustomer && 
                     <button
                   onClick={handleEditClick}
                   className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 
