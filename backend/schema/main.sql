@@ -184,3 +184,13 @@ CREATE TABLE ADMIN (
     hashed_password VARCHAR(255) NOT NULL,
     privilege INT NOT NULL DEFAULT 0 -- 0 for normal admin, 1 for super admin
 );
+
+
+-- forgot password table
+CREATE TABLE FORGOT_PASSWORD (
+    employee_id INT PRIMARY KEY,
+    code VARCHAR(255) NOT NULL,
+    expiry TIMESTAMP NOT NULL,
+
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
+);
