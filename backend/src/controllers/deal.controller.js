@@ -51,7 +51,9 @@ class DealController {
         }
 
         const result = await this.dealModel.claim(req.pool, dealData.id , req.employeeId);
-        res.json(result);
+        if (!result)
+            return res.status(400).json({error: 'Something unexpected went wrong'});
+        res.json({message : 'Deal claimed successfully'});
     }
 
     close = async (req, res) => {
@@ -65,7 +67,10 @@ class DealController {
         }
 
         const result = await this.dealModel.close(req.pool, dealData.id , dealData.status);
-        res.json(result);
+        if (!result)
+            return res.status(400).json({error: 'Something unexpected went wrong'});
+
+        res.json({status : dealData.status});
     }
 
     getEmployeeDeals = async (req, res) => {
