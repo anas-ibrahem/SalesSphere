@@ -2,11 +2,13 @@ import BusinessModel from '../models/business.model.js';
 import bcypt from 'bcryptjs';
 import validator from 'validator';
 import EmployeeModel from '../models/employee.model.js';
+import LogsModel from '../models/logs.model.js';
 
 
 class BusinessController {
     constructor() {
         this.BusinessModel = new BusinessModel({});
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -60,6 +62,14 @@ class BusinessController {
         if(result.error) {
             return res.status(400).json({error: result.error});
         }
+        else {
+            const logData = {
+                business_id: result.id,
+                type: 0,
+                content: 'Business registered'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(result);
     }
 
@@ -72,6 +82,14 @@ class BusinessController {
         }
 
         const result = await this.BusinessModel.update(req.pool, req.businessId, businessData);
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                type: 0,
+                content: 'Business information updated'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json(result);
     }
 }

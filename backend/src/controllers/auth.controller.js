@@ -48,13 +48,11 @@ class AuthController {
 
         const emp = await this.employeeModel.getByIdForAuth(req.pool, req.employeeId);
         
-        console.log(emp);
         
         if(emp && emp.hashed_password) {
             const match = await bcypt.compare(empData.currentPassword, emp.hashed_password);
             if(match) {
                 const hashedPassword = await bcypt.hash(empData.newPassword, 10);
-                console.log(hashedPassword);
                 await this.employeeModel.updatePassword(req.pool, req.employeeId, hashedPassword);
                 return res.json({message: 'Password updated successfully'});
             }
