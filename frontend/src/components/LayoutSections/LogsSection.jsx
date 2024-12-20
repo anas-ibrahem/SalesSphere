@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Routes, Route, useNavigate, Link } from "react-router-dom";
-import EmployeeProfile from "./EmployeeProfile";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   List,
   ListItem,
@@ -12,8 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
 import { LogTypes } from "../../utils/Enums";
-import { AccessTime, Paid, Person, CrisisAlert, BusinessCenter, Business } from "@mui/icons-material";
-import UserContext from "../../context/UserContext";
+import { Paid, Person, CrisisAlert, BusinessCenter, Business } from "@mui/icons-material";
 
 const LogIcons = {
     [LogTypes.Business]: Business,
