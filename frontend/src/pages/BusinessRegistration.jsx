@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/UserContext';
 import fetchAPI from '../utils/fetchAPI';
 import { EmployeeRoles } from '../utils/Enums';
+import getFileUrl from '../utils/getFileURL';
 
 const BusinessRegistration = () => {
   const theme = useTheme();
@@ -79,44 +80,24 @@ const BusinessRegistration = () => {
       return;
     }
 
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    const url = await getFileUrl(file);
+    console.log(url);
 
-    if (!cloudName || !uploadPreset) {
-      toast.error('Cloudinary configuration is missing. Please check your .env file.');
-      return;
+    if (url) {
+      setSelectedFiles(prev => ({
+        ...prev,
+        [fileType]: url
+      }));
+      
+      console.log(fileType, url);
+      formik.setFieldValue(fileType, url);
+      // Mark the field as touched after successful upload
+      formik.setFieldTouched(fileType, true, false);
+      toast.success('File uploaded successfully.');
+    } else {
+      toast.error('Failed to upload file.');
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
-
-    try {
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.secure_url) {
-        setSelectedFiles(prev => ({
-          ...prev,
-          [fileType]: data.secure_url
-        }));
-        
-        console.log(fileType, data.secure_url);
-        formik.setFieldValue(fileType, data.secure_url);
-        // Mark the field as touched after successful upload
-        formik.setFieldTouched(fileType, true, false);
-        toast.success('File uploaded successfully.');
-      } else {
-        toast.error('Failed to upload file.');
-      }
-    } catch (error) {
-      toast.error('An error occurred while uploading the file.');
-      console.error(error);
-    }
   };
 
   const handleNext = async (e, formik) => {
@@ -183,7 +164,10 @@ const BusinessRegistration = () => {
         city: values.businessCity,
         street: values.businessStreet,
         website_url: values.businessWebsite,
-        industry: values.businessIndustry
+        industry: values.businessIndustry,
+        business_logo_url: values.businessLogo,
+        managerid_card_url: values.managerID,
+        manager_personal_photo_url: values.managerPhoto
       },
       employee_data: {
         first_name: values.firstName,
@@ -263,7 +247,7 @@ const BusinessRegistration = () => {
               managerPhoto: '',
               businessLogo: '',
             }}
-            // validationSchema={getValidationSchema(activeStep)}
+            validationSchema={getValidationSchema(activeStep)}
             onSubmit={handleSubmit}
           >
             {(formik) => (

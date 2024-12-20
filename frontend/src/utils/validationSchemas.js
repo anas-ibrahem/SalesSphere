@@ -59,23 +59,12 @@ const PersonalInfoSchema = Yup.object().shape({
     businessIndustry: Yup.string().required('Industry is required'),
   });
   
-  const validateFile = (file) => {
-    if (file) {
-      if (file.size > 1024 * 1024 * 2) {
-        return 'File size must be less than 2MB';
-      }
-      if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-        return 'File format not supported';
-      }
-    }
-    return true;
-  };
+
 
   const DocumentUploadSchema = Yup.object().shape({
-    managerID: Yup.mixed().required('Personal ID is required').test('fileSize', 'File size must be less than 2MB', value => validateFile(value)),
-    managerPhoto: Yup.mixed().required('Personal Photo is required').test('fileSize', 'File size must be less than 2MB', value => validateFile(value)),
-    businessLogo: Yup.mixed().required('Business Logo is required').test('fileSize', 'File size must be less than 2MB', value => validateFile(value)),
-    businessRegistrationDoc: Yup.mixed().required('Business Registration Document is required').test('fileSize', 'File size must be less than 2MB', value => validateFile(value)),
+    managerID: Yup.string().required('Personal ID is required').url('Invalid file type'),
+    managerPhoto: Yup.string().required('Personal Photo is required').url('Invalid file type'),
+    businessLogo: Yup.string().required('Business Logo is required').url('Invalid file type'),
   });
 
-export { PersonalInfoSchema, ChangePasswordSchema, BusinessInfoSchema, DocumentUploadSchema, validateFile };
+export { PersonalInfoSchema, ChangePasswordSchema, BusinessInfoSchema, DocumentUploadSchema };
