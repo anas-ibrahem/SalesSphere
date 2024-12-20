@@ -36,7 +36,6 @@ class CustomerController {
   
         const businessId = req.businessId;
 
-        console.log('businessId:', businessId);
         customerData.business_id = businessId;
         customerData.added_by = req.employeeId;
         
@@ -56,13 +55,11 @@ class CustomerController {
     }
 
     getCustomersPerDate = async (req, res) => {
-        console.log(req.businessId);
         const customers = await this.customerModel.getCustomersPerDate(req.pool, req.businessId);
         res.json(customers);
     }
 
     getTopCustomersByRevenue = async (req, res) => {
-        console.log(req.businessId);
         const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
         res.json(customers);
     }

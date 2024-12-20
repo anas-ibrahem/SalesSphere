@@ -44,7 +44,6 @@ class EmployeeController {
 
         const businessId = req.businessId;
 
-        console.log('businessId:', businessId);
         empData.business_id = businessId;
         
         const newEmployee = new EmployeeModel(empData);
