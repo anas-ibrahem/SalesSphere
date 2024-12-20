@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import {
-  List,
-  ListItem,
-  Card,
-  Typography,
-} from "@material-tailwind/react";
+import { List, ListItem, Card, Typography } from "@material-tailwind/react";
 import AddCustomerForm from "../Forms/AddCustomerForm";
 import CustomerProfile from "./CustomerProfile";
 import Pagination from "../Pagination";
-import fetchAPI from '../../utils/fetchAPI';
+import fetchAPI from "../../utils/fetchAPI";
 import { CustomerTypes } from "../../utils/Enums";
-import { LineChart } from '@mui/x-charts';
-import { BarChart as BarChartIcon } from "@mui/icons-material";
-import { BarChart } from '@mui/x-charts';
+import { LineChart } from "@mui/x-charts";
+import { BarChart as BarChartIcon, Token } from "@mui/icons-material";
+import { BarChart } from "@mui/x-charts";
 
 const CustomersSection = () => {
   const [customers, setCustomers] = useState([]);
@@ -26,14 +21,14 @@ const CustomersSection = () => {
 
   const [metrics, setMetrics] = useState([]);
   const [revenueMetrics, setRevenueMetrics] = useState([]);
-  const [isBack, setIsBack] = useState(false);
+  const [reload, setReload] = useState(false);
   const CustomersPerPage = 4;
   const navigate = useNavigate();
 
   // Fetch customers from API
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    fetchAPI('/customer', 'GET', null, token)
+    const token = localStorage.getItem("token");
+    fetchAPI("/customer", "GET", null, token)
       .then((data) => {
         console.log(data);
         setCustomers(data);
@@ -44,26 +39,31 @@ const CustomersSection = () => {
         setLoading(false);
       });
 
-    fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
-      console.log(data);
-      setMetrics(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    }
-    );
+    fetchAPI("/customer/metrics", "GET", null, token)
+      .then((data) => {
+        console.log(data);
+        setMetrics(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching metrics:", error);
+      });
 
-    fetchAPI('/customer/metrics/revenue', 'GET', null, token).then((data) => {
-      console.log(data);
-      setRevenueMetrics(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    }
-    );
-
-  }, [isBack]);
+    fetchAPI("/customer/metrics/revenue", "GET", null, token)
+      .then((data) => {
+        console.log(data);
+        setRevenueMetrics(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching metrics:", error);
+      });
+  }, [reload]);
 
   const getCustomerType = (typeValue) => {
-    return Object.keys(CustomerTypes).find(key => CustomerTypes[key] === typeValue) || "Unknown";
+    return (
+      Object.keys(CustomerTypes).find(
+        (key) => CustomerTypes[key] === typeValue
+      ) || "Unknown"
+    );
   };
 
   // Filtering logic
@@ -71,11 +71,20 @@ const CustomersSection = () => {
     const customerType = getCustomerType(customer.type);
     return (
       (filterType === "All" || customerType === filterType) &&
-      (searchQuery === "" || 
-       customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       customer.email.toLowerCase().includes(searchQuery.toLowerCase()))
+      (searchQuery === "" ||
+        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   });
+  function handleOnBack() {
+    setSearchQuery("");
+    setFilterType("All");
+    setSortField("registration_date");
+    setSortOrder("asc");
+    setCurrentPage(1);
+    setReload(!reload);
+    navigate("/home/customers");
+  }
 
   // Sorting logic
   const sortedCustomers = [...filterCustomers].sort((a, b) => {
@@ -84,32 +93,32 @@ const CustomersSection = () => {
         const aDate = new Date(a.registration_date);
         const bDate = new Date(b.registration_date);
         return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-      
+
       case "name":
-        return sortOrder === "asc" 
+        return sortOrder === "asc"
           ? a.name.localeCompare(b.name)
           : b.name.localeCompare(a.name);
-      
+
       case "open_deals":
         return sortOrder === "asc"
           ? a.open_deals_count - b.open_deals_count
           : b.open_deals_count - a.open_deals_count;
-      
+
       case "closed_won_deals":
         return sortOrder === "asc"
           ? a.closed_won_deals_count - b.closed_won_deals_count
           : b.closed_won_deals_count - a.closed_won_deals_count;
-      
+
       case "closed_lost_deals":
         return sortOrder === "asc"
           ? a.closed_lost_deals_count - b.closed_lost_deals_count
           : b.closed_lost_deals_count - a.closed_lost_deals_count;
-      
+
       case "claimed_deals":
         return sortOrder === "asc"
           ? a.claimed_deals_count - b.claimed_deals_count
           : b.claimed_deals_count - a.claimed_deals_count;
-      
+
       default:
         return 0;
     }
@@ -185,7 +194,7 @@ const CustomersSection = () => {
                 </select>
 
                 {/* Search Input */}
-                <input 
+                <input
                   type="text"
                   placeholder="Search customers..."
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -232,7 +241,10 @@ const CustomersSection = () => {
                               className="font-normal flex justify-between"
                             >
                               <p className="mr-28">
-                                Registration Date: {new Date(customer.registration_date).toLocaleDateString()}
+                                Registration Date:{" "}
+                                {new Date(
+                                  customer.registration_date
+                                ).toLocaleDateString()}
                               </p>
                             </Typography>
                             <Typography
@@ -241,10 +253,19 @@ const CustomersSection = () => {
                               className="font-normal flex justify-between mt-2"
                             >
                               <div className="flex space-x-4">
-                                <span>Open Deals: {customer.open_deals_count}</span>
-                                <span>Claimed Deals: {customer.claimed_deals_count}</span>
-                                <span>Closed Won: {customer.closed_won_deals_count}</span>
-                                <span>Closed Lost: {customer.closed_lost_deals_count}</span>
+                                <span>
+                                  Open Deals: {customer.open_deals_count}
+                                </span>
+                                <span>
+                                  Claimed Deals: {customer.claimed_deals_count}
+                                </span>
+                                <span>
+                                  Closed Won: {customer.closed_won_deals_count}
+                                </span>
+                                <span>
+                                  Closed Lost:{" "}
+                                  {customer.closed_lost_deals_count}
+                                </span>
                               </div>
                             </Typography>
                           </div>
@@ -256,7 +277,9 @@ const CustomersSection = () => {
               </div>
               {/* Metrics Part */}
               <div className="flex flex-col mt-2 p-2 flex-grow">
-                <h1 className="text-xl mb-2"><BarChartIcon /> Metrics</h1>
+                <h1 className="text-xl mb-2">
+                  <BarChartIcon /> Metrics
+                </h1>
                 <div className="graph">
                   <div className="font-bold">Total Customers</div>
                   <LineChart
@@ -267,21 +290,23 @@ const CustomersSection = () => {
                       top: 50,
                       bottom: 50,
                     }}
-                    series={[{
-                      dataKey: 'customers_count',
-                      name: 'Customers',
-                      label: 'Customers',
-                      color: '#8884d8',
-                    }]}
-
-                    xAxis={[{
-                      id: 'Date',
-                      dataKey: 'reg_date',
-                      label: 'Date',
-                      scaleType: 'band',
-                      valueFormatter: (v) => new Date(v).toLocaleDateString(),
-                  }]}
-                  
+                    series={[
+                      {
+                        dataKey: "customers_count",
+                        name: "Customers",
+                        label: "Customers",
+                        color: "#8884d8",
+                      },
+                    ]}
+                    xAxis={[
+                      {
+                        id: "Date",
+                        dataKey: "reg_date",
+                        label: "Date",
+                        scaleType: "band",
+                        valueFormatter: (v) => new Date(v).toLocaleDateString(),
+                      },
+                    ]}
                     width={600}
                     height={300}
                   />
@@ -298,37 +323,35 @@ const CustomersSection = () => {
                       top: 50,
                       bottom: 50,
                     }}
-
-                    series={[{
-                      dataKey: 'total_revenue',
-                      name: 'Revenue',
-                      label: 'Revenue Per Customer',
-                      color: '#8884d8',
-                    }]}
-
-                    yAxis={[{
-                      id: 'Name',
-                      dataKey: 'name',
-                      scaleType: 'band',
-                      valueFormatter: (v) => v.length > 10 ? v.substring(0, 10) + '...' : v,
-                      labelStyle: {
-                        maxWidth: 50,
-                        whiteSpace: 'break-spaces',
-                        overflowWrap: 'break-word',
-                      }
-                    }]}
-
-                    grid={
-                      {vertical: {stroke: '#e0e0e0'}}
-                    }
-                  
+                    series={[
+                      {
+                        dataKey: "total_revenue",
+                        name: "Revenue",
+                        label: "Revenue Per Customer",
+                        color: "#8884d8",
+                      },
+                    ]}
+                    yAxis={[
+                      {
+                        id: "Name",
+                        dataKey: "name",
+                        scaleType: "band",
+                        valueFormatter: (v) =>
+                          v.length > 10 ? v.substring(0, 10) + "..." : v,
+                        labelStyle: {
+                          maxWidth: 50,
+                          whiteSpace: "break-spaces",
+                          overflowWrap: "break-word",
+                        },
+                      },
+                    ]}
+                    grid={{ vertical: { stroke: "#e0e0e0" } }}
                     width={600}
                     height={300}
                   />
                 </div>
-
+              </div>
             </div>
-          </div>
 
             {/* Pagination */}
             <Pagination
@@ -341,19 +364,11 @@ const CustomersSection = () => {
       />
       <Route
         path=":customerId/*"
-        element={<CustomerProfile back={() => navigate("/home/customers")} />}
+        element={<CustomerProfile back={handleOnBack} />}
       />
-      <Route
-        path="add"
-        element={
-          <AddCustomerForm onBack={() => {
-            setIsBack(!isBack);
-            navigate("/home/customers")
-          }} />
-        }
-      />
+      <Route path="add" element={<AddCustomerForm onBack={handleOnBack} />} />
     </Routes>
   );
-}
+};
 
 export default CustomersSection;

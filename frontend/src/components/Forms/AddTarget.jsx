@@ -54,7 +54,7 @@ const AddTarget = ({ onBack }) => {
       .then((data) => {
         console.log(data);
         toast.success("Target added successfully");
-        navigate(-1);
+        onBack();
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");

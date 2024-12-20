@@ -53,7 +53,7 @@ const EditCustomerForm = ({ customer, onBack }) => {
           toast.error("An error occurred. Please try again.");
         } else {
           toast.success("Customer edited successfully");
-          navigate(-1);
+          onBack();
         }
       })
       .catch((error) => {

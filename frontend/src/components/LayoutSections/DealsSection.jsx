@@ -8,6 +8,7 @@ import fetchAPI from "../../utils/fetchAPI";
 import { DealStatus } from "../../utils/Enums";
 
 function DealsSection() {
+  const [reload, setReload] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("date_opened");
@@ -32,12 +33,15 @@ function DealsSection() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [reload]);
 
   // Filtering logic
-  const filteredAndSortedDeals = DealsData.filter(deal => {
-    const matchesStatus = filterStatus === "all" || DealStatus[deal.status] === filterStatus;
-    const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredAndSortedDeals = DealsData.filter((deal) => {
+    const matchesStatus =
+      filterStatus === "all" || DealStatus[deal.status] === filterStatus;
+    const matchesSearch = deal.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   }).sort((a, b) => {
     if (sortBy === "due_date") {
@@ -64,6 +68,16 @@ function DealsSection() {
     indexOfFirstDeal,
     indexOfLastDeal
   );
+
+  function handleOnBack() {
+    setSearchQuery("");
+    setSortBy("");
+    setSortOrder("asc");
+    setCurrentPage(1);
+    setFilterStatus("all");
+    setReload(!reload);
+    navigate("/home/deals");
+  }
 
   return (
     <Routes>
@@ -195,15 +209,9 @@ function DealsSection() {
         }
       />
 
-      <Route
-        path=":dealId/*"
-        element={<DealDetails onBack={() => navigate("/home/deals")} />}
-      />
+      <Route path=":dealId/*" element={<DealDetails onBack={handleOnBack} />} />
 
-      <Route
-        path="add"
-        element={<OpenDealForm onBack={() => navigate("/home/deals")} />}
-      />
+      <Route path="add" element={<OpenDealForm onBack={handleOnBack} />} />
     </Routes>
   );
 }
