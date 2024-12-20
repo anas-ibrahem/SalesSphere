@@ -125,7 +125,8 @@ class FinanceModel {
         try {
             const result = await pool.query(`
                 INSERT INTO FINANCIAL_RECORD (amount, type, description, payment_method, business_id, deal_id) 
-                VALUES ($1, $2, $3, $4, $5, $6);`
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING *;`
                 , [amount, type, description, payment_method, business_id, deal_id]);
             return result.rows[0];
         }
