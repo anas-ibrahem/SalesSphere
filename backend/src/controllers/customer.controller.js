@@ -1,11 +1,13 @@
 import CustomerModel from "../models/customer.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
+import LogsModel from "../models/logs.model.js";
 
 
 class CustomerController {
     constructor() {
         this.customerModel = new CustomerModel({});
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -34,26 +36,30 @@ class CustomerController {
   
         const businessId = req.businessId;
 
-        console.log('businessId:', businessId);
         customerData.business_id = businessId;
         customerData.added_by = req.employeeId;
         
         const newCustomer = new CustomerModel(customerData);
         const result = await newCustomer.add(req.pool);
-        if(result == -1) {
-            return res.status(400).json({error: 'Failed to add customer'});
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                customer_id: result.id,
+                type: 2,
+                content: 'A new customer has been added'
+            }
+            this.logsModel.add(req.pool, logData);
         }
         res.json(result);
     }
 
     getCustomersPerDate = async (req, res) => {
-        console.log(req.businessId);
         const customers = await this.customerModel.getCustomersPerDate(req.pool, req.businessId);
         res.json(customers);
     }
 
     getTopCustomersByRevenue = async (req, res) => {
-        console.log(req.businessId);
         const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
         res.json(customers);
     }
@@ -73,8 +79,15 @@ class CustomerController {
         
         const customer = new CustomerModel(customerData);
         const result = await customer.update(req.pool);
-        if(result == -1) {
-            return res.status(400).json({error: 'Failed to update customer'});
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                customer_id: result.id,
+                type: 2,
+                content: 'Customer was updated'
+            }
+            this.logsModel.add(req.pool, logData);
         }
         res.json(result);
     }

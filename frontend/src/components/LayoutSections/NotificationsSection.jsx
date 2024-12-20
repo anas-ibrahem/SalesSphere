@@ -1,20 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import EmployeeProfile from "./EmployeeProfile";
 import {
   List,
   ListItem,
   ListItemPrefix,
-  Avatar,
   Card,
   Typography,
 } from "@material-tailwind/react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import AddEmployeeForm from "../Forms/AddEmployeeForm";
 import Pagination from "../Pagination";
 import fetchAPI from '../../utils/fetchAPI';
 import { NotificationPriority, NotificationTypes } from "../../utils/Enums";
-import { AccessTime, MilitaryTech, NotificationsOff, Paid, Person, Notifications, CrisisAlert, BusinessCenter, PriorityHigh, DoneAll, Done } from "@mui/icons-material";
+import { AccessTime, MilitaryTech, Paid, Person, Notifications, CrisisAlert, BusinessCenter, DoneAll, Done } from "@mui/icons-material";
 import UserContext from "../../context/UserContext";
 
 const NotificationIcons = {
@@ -88,22 +84,17 @@ const NotificationsSection = () => {
 
 
   // Pagination logic
-  const indexOfLastEmployee = currentPage * NotificationsPerPage;
-  const indexOfFirstEmployee = indexOfLastEmployee - NotificationsPerPage;
+  const indexOfLastNotification = currentPage * NotificationsPerPage;
+  const indexOfFirstNotification = indexOfLastNotification - NotificationsPerPage;
   const currentNotifications = filterNotifications.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
+    indexOfFirstNotification,
+    indexOfLastNotification
   );
   const totalPages = Math.ceil(filterNotifications.length / NotificationsPerPage);
 
   const manager = true;
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <section className="bg-white p-6 shadow-md h-screen flex flex-col">
+  return (<section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">Notifications {notificationCount > 0 && <span className="font-light text-lg">- You have {notificationCount} unread notifications</span>}</h1>
                 <div className="flex space-x-2">
@@ -155,7 +146,7 @@ const NotificationsSection = () => {
                         onClick={() => MarkAsRead(notification)}
                       >
                         <ListItemPrefix>
-                            <Icon className={`text-secondary-accent ${notification.priority === NotificationPriority.High ? 'text-red-900' : ''}`} />
+                            <Icon className={`text-secondary-accent m-2 ${notification.priority === NotificationPriority.High ? 'text-red-900' : ''}`} />
                         </ListItemPrefix>
                         <div>
                             <div className="flex items-center">
@@ -212,24 +203,7 @@ const NotificationsSection = () => {
               onPageChange={setCurrentPage}
             />
           </section>
-        }
-      />
-      <Route
-        path=":employeeId"
-        element={<EmployeeProfile back={() => navigate("/home/Notifications")} />}
-      />
-      <Route
-        path="add"
-        element={
-          <AddEmployeeForm onBack={() => navigate("/home/Notifications")} />
-        }
-      />
-      <Route
-        path="addtarget"
-        element={<AddEmployeeForm onBack={() => navigate("/home/Notifications")} />}
-      />
-    </Routes>
-  );
+        );
 }
 
 export default NotificationsSection;

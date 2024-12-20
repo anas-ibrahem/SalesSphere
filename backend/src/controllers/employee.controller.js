@@ -1,11 +1,13 @@
 import EmployeeModel from "../models/employee.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
+import LogsModel from "../models/logs.model.js";
 
 
 class EmployeeController {
     constructor() {
         this.employeeModel = new EmployeeModel({});
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -42,13 +44,21 @@ class EmployeeController {
 
         const businessId = req.businessId;
 
-        console.log('businessId:', businessId);
         empData.business_id = businessId;
         
         const newEmployee = new EmployeeModel(empData);
         const result = await newEmployee.register(req.pool, 1);
         if(result == -1) {
             return res.status(400).json({error: 'Email already exists'});
+        }
+        if(result.employeeId) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: result.employeeId,
+                type: 1,
+                content: 'A new employee has been added'
+            }
+            this.logsModel.add(req.pool, logData);
         }
         res.json(result);
     }
@@ -64,6 +74,14 @@ class EmployeeController {
 
         const result = await this.employeeModel.updateProfile(req.pool, req.employeeId, empData);
         if (result) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                type: 1,
+                content: 'Employee profile updated'
+            }
+            this.logsModel.add(req.pool, logData);
+
             res.json({message: 'Profile updated successfully'});
         } else {
             res.status(400).json({ error: 'Email already exists' });
@@ -85,6 +103,14 @@ class EmployeeController {
 
         const result = await this.employeeModel.updateProfile(req.pool, req.params.id, empData);
         if (result) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.params.id,
+                type: 1,
+                content: 'Employee profile updated By Manager'
+            }
+            this.logsModel.add(req.pool, logData);
+
             res.json({message: 'Profile updated successfully'});
         } else {
             res.status(400).json({ error: 'Email already exists' });

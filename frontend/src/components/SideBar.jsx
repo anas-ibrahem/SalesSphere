@@ -11,17 +11,17 @@ import {
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
 import { AdminPrivileges, EmployeeRoles } from "../utils/Enums";
-import { AddBusiness, AdminPanelSettings, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2, Settings } from "@mui/icons-material";
+import { AddBusiness, AdminPanelSettings, BusinessCenter, Logout, NotificationAddRounded, NotificationImportant, Notifications, Person2, Settings } from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
 
 const usersections = [
   { route: "/home/", icon: Home, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Business" },
-  { route: "/home/logs", icon: FileText, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Logs" },
-  { route: "/home/deals", icon: DollarSign, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Deals" },
+  { route: "/home/deals", icon: BusinessCenter, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Deals" },
   { route: "/home/records", icon: DollarSign, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Financial Records" },
   { route: "/home/employees", icon: Users, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Employees" },
   { route: "/home/customers", icon: UsersRound, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Customers" },
+  { route: "/home/logs", icon: FileText, roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener], title: "Logs" },
 ];
 
 const adminsections = [

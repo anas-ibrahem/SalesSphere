@@ -1,9 +1,11 @@
 import FinanceModel from "../models/finance.model.js";
+import LogsModel from "../models/logs.model.js";
 
 
 class FinanceController {
     constructor() {
         this.financeModel = new FinanceModel();
+        this.logsModel = new LogsModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -41,6 +43,16 @@ class FinanceController {
         financeData.business_id = req.businessId;
 
         const result = await this.financeModel.add(req.pool, financeData);
+        if(result) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                deal_id: financeData.deal_id,
+                type: 5,
+                content: 'A new finance record has been added ('+(financeData.amount < 0 ? '-' : '+')+'$' + financeData.amount + ')'
+            }
+            this.logsModel.add(req.pool, logData);
+        }
         res.json({success: result});
     }
 

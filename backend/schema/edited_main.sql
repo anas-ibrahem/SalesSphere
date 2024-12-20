@@ -62,7 +62,7 @@ CREATE TABLE DEAL (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     status INT NOT NULL, -- Open 0, Claimed 1, Closed Won 2, Closed Lost 3
-    description TEXT,
+    description TEXT NOT NULL,
     date_opened TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_closed TIMESTAMP,
     due_date TIMESTAMP NOT NULL,
@@ -103,8 +103,16 @@ CREATE TABLE ACTIVITY_LOG (
     id SERIAL PRIMARY KEY,
     date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     content TEXT NOT NULL,
-    cause VARCHAR(255) NOT NULL, -- Depends on the event (type of the log)
+    type INT NOT NULL, -- 0 for business, 1 for employee, 2 for customer, 3 for deal, 4 for target, 5 for finance
 
+    employee_id INT, -- Optional
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id),
+    customer_id INT, -- Optional
+    FOREIGN KEY (customer_id) REFERENCES CUSTOMER(id),
+    deal_id INT, -- Optional
+    FOREIGN KEY (deal_id) REFERENCES DEAL(id),
+    target_id INT, -- Optional
+    FOREIGN KEY (target_id) REFERENCES TARGET(id),
     -- Relationships
     business_id INT NOT NULL,
     FOREIGN KEY (business_id) REFERENCES BUSINESS(id)

@@ -9,6 +9,7 @@ import DealController from '../../controllers/deal.controller.js';
 // Define routes for /api/deal
 router.get('/', DealController.getAll);
 router.get('/claimed', DealController.getEmployeeClaimedDeals);
+router.get('/closed', DealController.getEmployeeClosedDeals);
 router.get('/open', DealController.getAllOpenDeals);
 router.get('/:id', DealController.getById);
 
