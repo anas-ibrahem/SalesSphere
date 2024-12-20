@@ -125,15 +125,15 @@ const LogsSection = () => {
                             variant="small"
                             color="gray"
                             className="font-normal"
-                          >
+                            >
                             {
-                              log.employee_id && <span> Employee: <Link to={`/home/employees/${log.employee_id}`} className="text-blue-500">{log.employee_name}</Link></span>
+                              log.deal_name && <span> Deal: <Link to={`/home/deals/${log.deal_id}`} className="text-blue-500">{log.deal_name}</Link></span>
                             }
                             {
                               log.customer_name && <span> Customer: <Link to={`/home/customers/${log.customer_id}`} className="text-blue-500">{log.customer_name}</Link></span>
                             }
                             {
-                              log.deal_name && <span> Deal: <Link to={`/home/deals/${log.deal_id}`} className="text-blue-500">{log.deal_name}</Link></span>
+                              log.employee_id && <span> Employee: <Link to={`/home/employees/${log.employee_id}`} className="text-blue-500">{log.employee_name}</Link></span>
                             }
 
                           </Typography>
