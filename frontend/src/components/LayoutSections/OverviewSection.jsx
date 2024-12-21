@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography, Grid, useTheme, LinearProgress, List, ListItem, Chip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, useTheme, LinearProgress, List, ListItem, Chip, Tooltip } from '@mui/material';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import { LineChart } from '@mui/x-charts/LineChart';
-import { BarChart } from '@mui/x-charts/BarChart';
 import { Crown, TrendingUp, Users, Clock, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import fetchAPI from '../../utils/fetchAPI';
 import UserContext from '../../context/UserContext';
 import { EmployeeRoles } from '../../utils/Enums';
+import { PieChart, BarChart, LineChart } from '@mui/x-charts';
 
 const OverviewSection = () => {
   const theme = useTheme();
@@ -49,7 +48,8 @@ const OverviewSection = () => {
       const targetsData = await fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token);
       setTargets(targetsData);
 
-      const businessSummaryData = await fetchAPI('/business/summary', 'GET', null, token);
+      const summary_endpoint = employee.role === EmployeeRoles.Manager ? '/business/summary' : '/finance/employee/summary';
+      const businessSummaryData = await fetchAPI(summary_endpoint, 'GET', null, token);
       setBusinessSummary(businessSummaryData);
       } catch (error) {
       console.error("Error fetching metrics:", error);
@@ -540,6 +540,77 @@ const OverviewSection = () => {
           </Card>
         </Grid>
 
+        {employee.role == EmployeeRoles.Manager && <Grid item xs={12} md={6}>
+  <Card sx={{ 
+    height: '100%',
+    boxShadow: theme.shadows[2],
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[4],
+      transform: 'translateY(-2px)'
+    }
+  }}>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+        Employee Distribution
+      </Typography>
+    </Box>
+    <CardContent>
+      <Box sx={{ height: 300, display: 'flex', justifyContent: 'center' }}>
+        <PieChart
+          series={[
+            {
+              data:[
+                { id:0, label: 'Deal Openers', value: businessSummary.openers },
+                { id:1, label: 'Deal Executors', value: businessSummary.executors }
+              ],
+              highlightScope: { fade: 'global', highlight: 'item' },
+              faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+            }
+          ]}
+          height={300}
+        />
+      </Box>
+    </CardContent>
+  </Card>
+</Grid>}
+
+{employee.role == EmployeeRoles.Manager && <Grid item xs={12} md={6}>
+  <Card sx={{ 
+    height: '100%',
+    boxShadow: theme.shadows[2],
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[4],
+      transform: 'translateY(-2px)'
+    }
+  }}>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+        Deal Status Distribution
+      </Typography>
+    </Box>
+    <CardContent>
+      <Box sx={{ height: 300, display: 'flex', justifyContent: 'center' }}>
+        <PieChart
+          series={
+            [{
+              data:[
+              { id:0, label: 'Open Deals', value: businessSummary.open_deals },
+              { id:1, label: 'Claimed Deals', value: businessSummary.claimed_deals },
+              { id:2, label: 'Closed Won Deals', value: businessSummary.closed_won_deals },
+              { id:3, label: 'Closed Lost Deals', value: businessSummary.closed_lost_deals }
+            ],
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' }
+          }]}
+          height={300}
+        />
+      </Box>
+    </CardContent>
+  </Card>
+</Grid>}
+
         <Grid item xs={12}>
           <Card sx={{ 
             boxShadow: theme.shadows[2],
@@ -595,6 +666,7 @@ const OverviewSection = () => {
             </CardContent>
           </Card>
         </Grid>
+        
       </Grid>
     </Box>
   );

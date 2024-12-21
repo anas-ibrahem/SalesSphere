@@ -2,11 +2,15 @@ class TargetModel {
     getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*
+                SELECT t.*, CAST(COUNT(et.employee_id) as int) as employee_count,
+                CAST(AVG(et.progress) as int) as average_progress,
+                CASE WHEN t.deadline < CURRENT_TIMESTAMP THEN true ELSE false END as is_finished,
+                CASE WHEN t.start_date > CURRENT_TIMESTAMP THEN true ELSE false END as is_upcoming
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
                 JOIN employee e ON et.employee_id = e.id
-                WHERE e.business_id = $1;
+                WHERE e.business_id = $1
+                GROUP BY t.id;
             `, [business_id]);
 
             return result.rows;

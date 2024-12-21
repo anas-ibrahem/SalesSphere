@@ -155,6 +155,34 @@ class FinanceModel {
         }
     }
 
+    getSummaryForEmployee = async (pool, employee_id) => {
+        try {
+            const income = await pool.query(`
+                SELECT COALESCE(SUM(fr.amount), 0) as total
+                FROM FINANCIAL_RECORD fr
+                JOIN DEAL d ON fr.deal_id = d.id
+                WHERE fr.type = 1 AND (d.deal_executor = $1 OR d.deal_opener = $1);
+            `, [employee_id]);
+
+            const expenses = await pool.query(`
+                SELECT COALESCE(SUM(fr.amount), 0) as total
+                FROM FINANCIAL_RECORD fr
+                JOIN DEAL d ON fr.deal_id = d.id
+                WHERE fr.type = 0 AND (d.deal_executor = $1 OR d.deal_opener = $1);
+            `, [employee_id]);
+
+            return {
+                income: income.rows[0].total,
+                expenses: expenses.rows[0].total,
+                net_balance: income.rows[0].total - expenses.rows[0].total
+            };
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return 0;
+        }
+    }
+
 }
 
 export default FinanceModel;
