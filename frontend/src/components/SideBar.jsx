@@ -51,7 +51,7 @@ const usersections = [
   {
     route: "/home/targets",
     icon: TrackChangesIcon,
-    roles: [EmployeeRoles.Manager],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
     title: "Targets",
   },
   {
