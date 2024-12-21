@@ -60,6 +60,7 @@ const CustomerProfile = ({ back }) => {
   const { employee:me } = useContext(UserContext);
   const [canEdit , setCanEdit] = useState(false);
   const [notFound , setNotFound] = useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -77,7 +78,7 @@ const CustomerProfile = ({ back }) => {
       .catch((error) => {
         console.error("Error fetching customer details:", error);
       });
-  }, [customerId , isEditing]);
+  }, [customerId , isEditing, reload]);
 
   if (notFound)
     {
@@ -104,6 +105,7 @@ const CustomerProfile = ({ back }) => {
   const handleBackFromEdit = () => {
     navigate('/home/customers/' + customerId);
     setIsEditing(false);
+    setReload(!reload);
   };
 
   return (
