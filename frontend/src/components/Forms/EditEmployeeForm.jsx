@@ -34,16 +34,16 @@ const EditEmployeeForm = ({ employee, onBack }) => {
       };
 
       setFormValues({
-        id: employee.id || "",
-        first_name: employee.first_name || "",
-        last_name: employee.last_name || "",
-        email: employee.email || "",
-        role: employee.role || "",
-        birth_date: formatDate(employee.birth_date),
-        phone_number: employee.phone_number || "",
-        address: employee.address || "",
-        hire_date: formatDate(employee.hire_date),
-        profile_picture_url: employee.profile_picture_url || null,
+        id: employee?.id || "",
+        first_name: employee?.first_name || "",
+        last_name: employee?.last_name || "",
+        email: employee?.email || "",
+        role: employee?.role ?? "",
+        birth_date: formatDate(employee?.birth_date),
+        phone_number: employee?.phone_number || "",
+        address: employee?.address || "",
+        hire_date: formatDate(employee?.hire_date),
+        profile_picture_url: employee?.profile_picture_url || null,
       });
 
       // Set initial profile picture preview if exists
@@ -137,8 +137,10 @@ const EditEmployeeForm = ({ employee, onBack }) => {
         formData,
         token
       );
+      console.log("data", formData);
       if (data.error) {
         toast.error("An error occurred. Please try again.");
+        console.error(data.error);
       } else {
         toast.success("Profile updated successfully");
         if (onBack) onBack();
