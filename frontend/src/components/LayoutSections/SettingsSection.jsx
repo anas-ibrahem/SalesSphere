@@ -14,9 +14,9 @@ import ChangePasswordForm from '../Forms/ChangePasswordForm';
 import EditBusinessForm from '../Forms/EditBusinessForm';
 
 const SettingsSection = () => {
-  const { employee } = useContext(UserContext);
-  const [activeTab, setActiveTab] = useState("Profile");
-  const isManager = 2 === EmployeeRoles.Manager; // TODO - Replace with actual user role
+  const { employee : me } = useContext(UserContext);
+  const isManager = me.role === EmployeeRoles.Manager; 
+  const [activeTab, setActiveTab] = useState(isManager ? "Business" : "Profile");
 
   const BusinessSettings = () => (
     <div className="w-full max-w-3xl mx-auto space-y-6">
@@ -83,13 +83,13 @@ const SettingsSection = () => {
   const renderContent = () => {
     switch(activeTab) {
       case 'Profile':
-        return <EditEmployeeForm employee={employee} />;
+        return <EditEmployeeForm employee={me} />;
       case 'Business':
         return <EditBusinessForm />;
       case 'Password':
         return <ChangePasswordForm />;
       default:
-        return <EditEmployeeForm employee={employee} onBack={() => null} />;
+        return <EditEmployeeForm employee={me} onBack={() => null} />;
     }
   };
 
@@ -107,6 +107,17 @@ const SettingsSection = () => {
 
         {/* Tab Navigation */}
         <div className="flex flex-col sm:flex-row border-b">
+        {isManager && (
+            <button
+              className={`w-full sm:flex-1 py-3 font-semibold uppercase tracking-wider text-sm 
+                ${activeTab === 'Business' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              onClick={() => setActiveTab('Business')}
+            >
+              Business
+            </button>
+          )}
           {['Profile', 'Password'].map(tab => (
             <button
               key={tab}
@@ -119,17 +130,7 @@ const SettingsSection = () => {
               {tab}
             </button>
           ))}
-          {isManager && (
-            <button
-              className={`w-full sm:flex-1 py-3 font-semibold uppercase tracking-wider text-sm 
-                ${activeTab === 'Business' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-              onClick={() => setActiveTab('Business')}
-            >
-              Business
-            </button>
-          )}
+
         </div>
 
         {/* Content Area */}

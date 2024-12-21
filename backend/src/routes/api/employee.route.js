@@ -14,6 +14,8 @@ router.get('/:id', employeeController.getById);
 
 router.get('/summary/all', employeeController.getAllSummary);
 router.get('/summary/:id', employeeController.getSummary);
+router.get('/metrics/top', employeeController.getTopEmployees);
+router.get('/metrics/rank/:role', employeeController.getMyRank);
 
 // to register a new employee
 router.post('/', employeeController.register);

@@ -40,7 +40,7 @@ class BusinessModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Business not found'};
             }
 
             const results = result.rows[0];
@@ -49,7 +49,7 @@ class BusinessModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Business not found'};
         }
     }
     
@@ -113,7 +113,7 @@ class BusinessModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Failed to update business'};
         }
 
     }

@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { use } from "react";
+import { EmployeeRoles } from "../../utils/Enums";
 
 const BusinessSection = function () {
   const [business, setBusiness] = useState(null);
@@ -18,18 +19,18 @@ const BusinessSection = function () {
   const [businessManager, setBusinessManager] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { employee: manager } = useContext(UserContext);
+  const { employee: me } = useContext(UserContext);
 
   const totalIncome = 5000; // TODO: Fetch from API
   const totalExpenses = 2000; // TODO: Fetch from API
   const totalOpenerEmployees = 50; // TODO: Fetch from API
-  const totalExecuterEmployees = 30; // TODO: Fetch from API
+  const totalExecutorEmployees = 30; // TODO: Fetch from API
 
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
         const businessData = await fetchAPI(
-          `/business/${manager.business_id}`,
+          `/business/${me.business_id}`,
           "GET",
           null,
           token
@@ -43,7 +44,7 @@ const BusinessSection = function () {
       }
     };
     fetchBusinessData();
-  }, [manager.business_id, token]);
+  }, [me.business_id, token]);
 
   const handleEditClick = () => {
     navigate("/home/settings/");
@@ -61,7 +62,7 @@ const BusinessSection = function () {
           // Business Section
           <section className="bg-white m-0 rounded shadow-xl w-full h-screen flex flex-col overflow-hidden">
             <div className="relative h-[120px] bg-gradient-to-r from-cyan-500 to-blue-500 flex-shrink-0">
-              <button
+              {me.role === EmployeeRoles.Manager && <button
                 onClick={handleEditClick}
                 className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 
               select-none appearance-none items-center 
@@ -70,7 +71,7 @@ const BusinessSection = function () {
               hover:border-gray-300 active:bg-white hover:bg-gray-100"
               >
                 <Pencil className="w-4 h-4 mr-1" /> Edit
-              </button>
+              </button>}
               <div className="absolute bottom-[-45px] left-5 h-[90px] w-[90px] shadow-md rounded-full border-4 overflow-hidden border-white">
                 <img
                   src={business.business_logo_url}
@@ -140,7 +141,7 @@ const BusinessSection = function () {
                         Number Of Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalOpenerEmployees + totalExecuterEmployees}
+                        {totalOpenerEmployees + totalExecutorEmployees}
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
@@ -153,10 +154,10 @@ const BusinessSection = function () {
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">
-                        Number Of Executer Employees
+                        Number Of Executor Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalExecuterEmployees}
+                        {totalExecutorEmployees}
                       </p>
                     </div>
                   </div>

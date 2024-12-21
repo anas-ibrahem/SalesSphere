@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, User, Minus, TrendingUp, TrendingDown, Save, X } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  Minus,
+  TrendingUp,
+  TrendingDown,
+  Save,
+  X,
+} from "lucide-react";
 import { useParams } from "react-router-dom";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { DealStatus } from "../../utils/Enums";
-import ProfileModal from "./ProfileModal";
+import { DealStatus, EmployeeRoles } from "../../utils/Enums";
+import { useContext } from "react";
+import UserContext from "../../context/UserContext";
 import fetchAPI from "../../utils/fetchAPI";
 import AddFinancialRecord from "../Forms/AddFinancialRecord";
 import { PaymentMethods } from "../../utils/Enums";
@@ -41,11 +50,12 @@ function DealDetails({ onBack = () => {} }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
-
+  const [reload, setReload] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { employee: me } = useContext(UserContext);
 
-  const executer = true; // TODO - Replace with actual user role
+  const executor = true; // TODO - Replace with actual user role
   const opener = true; // TODO - Replace with actual user role
   const {
     title = "Untitled Deal",
@@ -60,19 +70,29 @@ function DealDetails({ onBack = () => {} }) {
     deal_opener = null,
     id = dealId,
   } = deal;
-
+  
   useEffect(() => {
     if (deal) {
       setEditedDeal({
-        title: deal.title || '',
-        description: deal.description || '',
-        due_date: deal.due_date ? new Date(deal.due_date).toISOString().split('.')[0] : '',
+        title: deal.title || "",
+        description: deal.description || "",
+        due_date: deal.due_date
+          ? new Date(deal.due_date).toISOString().split(".")[0]
+          : "",
         customer_budget: deal.customer_budget || 0,
         expenses: deal.expenses || 0,
       });
     }
+    console.log("Me" , me)
+    console.log("Deal" , deal)
   }, [deal]);
+
   
+  const executer = me.role === EmployeeRoles.DealExecutor; 
+  const opener = me.role === EmployeeRoles.DealOpener;
+  const canEdit = opener && me.id === deal.deal_opener.id;
+
+
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
       .then(() => {
@@ -91,6 +111,14 @@ function DealDetails({ onBack = () => {} }) {
       })
       .catch(() => toast.error("Error closing deal"));
   }
+  function handelDeleteDeal() {
+    fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
+      .then(() => {
+        toast.success("Deal deleted successfully");
+        navigate("/home/deals");
+      })
+      .catch(() => toast.error("Error deleting deal"));
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +127,6 @@ function DealDetails({ onBack = () => {} }) {
         const dealData = await fetchAPI(`/deal/${dealId}`, "GET", null, token);
         setDeal(dealData);
         setDealStatus(dealData.status);
-
         const financialData = await fetchAPI(
           `/finance/deal/${dealId}`,
           "GET",
@@ -134,7 +161,7 @@ function DealDetails({ onBack = () => {} }) {
     };
 
     fetchData();
-  }, [dealId, dealStatus, token]);
+  }, [dealId, dealStatus, token, reload]);
 
   // Format currency with sign
   const formatCurrency = (type, amount) => {
@@ -146,7 +173,10 @@ function DealDetails({ onBack = () => {} }) {
   const handleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
-
+  const handleOnBack = () => {
+    setReload(!reload);
+    navigate(-1);
+  };
   const handleSaveChanges = async () => {
     try {
       await fetchAPI(`/deal/${dealId}`, "PUT", editedDeal, token);
@@ -300,7 +330,7 @@ function DealDetails({ onBack = () => {} }) {
     <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Deal Information</h2>
-        {dealStatus === 0 && (
+        {canEdit && deal.status === 0 && (
           <div>
             {isEditing ? (
               <div className="flex gap-2">
@@ -334,47 +364,73 @@ function DealDetails({ onBack = () => {} }) {
         {isEditing ? (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Title
+              </label>
               <input
                 type="text"
                 value={editedDeal.title}
-                onChange={(e) => setEditedDeal({ ...editedDeal, title: e.target.value })}
+                onChange={(e) =>
+                  setEditedDeal({ ...editedDeal, title: e.target.value })
+                }
                 className="w-full p-2 border rounded"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
               <textarea
                 value={editedDeal.description}
-                onChange={(e) => setEditedDeal({ ...editedDeal, description: e.target.value })}
+                onChange={(e) =>
+                  setEditedDeal({ ...editedDeal, description: e.target.value })
+                }
                 className="w-full p-2 border rounded"
                 rows="3"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Due Date
+              </label>
               <input
                 type="datetime-local"
                 value={editedDeal.due_date}
-                onChange={(e) => setEditedDeal({ ...editedDeal, due_date: e.target.value })}
+                onChange={(e) =>
+                  setEditedDeal({ ...editedDeal, due_date: e.target.value })
+                }
                 className="w-full p-2 border rounded"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Customer Budget</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Customer Budget
+              </label>
               <input
                 type="number"
                 value={editedDeal.customer_budget}
-                onChange={(e) => setEditedDeal({ ...editedDeal, customer_budget: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setEditedDeal({
+                    ...editedDeal,
+                    customer_budget: parseFloat(e.target.value),
+                  })
+                }
                 className="w-full p-2 border rounded"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Expenses</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Expenses
+              </label>
               <input
                 type="number"
                 value={editedDeal.expenses}
-                onChange={(e) => setEditedDeal({ ...editedDeal, expenses: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setEditedDeal({
+                    ...editedDeal,
+                    expenses: parseFloat(e.target.value),
+                  })
+                }
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -382,16 +438,20 @@ function DealDetails({ onBack = () => {} }) {
         ) : (
           <>
             <p className="text-gray-700">
-              <span className="font-medium">Description:</span> {deal.description}
+              <span className="font-medium">Description:</span>{" "}
+              {deal.description}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">Opened:</span> {new Date(deal.date_opened).toLocaleString()}
+              <span className="font-medium">Opened:</span>{" "}
+              {new Date(deal.date_opened).toLocaleString()}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">Due Date:</span> {new Date(deal.due_date).toLocaleString()}
+              <span className="font-medium">Due Date:</span>{" "}
+              {new Date(deal.due_date).toLocaleString()}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">Customer Budget *:</span> ${deal.customer_budget}
+              <span className="font-medium">Customer Budget *:</span> $
+              {deal.customer_budget}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Expenses *:</span> -${deal.expenses}
@@ -437,7 +497,15 @@ function DealDetails({ onBack = () => {} }) {
               </button>
 
               <div className="flex space-x-3">
-                {executer && deal.status === 0 && (
+                {opener && deal.status === 0 && (
+                  <button
+                    onClick={handelDeleteDeal}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                  >
+                    Delete Deal
+                  </button>
+                )}
+                {executor && deal.status === 0 && (
                   <button
                     onClick={handelClaimDeal}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -446,7 +514,7 @@ function DealDetails({ onBack = () => {} }) {
                   </button>
                 )}
 
-                {executer && deal.status === 1 && (
+                {executor && deal.status === 1 && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
@@ -469,14 +537,16 @@ function DealDetails({ onBack = () => {} }) {
               </div>
             </div>
 
-                       {/* Title and Status */}
-                       <div className="mb-8">
+            {/* Title and Status */}
+            <div className="mb-8">
               <h1 className="text-3xl font-bold mb-2">
                 {isEditing ? (
                   <input
                     type="text"
                     value={editedDeal.title}
-                    onChange={(e) => setEditedDeal({ ...editedDeal, title: e.target.value })}
+                    onChange={(e) =>
+                      setEditedDeal({ ...editedDeal, title: e.target.value })
+                    }
                     className="w-full p-2 border rounded text-3xl font-bold"
                   />
                 ) : (
@@ -604,7 +674,7 @@ function DealDetails({ onBack = () => {} }) {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
-                  {executer && deal.status === 1 && (
+                  {executor && deal.status === 1 && (
                     <button
                       onClick={() => navigate(`new-record`)}
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -656,7 +726,10 @@ function DealDetails({ onBack = () => {} }) {
           </div>
         }
       />
-      <Route path="/new-record" element={<AddFinancialRecord deal={deal} />} />
+      <Route
+        path="/new-record"
+        element={<AddFinancialRecord deal={deal} onBack={handleOnBack} />}
+      />
     </Routes>
   );
 }

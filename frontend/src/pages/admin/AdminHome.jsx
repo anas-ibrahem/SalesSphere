@@ -14,8 +14,6 @@ import ManageAdmins from "../../components/AdminSections/ManageAdmins";
 import BusinessSection from "../../components/LayoutSections/BusinessSection";
 
 function AdminHome() {
-  const [activeSection, setActiveSection] = useState("default");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { isAuthenticated, admin } = useContext(AdminContext);
   const Navigate = useNavigate();
 
@@ -29,21 +27,11 @@ function AdminHome() {
 
   if (!isAuthenticated) return null;
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar on the left */}
       <SideBar
-        onSectionChange={handleSectionChange}
-        isCollapsed={isSidebarCollapsed}
-        toggleSidebar={toggleSidebar}
         type="admin"
       />
 

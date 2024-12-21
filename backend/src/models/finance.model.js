@@ -61,7 +61,7 @@ class FinanceModel {
             `, [id]);
 
             if (result.rows.length === 0) {
-                return {};
+                return {error: 'Financial record not found'};
             }
 
             const results = result.rows[0];
@@ -71,7 +71,7 @@ class FinanceModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Financial record not found'};
         }
     }
     getByDealId = async (pool, deal_id) => {
@@ -117,7 +117,7 @@ class FinanceModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Financial record not found'};
         }
     }
     add = async (pool, financial_record) => {
@@ -133,6 +133,25 @@ class FinanceModel {
         catch (error) {
             console.error('Database query error:', error);
             return false;
+        }
+    }
+
+    getProfitsPerDate = async (pool, business_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END) - SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END) as profit, 
+                cast(fr.transaction_date as date) as date
+                FROM FINANCIAL_RECORD fr
+                WHERE fr.business_id = $1
+                GROUP BY date
+                ORDER BY date;
+            `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
         }
     }
 

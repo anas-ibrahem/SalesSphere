@@ -5,9 +5,12 @@ import OpenDealForm from "../Forms/OpenDealForm";
 import { List, ListItem, Card, Typography } from "@material-tailwind/react";
 import Pagination from "../Pagination";
 import fetchAPI from "../../utils/fetchAPI";
-import { DealStatus } from "../../utils/Enums";
+import { DealStatus, EmployeeRoles } from "../../utils/Enums";
+import { useContext } from "react";
+import UserContext from "../../context/UserContext";
 
 function DealsSection() {
+  const [reload, setReload] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("date_opened");
@@ -17,14 +20,20 @@ function DealsSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const { employee: me } = useContext(UserContext);
 
-  const manager = true; // TODO - Replace with actual user role
+  const statusTabs = [
+    { value: "all", label: "All", color: "bg-gray-500" },
+    { value: "Open", label: "Open", color: "bg-blue-500" },
+    { value: "Claimed", label: "Claimed", color: "bg-yellow-500" },
+    { value: "Closed Won", label: "Closed Won", color: "bg-green-500" },
+    { value: "Closed Lost", label: "Closed Lost", color: "bg-red-500" },
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetchAPI("/deal", "GET", null, token)
       .then((data) => {
-        console.log(data);
         setDealsData(data);
         setLoading(false);
       })
@@ -32,12 +41,14 @@ function DealsSection() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [reload]);
 
-  // Filtering logic
-  const filteredAndSortedDeals = DealsData.filter(deal => {
-    const matchesStatus = filterStatus === "all" || DealStatus[deal.status] === filterStatus;
-    const matchesSearch = deal.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredAndSortedDeals = DealsData.filter((deal) => {
+    const matchesStatus =
+      filterStatus === "all" || DealStatus[deal.status] === filterStatus;
+    const matchesSearch = deal.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   }).sort((a, b) => {
     if (sortBy === "due_date") {
@@ -49,14 +60,13 @@ function DealsSection() {
     if (sortBy === "expenses") {
       return (sortOrder === "asc" ? 1 : -1) * (a.expenses - b.expenses);
     }
+    return 0;
   });
 
-  // Reset to first page when search query changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, filterStatus]);
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredAndSortedDeals.length / itemsPerPage);
   const indexOfLastDeal = currentPage * itemsPerPage;
   const indexOfFirstDeal = indexOfLastDeal - itemsPerPage;
@@ -65,6 +75,31 @@ function DealsSection() {
     indexOfLastDeal
   );
 
+  function handleOnBack() {
+    setSearchQuery("");
+    setSortBy("");
+    setSortOrder("asc");
+    setCurrentPage(1);
+    setFilterStatus("all");
+    setReload(!reload);
+    navigate("/home/deals");
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Open":
+        return "text-blue-500";
+      case "Claimed":
+        return "text-yellow-500";
+      case "Closed Won":
+        return "text-green-500";
+      case "Closed Lost":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
+    }
+  };
+
   return (
     <Routes>
       <Route
@@ -72,22 +107,52 @@ function DealsSection() {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Deals</h1>
-              {manager && (
+              <h1 className="text-2xl font-bold mb-4">
+                {me.role !== EmployeeRoles.Manager &&
+                <span>Your </span>
+                }
+                 {me.role === EmployeeRoles.Manager &&
+                <span>Business' </span>
+                }
+                Deals</h1>
+              {me.role === EmployeeRoles.DealOpener && (
                 <button
                   onClick={() => navigate("add")}
-                  className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
+                  className="flex items-center px-4 py-2 border rounded bg-blue-500 text-white hover:bg-blue-600"
                 >
-                  <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
+                  <i className="fas fa-plus text-xl mr-2"></i>
                   <span className="text-lg">Open Deal</span>
                 </button>
               )}
             </div>
 
-            {/* Search and Filters */}
+            {/* Status Tabs */}
+            <div className="flex space-x-1 mb-4">
+              {statusTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setFilterStatus(tab.value)}
+                  className={`px-4 py-2 rounded-t-lg font-medium transition-colors duration-200 ${
+                    filterStatus === tab.value
+                      ? `${tab.color} text-white`
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {tab.label}
+                  <span className="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-sm">
+                    {DealsData.filter(
+                      (deal) =>
+                        tab.value === "all" ||
+                        DealStatus[deal.status] === tab.value
+                    ).length}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Search and Sort */}
             <div className="flex justify-between mb-4">
               <div className="flex space-x-4 items-center">
-                {/* Search Input */}
                 <input
                   type="text"
                   placeholder="Search deals..."
@@ -95,17 +160,6 @@ function DealsSection() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="p-2 border rounded w-64"
                 />
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="p-2 border rounded"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="Open">Open</option>
-                  <option value="Claimed">Claimed</option>
-                  <option value="Closed Won">Closed Won</option>
-                  <option value="Closed Lost">Closed Lost</option>
-                </select>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -115,6 +169,7 @@ function DealsSection() {
                   <option value="expenses">Sort by Expenses</option>
                 </select>
                 <select
+                  value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
                   className="p-2 border rounded"
                 >
@@ -129,19 +184,11 @@ function DealsSection() {
               <Card>
                 <List>
                   {loading ? (
-                    <Typography
-                      variant="h6"
-                      color="blue-gray"
-                      className="text-center"
-                    >
+                    <Typography variant="h6" color="blue-gray" className="text-center">
                       Loading...
                     </Typography>
                   ) : currentDeals.length === 0 ? (
-                    <Typography
-                      variant="h6"
-                      color="blue-gray"
-                      className="text-center py-4"
-                    >
+                    <Typography variant="h6" color="blue-gray" className="text-center py-4">
                       No deals found
                     </Typography>
                   ) : (
@@ -157,13 +204,13 @@ function DealsSection() {
                           </Typography>
                           <Typography
                             variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
+                            className={`font-medium flex justify-between ${getStatusColor(
+                              DealStatus[deal.status]
+                            )}`}
                           >
                             <p>Status: {DealStatus[deal.status]}</p>
                             <p>
-                              Due Date:{" "}
-                              {new Date(deal.due_date).toLocaleDateString()}
+                              Due Date: {new Date(deal.due_date).toLocaleDateString()}
                             </p>
                           </Typography>
                           <Typography
@@ -185,7 +232,6 @@ function DealsSection() {
               </Card>
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -195,15 +241,8 @@ function DealsSection() {
         }
       />
 
-      <Route
-        path=":dealId/*"
-        element={<DealDetails onBack={() => navigate("/home/deals")} />}
-      />
-
-      <Route
-        path="add"
-        element={<OpenDealForm onBack={() => navigate("/home/deals")} />}
-      />
+      <Route path=":dealId/*" element={<DealDetails onBack={handleOnBack} />} />
+      <Route path="add" element={<OpenDealForm onBack={handleOnBack} />} />
     </Routes>
   );
 }

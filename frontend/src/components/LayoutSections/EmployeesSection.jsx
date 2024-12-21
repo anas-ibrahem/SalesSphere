@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import EmployeeProfile from "./EmployeeProfile";
 import {
@@ -15,8 +15,10 @@ import Pagination from "../Pagination";
 import fetchAPI from "../../utils/fetchAPI";
 import { EmployeeRoles } from "../../utils/Enums";
 import AddTarget from "../Forms/AddTarget";
+import UserContext from "../../context/UserContext";
 
 const EmployeesSection = () => {
+  const [reload, setReload] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
@@ -41,7 +43,7 @@ const EmployeesSection = () => {
         console.error("Error fetching employees:", error);
         setLoading(false);
       });
-  }, []);
+  }, [reload]);
 
   const getRoleType = (typeValue) => {
     return (
@@ -51,6 +53,15 @@ const EmployeesSection = () => {
     );
   };
 
+  function handleOnBack() {
+    setSearchQuery("");
+    setSortOrder("asc");
+    setFilterType("All");
+    setSortField("account_creation_date");
+    setCurrentPage(1);
+    setReload(!reload);
+    navigate("/home/employees");
+  }
   // Filtering logic
   const filterEmployees = employees.filter((employee) => {
     const roleType = getRoleType(employee.role);
@@ -131,8 +142,8 @@ const EmployeesSection = () => {
     indexOfLastEmployee
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
-
-  const manager = true;
+  const {employee : me } = useContext(UserContext);
+  const manager = me.role === EmployeeRoles.Manager;
 
   return (
     <Routes>
@@ -141,7 +152,7 @@ const EmployeesSection = () => {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Employees</h1>
+              <h1 className="text-2xl font-bold mb-4">Business' Employees</h1>
 
               {manager && (
                 <div className="flex space-x-2">
@@ -344,16 +355,10 @@ const EmployeesSection = () => {
       />
       <Route
         path=":employeeId/*"
-        element={<EmployeeProfile back={() => navigate("/home/employees")} />}
+        element={<EmployeeProfile back={handleOnBack} />}
       />
-      <Route
-        path="add"
-        element={<AddEmployeeForm onBack={() => navigate("/home/employees")} />}
-      />
-      <Route
-        path="addTarget"
-        element={<AddTarget onBack={() => navigate("/home/employees")} />}
-      />
+      <Route path="add" element={<AddEmployeeForm onBack={handleOnBack} />} />
+      <Route path="addTarget" element={<AddTarget onBack={handleOnBack} />} />
     </Routes>
   );
 };
