@@ -1,6 +1,7 @@
 import TargetModel from "../models/target.model.js";
 import LogsModel from "../models/logs.model.js";
 import NotificationModel from "../models/notification.model.js";
+import EmployeeModel from "../models/employee.model.js";
 
 
 class TargetController {
@@ -8,12 +9,18 @@ class TargetController {
         this.targetModel = new TargetModel();
         this.logsModel = new LogsModel();
         this.notificationModel = new NotificationModel();
+        this.employeeModel = new EmployeeModel({});
     }
 
     // Please use arrow function to bind 'this' to the class
 
     getAll = async (req, res) => {
-        const targets = await this.targetModel.getAll(req.pool, req.businessId);
+        const emp = await this.employeeModel.getById(req.pool, req.params.id);
+        if(emp.role === 2) { // manager
+            const targets = await this.targetModel.getAll(req.pool, req.businessId);
+            return res.json(targets);
+        }
+        const targets = await this.targetModel.getAllByEmployee(req.pool, req.employeeId);
         res.json(targets);
     }
 
@@ -38,6 +45,11 @@ class TargetController {
     }
 
     getAllByEmployeeActive = async (req, res) => {
+        const emp = await this.employeeModel.getById(req.pool, req.params.id);
+        if(emp.role === 2) { // manager
+            const targets = await this.targetModel.getAllActive(req.pool, req.businessId);
+            return res.json(targets);
+        }
         const targets = await this.targetModel.getAllByEmployeeActive(req.pool, req.params.id);
         res.json(targets);
     }

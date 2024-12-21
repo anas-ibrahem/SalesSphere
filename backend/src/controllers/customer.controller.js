@@ -91,6 +91,12 @@ class CustomerController {
         const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
         res.json(customers);
     }
+
+    getTopCustomersByRevenueForEmployee = async (req, res) => {
+        const customers = await this.customerModel.getTopCustomersByRevenueForEmployee(req.pool, req.employeeId);
+        res.json(customers);
+    }
+    
     update = async (req, res) => {
         const customerData = req.body;
         if(!customerData.email || !validator.isEmail(customerData.email)) {

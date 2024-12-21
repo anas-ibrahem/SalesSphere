@@ -155,6 +155,27 @@ class FinanceModel {
         }
     }
 
+    getProfitsPerDateForEmployee = async (pool, employee_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT COALESCE(SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END), 0) as profit, 
+                cast(fr.transaction_date as date) as date
+                FROM FINANCIAL_RECORD fr
+                JOIN DEAL d ON fr.deal_id = d.id
+                WHERE d.deal_executor = $1 OR d.deal_opener = $1
+                GROUP BY date
+                ORDER BY date;
+            `, [employee_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+    
+
     getSummaryForEmployee = async (pool, employee_id) => {
         try {
             const income = await pool.query(`
