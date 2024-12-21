@@ -57,7 +57,7 @@ const CustomerProfile = ({ back }) => {
   const [customer, setCustomer] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const { employee:me } = useContext(UserContext);
-  const canEditCustomer = (me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id);
+  const [canEdit , setCanEdit] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -65,6 +65,7 @@ const CustomerProfile = ({ back }) => {
       .then((data) => {
         console.log(data);
         setCustomer(data);
+        setCanEdit(me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id);
       })
       .catch((error) => {
         console.error("Error fetching customer details:", error);
@@ -110,7 +111,7 @@ const CustomerProfile = ({ back }) => {
                 >
                   Back
                 </button>
-                {canEditCustomer && 
+                {canEdit && 
                     <button
                   onClick={handleEditClick}
                   className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 

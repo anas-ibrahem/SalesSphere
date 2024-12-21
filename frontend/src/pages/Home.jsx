@@ -45,7 +45,6 @@ function Home() {
       >
         <div className="max-h-full overflow-y-auto ">
           <Routes>
-            <Route path="/dashboard" element={<DashBoardOverView />} />
             <Route path="/business" element={<BusinessSection />} />
             <Route path="/logs" element={<LogsSection />} />
             <Route path="/records" element={<RecordsSection />} />

@@ -55,8 +55,6 @@ function DealDetails({ onBack = () => {} }) {
   const token = localStorage.getItem("token");
   const { employee: me } = useContext(UserContext);
 
-  const executor = true; // TODO - Replace with actual user role
-  const opener = true; // TODO - Replace with actual user role
   const {
     title = "Untitled Deal",
     status = 0,
