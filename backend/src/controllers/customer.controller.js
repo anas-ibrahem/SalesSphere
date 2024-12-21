@@ -124,6 +124,20 @@ class CustomerController {
         }
         res.json(result);
     }
+
+    delete = async (req, res) => {
+        const result = await this.customerModel.delete(req.pool, req.params.id);
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                type: 2,
+                content: `Customer ${result.name} (ID: ${result.id}) has been deleted`
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+        res.json(result);
+    }
 }
 
 

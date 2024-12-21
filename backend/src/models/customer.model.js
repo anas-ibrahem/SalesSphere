@@ -170,6 +170,26 @@ class CustomerModel {
         }
     }
 
+    delete = async (pool, customer_id) => {
+        try {
+            const result = await pool.query(`
+                DELETE FROM customer
+                WHERE id = $1
+                RETURNING id, name;
+            `, [customer_id]);
+
+            if(result.rows.length === 0) {
+                return {error: 'Invalid customer ID'};
+            }
+
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {error: 'Error deleting customer'};
+        }
+    }
+
 }
 
 export default CustomerModel;
