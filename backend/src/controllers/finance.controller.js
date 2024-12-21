@@ -47,7 +47,7 @@ class FinanceController {
             return res.status(400).json({error: 'All data are required'});
         }
         if(financeData.amount <= 0) {
-            return res.status(400).json({error: 'Amount must be greater than 0, and specify the type.'});
+            return res.status(400).json({error: 'Amount must be greater than 0.'});
         }
         financeData.business_id = req.businessId;
 
