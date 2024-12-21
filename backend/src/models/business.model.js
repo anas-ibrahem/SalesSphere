@@ -185,9 +185,9 @@ class BusinessModel {
                 employees: openers.rows[0].count + executors.rows[0].count,
                 customers: customers.rows[0].count,
                 open_deals: open_deals.rows[0].count,
+                claimed_deals: claimed_deals.rows[0].count,
                 closed_won_deals: closed_won_deals.rows[0].count,
                 closed_lost_deals: closed_lost_deals.rows[0].count,
-                claimed_deals: claimed_deals.rows[0].count,
                 income: income.rows[0].total,
                 expenses: expenses.rows[0].total,
                 net_balance: income.rows[0].total - expenses.rows[0].total
