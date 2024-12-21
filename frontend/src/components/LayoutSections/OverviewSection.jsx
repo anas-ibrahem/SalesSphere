@@ -1,11 +1,95 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Card, CardContent, Typography, Grid, useTheme, LinearProgress, List, ListItem, Chip } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Crown, TrendingUp, Users, Clock } from 'lucide-react';
+import fetchAPI from '../../utils/fetchAPI';
+import UserContext from '../../context/UserContext';
+import { EmployeeRoles } from '../../utils/Enums';
 
 const OverviewSection = () => {
   const theme = useTheme();
+  const [dailyCustomers, setDailyCustomers] = useState([]);
+  const [customerRevenueMetrics, setCustomerRevenueMetrics] = useState([]);
+  const [dailyProfit, setDailyProfit] = useState([]);
+  const [topExecutors, setTopExecutors] = useState([]);
+  const [topOpeners, setTopOpeners] = useState([]);
+  const [rank, setRank] = useState(0);
+  const [targets, setTargets] = useState([]);
+
+  const { employee } = useContext(UserContext);
+
+  // Fetch customers from API
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+
+    fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
+      console.log(data);
+      setDailyCustomers(data);
+    }).catch((error) => {
+      console.error("Error fetching metrics:", error);
+    }
+    );
+
+    fetchAPI('/customer/metrics/revenue', 'GET', null, token).then((data) => {
+      console.log(data);
+      setCustomerRevenueMetrics(data);
+    }).catch((error) => {
+      console.error("Error fetching metrics:", error);
+    }
+    );
+
+    fetchAPI('/finance/metrics', 'GET', null, token).then((data) => {
+      console.log(data);
+      setDailyProfit(data);
+    }).catch((error) => {
+        console.error("Error fetching metrics:", error);
+        }
+    );
+
+    fetchAPI('/employee/metrics/top', 'GET', null, token).then((data) => {
+        console.log(data);
+        setTopExecutors(data.executors);
+        setTopOpeners(data.openers);
+        }
+    ).catch((error) => {
+        console.error("Error fetching metrics:", error);
+        }
+    );
+
+    fetchAPI('/employee/metrics/rank/'+employee.role, 'GET', null, token).then((data) => {
+        console.log(data);
+        setRank(data.rank);
+        }
+    ).catch((error) => {
+        console.error("Error fetching metrics:", error);
+        }
+    );
+
+    fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token).then((data) => {
+        console.log(data);
+        setTargets(data);
+        }
+    ).catch((error) => {
+        console.error("Error fetching metrics:", error);
+        }
+    );
+
+  }, []);
+
+  const getRoleName = (role) => {
+    switch (role) {
+        case EmployeeRoles.DealExecutor:
+            return "Deal Executor";
+        case EmployeeRoles.DealOpener:
+            return "Deal Opener";
+        case EmployeeRoles.Manager:
+            return "Business Manager";
+        default:
+            return "Employee";
+    }
+};
 
   // Helper function to calculate days until deadline
   const getDaysUntil = (deadline) => {
@@ -15,91 +99,6 @@ const OverviewSection = () => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // Sample targets data with deadlines
-  const targets = [
-    { 
-      title: "Q4 Sales Target", 
-      current: 850000, 
-      target: 1000000,
-      progress: 85,
-      deadline: '2024-12-31'
-    },
-    { 
-      title: "New Customers Goal", 
-      current: 45, 
-      target: 50,
-      progress: 90,
-      deadline: '2024-12-25'
-    },
-    { 
-      title: "Revenue Per Deal", 
-      current: 28000, 
-      target: 40000,
-      progress: 70,
-      deadline: '2024-12-28'
-    },
-    { 
-      title: "Customer Satisfaction", 
-      current: 4.2, 
-      target: 4.5,
-      progress: 93,
-      deadline: '2024-12-23'
-    },
-    { 
-      title: "Deal Closure Rate", 
-      current: 65, 
-      target: 75,
-      progress: 87,
-      deadline: '2025-01-15'
-    },
-    { 
-      title: "Team Collaboration Score", 
-      current: 82, 
-      target: 100,
-      progress: 82,
-      deadline: '2024-12-24'
-    }
-  ];
-
-  const profitData = [
-    { date: '2024-12-15', profit: 5000 },
-    { date: '2024-12-16', profit: 6200 },
-    { date: '2024-12-17', profit: 7800 },
-    { date: '2024-12-18', profit: 6500 },
-    { date: '2024-12-19', profit: 8900 },
-    { date: '2024-12-20', profit: 9200 },
-    { date: '2024-12-21', profit: 8400 },
-  ];
-
-  const customersData = [
-    { date: '2024-12-15', customers: 120 },
-    { date: '2024-12-16', customers: 145 },
-    { date: '2024-12-17', customers: 162 },
-    { date: '2024-12-18', customers: 158 },
-    { date: '2024-12-19', customers: 175 },
-    { date: '2024-12-20', customers: 182 },
-    { date: '2024-12-21', customers: 168 },
-  ];
-
-  const topCustomers = [
-    { name: 'Tech Corp', revenue: 125000 },
-    { name: 'Global Industries', revenue: 98000 },
-    { name: 'StartUp Inc', revenue: 76000 },
-  ];
-
-  const dealOpeners = [
-    { name: 'John Smith', deals: 45 },
-    { name: 'Sarah Johnson', deals: 42 },
-    { name: 'Mike Brown', deals: 38 },
-  ];
-
-  const dealExecutors = [
-    { name: 'Emma Davis', deals: 52 },
-    { name: 'Tom Wilson', deals: 48 },
-    { name: 'Lisa Anderson', deals: 45 },
-  ];
-
-  const myRank = 5;
 
   const getProgressColor = (progress) => {
     if (progress >= 90) return '#22c55e';
@@ -152,7 +151,7 @@ const OverviewSection = () => {
                     <Box sx={{ mb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                         <Typography variant="subtitle2">
-                          {target.title}
+                          {target.description}
                         </Typography>
                         <Chip
                           icon={<Clock size={14} />}
@@ -172,21 +171,21 @@ const OverviewSection = () => {
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                         <Typography variant="body2" color="text.secondary">
-                          {target.current.toLocaleString()} / {target.target.toLocaleString()}
+                          {target.progress.toLocaleString()} / {target.goal.toLocaleString()}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {target.progress}%
+                          {Math.floor((target.progress / target.goal) * 100)}%
                         </Typography>
                       </Box>
                       <LinearProgress
                         variant="determinate"
-                        value={target.progress}
+                        value={Math.floor((target.progress / target.goal) * 100)}
                         sx={{
                           height: 6,
                           borderRadius: 1,
                           backgroundColor: 'rgba(0,0,0,0.1)',
                           '& .MuiLinearProgress-bar': {
-                            backgroundColor: getProgressColor(target.progress),
+                            backgroundColor: getProgressColor(Math.floor((target.progress / target.goal) * 100)),
                           },
                         }}
                       />
@@ -208,7 +207,7 @@ const OverviewSection = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>#{myRank} Deal Executer</Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>#{rank} {getRoleName(employee.role)}</Typography>
                   <Typography color="text.secondary" variant="body2">My Overall Rank</Typography>
                 </Box>
               </Box>
@@ -217,9 +216,9 @@ const OverviewSection = () => {
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                    Top Deal Openers
+                    Top 5 Deal Openers
                   </Typography>
-                  {dealOpeners.map((opener, index) => (
+                  {topOpeners.map((opener, index) => (
                     <Box
                       key={opener.name}
                       sx={{
@@ -236,9 +235,9 @@ const OverviewSection = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                    Top Deal Executors
+                    Top 5 Deal Executors
                   </Typography>
-                  {dealExecutors.map((executor, index) => (
+                  {topExecutors.map((executor, index) => (
                     <Box
                       key={executor.name}
                       sx={{
@@ -269,13 +268,16 @@ const OverviewSection = () => {
             <CardContent>
               <Box sx={{ height: 256 }}>
                 <LineChart
+                dataset={dailyProfit}
                   xAxis={[{ 
-                    data: profitData.map(item => item.date),
-                    scaleType: 'band'
+                    label: 'Date',
+                    dataKey: 'date',
+                    scaleType: 'band',
+                    valueFormatter: (v) => new Date(v).toLocaleDateString(),
                   }]}
                   series={[
                     {
-                      data: profitData.map(item => item.profit),
+                      dataKey: 'profit',
                       color: '#2563eb',
                       label: 'Profit'
                     }
@@ -303,15 +305,20 @@ const OverviewSection = () => {
             <CardContent>
               <Box sx={{ height: 256 }}>
                 <LineChart
-                  xAxis={[{ 
-                    data: customersData.map(item => item.date),
-                    scaleType: 'band'
-                  }]}
+                dataset={dailyCustomers}
+                xAxis={[{
+                    id: 'Date',
+                    dataKey: 'reg_date',
+                    label: 'Date',
+                    scaleType: 'band',
+                    valueFormatter: (v) => new Date(v).toLocaleDateString(),
+                }]}
                   series={[
                     {
-                      data: customersData.map(item => item.customers),
+                        dataKey: 'customers_count',
+                        name: 'Customers',
+                        label: 'Customers',
                       color: '#16a34a',
-                      label: 'Customers'
                     }
                   ]}
                   height={256}
@@ -337,17 +344,26 @@ const OverviewSection = () => {
             <CardContent>
               <Box sx={{ height: 256 }}>
                 <BarChart
-                  xAxis={[{ 
-                    data: topCustomers.map(customer => customer.name),
-                    scaleType: 'band'
+                dataset={customerRevenueMetrics}
+                series={[{
+                    dataKey: 'total_revenue',
+                    name: 'Revenue',
+                    label: 'Revenue',
+                    color: '#8884d8',
                   }]}
-                  series={[
-                    {
-                      data: topCustomers.map(customer => customer.revenue),
-                      color: '#8b5cf6',
-                      label: 'Revenue'
+
+                  xAxis={[{
+                    id: 'Name',
+                    dataKey: 'name',
+                    scaleType: 'band',
+                    valueFormatter: (v) => v.length > 10 ? v.substring(0, 10) + '...' : v,
+                    labelStyle: {
+                      maxWidth: 50,
+                      whiteSpace: 'break-spaces',
+                      overflowWrap: 'break-word',
                     }
-                  ]}
+                  }]}
+                  
                   height={256}
                 />
               </Box>

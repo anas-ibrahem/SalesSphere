@@ -473,6 +473,72 @@ class EmployeeModel {
             return false;
         }
     }
+
+    getTopEmployees = async (pool, business_id) => {
+        // get the names of the top 5 employees with the most closed/opened won deals
+        try {
+            const exec_result = await pool.query(`
+                SELECT concat(ep.first_name, ' ', ep.last_name) as name, COUNT(d.id) as deals
+                FROM employee e
+                LEFT JOIN deal d
+                ON d.deal_executor = e.id AND d.status = 2
+                JOIN employee_profile ep
+                ON e.id = ep.employee_id
+                WHERE e.business_id = $1 and e.role = 1
+                GROUP BY ep.first_name, ep.last_name
+                ORDER BY deals DESC
+                LIMIT 5;
+            `, [business_id]);
+
+            const opener_result = await pool.query(`
+                SELECT concat(ep.first_name, ' ', ep.last_name) as name, COUNT(d.id) as deals
+                FROM employee e
+                LEFT JOIN deal d
+                ON d.deal_opener = e.id AND d.status = 2
+                JOIN employee_profile ep
+                ON e.id = ep.employee_id
+                WHERE e.business_id = $1 and e.role = 0
+                GROUP BY ep.first_name, ep.last_name
+                ORDER BY deals DESC
+                LIMIT 5;
+            `, [business_id]);
+
+            return {executors: exec_result.rows, openers: opener_result.rows};
+
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {executors: [], openers: []};
+        }
+    }
+
+    getMyRank = async (pool, employee_id, role) => {
+        // get the rank of the employee with the most closed deals
+        try {  
+            const result = await pool.query(`
+                SELECT rank
+                FROM (
+                    SELECT e.id, RANK() OVER (ORDER BY COUNT(d.id) DESC) as rank
+                    FROM employee e
+                    LEFT JOIN deal d
+                    ON d.${role == 0 ? 'deal_opener' : 'deal_executor'} = e.id AND d.status = 2
+                    WHERE e.role = $1
+                    GROUP BY e.id
+                ) as r
+                WHERE id = $2;
+            `, [role, employee_id]);
+
+            if(result.rows.length === 0) {
+                return {rank: 0};
+            }
+
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {rank: 0};
+        }
+    }
     
 }
 

@@ -136,6 +136,25 @@ class FinanceModel {
         }
     }
 
+    getProfitsPerDate = async (pool, business_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END) - SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END) as profit, 
+                cast(fr.transaction_date as date) as date
+                FROM FINANCIAL_RECORD fr
+                WHERE fr.business_id = $1
+                GROUP BY date
+                ORDER BY date;
+            `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+
 }
 
 export default FinanceModel;

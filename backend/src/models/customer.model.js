@@ -131,11 +131,12 @@ class CustomerModel {
     getTopCustomersByRevenue = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT c.id, c.name, SUM(d.customer_budget - d.expenses) as total_revenue
+                SELECT c.id, c.name, SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END) - SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END) as total_revenue
                 FROM customer c
                 JOIN deal d
                 ON c.id = d.customer_id
-                WHERE c.business_id = $1 and d.status = 2
+                JOIN financial_record fr on d.id = fr.deal_id
+                WHERE c.business_id = $1
                 GROUP BY c.id, c.name
                 ORDER BY total_revenue DESC
                 LIMIT 5;

@@ -45,7 +45,7 @@ function DealDetails({ onBack = () => {} }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const executer = true; // TODO - Replace with actual user role
+  const executor = true; // TODO - Replace with actual user role
   const opener = true; // TODO - Replace with actual user role
   const {
     title = "Untitled Deal",
@@ -437,7 +437,7 @@ function DealDetails({ onBack = () => {} }) {
               </button>
 
               <div className="flex space-x-3">
-                {executer && deal.status === 0 && (
+                {executor && deal.status === 0 && (
                   <button
                     onClick={handelClaimDeal}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -446,7 +446,7 @@ function DealDetails({ onBack = () => {} }) {
                   </button>
                 )}
 
-                {executer && deal.status === 1 && (
+                {executor && deal.status === 1 && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
@@ -604,7 +604,7 @@ function DealDetails({ onBack = () => {} }) {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
-                  {executer && deal.status === 1 && (
+                  {executor && deal.status === 1 && (
                     <button
                       onClick={() => navigate(`new-record`)}
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"

@@ -61,7 +61,8 @@ class FinanceController {
         }
         this.logsModel.add(req.pool, logData);
 
-        this.targetModel.addProgress(req.pool, req.employeeId, 3);
+        if (financeData.type == 1) // only add progress if it's a profit
+            this.targetModel.addProgress(req.pool, req.employeeId, 3, financeData.amount);
 
         res.json(result);
     }
@@ -71,6 +72,10 @@ class FinanceController {
         res.json(finances);
     }
 
+    getProfitsPerDate = async (req, res) => {
+        const finances = await this.financeModel.getProfitsPerDate(req.pool, req.businessId);
+        res.json(finances);
+    }
 
 }
 

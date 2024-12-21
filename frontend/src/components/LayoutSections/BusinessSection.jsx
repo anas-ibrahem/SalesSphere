@@ -23,7 +23,7 @@ const BusinessSection = function () {
   const totalIncome = 5000; // TODO: Fetch from API
   const totalExpenses = 2000; // TODO: Fetch from API
   const totalOpenerEmployees = 50; // TODO: Fetch from API
-  const totalExecuterEmployees = 30; // TODO: Fetch from API
+  const totalExecutorEmployees = 30; // TODO: Fetch from API
 
   useEffect(() => {
     const fetchBusinessData = async () => {
@@ -140,7 +140,7 @@ const BusinessSection = function () {
                         Number Of Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalOpenerEmployees + totalExecuterEmployees}
+                        {totalOpenerEmployees + totalExecutorEmployees}
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
@@ -153,10 +153,10 @@ const BusinessSection = function () {
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">
-                        Number Of Executer Employees
+                        Number Of Executor Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalExecuterEmployees}
+                        {totalExecutorEmployees}
                       </p>
                     </div>
                   </div>

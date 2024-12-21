@@ -14,6 +14,8 @@ router.get('/profits', financeController.getAllProfits);
 router.get('/deal/summary/:id', financeController.getByDealIdSummary);
 router.get('/deal/:id', financeController.getByDealId);
 
+router.get('/metrics', financeController.getProfitsPerDate);
+
 router.get('/:id', financeController.getById);
 
 // to create a new finance

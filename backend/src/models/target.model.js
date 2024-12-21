@@ -38,7 +38,7 @@ class TargetModel {
     getAllUpcoming = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*, (t.deadline - CURRENT_TIMESTAMP) as time_left
+                SELECT t.*, et.progress, (t.deadline - CURRENT_TIMESTAMP) as time_left
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
                 JOIN employee e ON et.employee_id = e.id
@@ -56,7 +56,7 @@ class TargetModel {
     getAllFinished = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*, (CURRENT_TIMESTAMP - t.deadline) as time_passed
+                SELECT t.*, et.progress, (CURRENT_TIMESTAMP - t.deadline) as time_passed
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
                 JOIN employee e ON et.employee_id = e.id
@@ -74,7 +74,7 @@ class TargetModel {
     getAllByEmployee = async (pool, employee_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*
+                SELECT t.*, et.progress
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
                 WHERE et.employee_id = $1;
@@ -91,10 +91,11 @@ class TargetModel {
     getAllByEmployeeActive = async (pool, employee_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*, (t.deadline - CURRENT_TIMESTAMP) as time_left
+                SELECT t.*, et.progress, (t.deadline - CURRENT_TIMESTAMP) as time_left
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
-                WHERE et.employee_id = $1 AND t.deadline > CURRENT_TIMESTAMP AND t.start_date < CURRENT_TIMESTAMP;
+                WHERE et.employee_id = $1 AND t.deadline > CURRENT_TIMESTAMP AND t.start_date < CURRENT_TIMESTAMP
+                ORDER BY t.deadline ASC;
             `, [employee_id]);
 
             return result.rows;
@@ -108,10 +109,11 @@ class TargetModel {
     getAllByEmployeeUpcoming = async (pool, employee_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*, (t.deadline - CURRENT_TIMESTAMP) as time_left
+                SELECT t.*, et.progress, (t.deadline - CURRENT_TIMESTAMP) as time_left
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
-                WHERE et.employee_id = $1 AND t.start_date > CURRENT_TIMESTAMP;
+                WHERE et.employee_id = $1 AND t.start_date > CURRENT_TIMESTAMP
+                ORDER BY t.start_date ASC;
             `, [employee_id]);
 
             return result.rows;
@@ -125,7 +127,7 @@ class TargetModel {
     getAllByEmployeeFinished = async (pool, employee_id) => {
         try {
             const result = await pool.query(`
-                SELECT t.*, (CURRENT_TIMESTAMP - t.deadline) as time_passed
+                SELECT t.*, et.progress, (CURRENT_TIMESTAMP - t.deadline) as time_passed
                 FROM TARGET t
                 JOIN EMPLOYEE_TARGET et ON t.id = et.target_id
                 WHERE et.employee_id = $1 AND t.deadline < CURRENT_TIMESTAMP;
@@ -236,18 +238,18 @@ class TargetModel {
         }
     }
 
-    addProgress = async (pool, employeeId, targetType) => {
+    addProgress = async (pool, employeeId, targetType, amount=1) => {
         try {
             const result = await pool.query(`
                 UPDATE EMPLOYEE_TARGET
-                SET progress = progress + 1
+                SET progress = progress + $3
                 WHERE employee_id = $1 AND target_id IN (
                     SELECT t.id
                     FROM TARGET t
                     WHERE t.type = $2 AND t.deadline > CURRENT_TIMESTAMP AND t.start_date < CURRENT_TIMESTAMP
                 )
                 RETURNING *;
-            `, [employeeId, targetType]);
+            `, [employeeId, targetType, amount]);
 
             return {success: result.rows.length > 0};
         }
