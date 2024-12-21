@@ -329,8 +329,8 @@ const EmployeeProfile = ({ back }) => {
                   </div>
                 )}
 
-                {/* Updated Targets Section */}
-                {employee?.role !== EmployeeRoles.Manager && (
+                {/* Targets Section */}
+                {(employee.role !== EmployeeRoles.Manager && (me.id === employee.id || me.role === EmployeeRoles.Manager) ) && (
                   <div className="mt-4">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-md font-medium flex items-center gap-2">
@@ -449,7 +449,7 @@ const EmployeeProfile = ({ back }) => {
                 </div>
 
                 {/* Deals Section */}
-                {employee.role !== EmployeeRoles.Manager && (
+                {(employee.role !== EmployeeRoles.Manager && (me.id === employee.id || me.role === EmployeeRoles.Manager) ) && (
                   <div className="mt-4">
                     <h4 className="text-md font-medium flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-blue-600" /> Related
@@ -488,7 +488,7 @@ const EmployeeProfile = ({ back }) => {
                   </div>
                 )}
                 {/* Customers Section */}
-                {employee.role !== EmployeeRoles.Manager && (
+                {(employee.role !== EmployeeRoles.Manager && (me.id === employee.id || me.role === EmployeeRoles.Manager) ) && (
                   <div className="mt-4">
                     <h4 className="text-md font-medium flex items-center gap-2">
                       <UsersRound className="w-5 h-5 text-cyan-800" /> Customers
@@ -505,7 +505,7 @@ const EmployeeProfile = ({ back }) => {
                 )}
 
                 {/* My Business Section for Manager*/}
-                {employee.role === EmployeeRoles.Manager && (
+                {employee.role === EmployeeRoles.Manager && me.role === EmployeeRoles.Manager && (
                   <div className="mt-4">
                     <h4 className="text-md font-medium flex items-center gap-2">
                       <Home className="w-5 h-5 text-cyan-800" /> Your Business
