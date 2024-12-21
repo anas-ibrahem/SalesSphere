@@ -2,12 +2,14 @@ import EmployeeModel from "../models/employee.model.js";
 import bcypt from 'bcryptjs';
 import validator from 'validator';
 import LogsModel from "../models/logs.model.js";
+import NotificationModel from "../models/notification.model.js";
 
 
 class EmployeeController {
     constructor() {
         this.employeeModel = new EmployeeModel({});
         this.logsModel = new LogsModel();
+        this.notificationModel = new NotificationModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -59,6 +61,24 @@ class EmployeeController {
                 content: 'A new employee has been added'
             }
             this.logsModel.add(req.pool, logData);
+
+            const notificationData = {
+                title: 'New Employee Added',
+                content: `New employee ${empData.first_name} ${empData.last_name} has been added`,
+                priority: 0,
+                type: 0
+            }
+
+            this.notificationModel.addNotificationToAll(req.pool, req.businessId, notificationData);
+
+            const notificationData2 = {
+                title: 'Welcome to the team!',
+                content: `You have been added to our business`,
+                priority: 0,
+                type: 0
+            }
+
+            this.notificationModel.addNotification(req.pool, result.employeeId, notificationData2);
         }
         res.json(result);
     }

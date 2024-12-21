@@ -124,7 +124,6 @@ CREATE TABLE BADGE (
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     type INT NOT NULL, -- Depends on the event
-    icon_url VARCHAR(255) NOT NULL,
     required_points INT NOT NULL -- Requirement to get the badge
 );
 
