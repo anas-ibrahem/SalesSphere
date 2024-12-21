@@ -10,6 +10,8 @@ const businessController = new BusinessController();
 // Define routes for /api/business
 router.get('/', businessController.getAll);
 
+router.get('/summary', businessController.getSummary);
+
 router.get('/:id', businessController.getById);
 
 router.patch('/', businessController.update);

@@ -15,6 +15,9 @@ router.get('/deal/summary/:id', financeController.getByDealIdSummary);
 router.get('/deal/:id', financeController.getByDealId);
 
 router.get('/metrics', financeController.getProfitsPerDate);
+router.get('/metrics/employee', financeController.getProfitsPerDateForEmployee);
+
+router.get('/employee/summary', financeController.getSummaryForEmployee);
 
 router.get('/:id', financeController.getById);
 

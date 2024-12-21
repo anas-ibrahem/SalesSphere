@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography, Grid, useTheme, LinearProgress, List, ListItem, Chip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, useTheme, LinearProgress, List, ListItem, Chip, Tooltip } from '@mui/material';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import { LineChart } from '@mui/x-charts/LineChart';
-import { BarChart } from '@mui/x-charts/BarChart';
 import { Crown, TrendingUp, Users, Clock, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import fetchAPI from '../../utils/fetchAPI';
 import UserContext from '../../context/UserContext';
-import { EmployeeRoles } from '../../utils/Enums';
+import { EmployeeRoles, TargetIcons, TargetTypes } from '../../utils/Enums';
+import { PieChart, BarChart, LineChart } from '@mui/x-charts';
 
 const OverviewSection = () => {
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
   const [dailyCustomers, setDailyCustomers] = useState([]);
   const [customerRevenueMetrics, setCustomerRevenueMetrics] = useState([]);
   const [dailyProfit, setDailyProfit] = useState([]);
@@ -17,60 +17,65 @@ const OverviewSection = () => {
   const [topOpeners, setTopOpeners] = useState([]);
   const [rank, setRank] = useState(0);
   const [targets, setTargets] = useState([]);
-  const [financialMetrics, setFinancialMetrics] = useState({ income: 12, expense: 12 });
+  const [businessSummary, setBusinessSummary] = useState({ openers: 0, executors: 0, customers: 0, open_deals: 0, 
+    claimed_deals: 0, closed_won_deals: 0, closed_lost_deals: 0,
+    income: 0, expenses: 0, net_balance: 0
+  });
 
   const { employee } = useContext(UserContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
-      setDailyCustomers(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+    const fetchMetrics = async () => {
+      try {
+      const dailyCustomersData = await fetchAPI('/customer/metrics', 'GET', null, token);
+      setDailyCustomers(dailyCustomersData);
 
-    fetchAPI('/customer/metrics/revenue', 'GET', null, token).then((data) => {
-      setCustomerRevenueMetrics(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const customerRevenue_endpoint = employee.role === EmployeeRoles.Manager ? '/customer/metrics/revenue' : '/customer/metrics/revenue/employee';
+      const customerRevenueMetricsData = await fetchAPI(customerRevenue_endpoint, 'GET', null, token);
+      setCustomerRevenueMetrics(customerRevenueMetricsData);
 
-    fetchAPI('/finance/metrics', 'GET', null, token).then((data) => {
-      setDailyProfit(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const dailyPrfit_endpoint = employee.role === EmployeeRoles.Manager ? '/finance/metrics' : '/finance/metrics/employee';
+      const dailyProfitData = await fetchAPI(dailyPrfit_endpoint, 'GET', null, token);
+      setDailyProfit(dailyProfitData);
 
-    fetchAPI('/employee/metrics/top', 'GET', null, token).then((data) => {
-      setTopExecutors(data.executors);
-      setTopOpeners(data.openers);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const topEmployeesData = await fetchAPI('/employee/metrics/top', 'GET', null, token);
+      setTopExecutors(topEmployeesData.executors);
+      setTopOpeners(topEmployeesData.openers);
 
-    fetchAPI('/employee/metrics/rank/'+employee.role, 'GET', null, token).then((data) => {
-      setRank(data.rank);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const rankData = await fetchAPI('/employee/metrics/rank/' + employee.role, 'GET', null, token);
+      setRank(rankData.rank);
 
-    fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token).then((data) => {
-      setTargets(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const targetsData = await fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token);
+      setTargets(targetsData);
 
-    fetchAPI('/finance/metrics/daily', 'GET', null, token).then((data) => {
-      setFinancialMetrics({
-        income: data.income,
-        expense: data.expense
-      });
-    }).catch((error) => {
-      console.error("Error fetching financial metrics:", error);
-    });
+      const summary_endpoint = employee.role === EmployeeRoles.Manager ? '/business/summary' : '/finance/employee/summary';
+      const businessSummaryData = await fetchAPI(summary_endpoint, 'GET', null, token);
+      setBusinessSummary(businessSummaryData);
+      } catch (error) {
+      console.error("Error fetching metrics:", error);
+      }
+    };
+
+    fetchMetrics()
+    .then(() =>{ 
+      setIsLoading(false);
+      console.log('Metrics fetched successfully!')
+    })
+    .catch((error) => console.error('Error fetching metrics:', error));
 
   }, [employee.id, employee.role]);
+
+  if(isLoading) {
+    return (
+      <Box sx={{ p: 6 }}>
+        <Typography variant="h5" sx={{ mb: 4, fontWeight: 600, color: '#111830' }}>
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
 
   const getRoleName = (role) => {
     switch (role) {
@@ -84,6 +89,22 @@ const OverviewSection = () => {
         return "Employee";
     }
   };
+
+  const getTargetType = (type) => {
+    switch (type) {
+      case TargetTypes.OpenDeals:
+        return 'deals opened';
+      case TargetTypes.CloseDeals:
+        return 'deals closed';
+      case TargetTypes.AddCustomers:
+        return 'customers added';
+      case TargetTypes.Revenue:
+        return 'revenue';
+      default:
+        return 'target';
+    }
+  };
+
 
   const getDaysUntil = (deadline) => {
     const today = new Date();
@@ -121,16 +142,15 @@ const OverviewSection = () => {
       minHeight: '100vh'
     }}>
       <Typography 
-        variant="h4" 
+        variant="h5" 
         sx={{ 
           mb: 4, 
-          fontWeight: 800,
+          fontWeight: 600,
           color: '#111830',
-          borderBottom: `2px solid ${'#111830'}`,
-          paddingBottom: 2
+          paddingBottom: 1
         }}
       >
-        Welcome Saler, Ready To Sale On SalesSphere 🚀
+        Welcome, {employee.first_name} {employee.last_name}
       </Typography>
 
 
@@ -147,15 +167,15 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowUpCircle size={40} color="#22c55e" />
+              <ArrowUpCircle size={30} color="#22c55e" />
               <Box>
-                <Typography variant="h6" color="#22c55e">
+                <Typography variant="h7" color="#22c55e">
                   {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                   {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                   Income
                   </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#22c55e' }}>
-                  ${financialMetrics.income.toLocaleString()}
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#22c55e' }}>
+                  ${businessSummary.income.toLocaleString()}
                 </Typography>
               </Box>
             </CardContent>
@@ -173,16 +193,16 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowDownCircle size={40} color="#ef4444" />
+              <ArrowDownCircle size={30} color="#ef4444" />
               <Box>
-                <Typography variant="h6" color="#ef4444">
+                <Typography variant="h7" color="#ef4444">
                   
                 {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                 {employee.role !== EmployeeRoles.Manager && <span>Your </span>} 
                   
                   Expenses</Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#ef4444' }}>
-                  ${financialMetrics.expense.toLocaleString()}
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#ef4444' }}>
+                  ${businessSummary.expenses.toLocaleString()}
                 </Typography>
               </Box>
             </CardContent>
@@ -192,7 +212,7 @@ const OverviewSection = () => {
         <Grid item xs={24} md={12}>
           {/* Calculate total and determine styling */}
           {(() => {
-          const total = financialMetrics.income - financialMetrics.expense;
+          const total = businessSummary.net_balance;
 
           const getCardStyle = (total) => {
             if (total > 0) {
@@ -230,11 +250,11 @@ const OverviewSection = () => {
 
           const getIcon = (total) => {
             if (total > 0) {
-              return <ArrowUpCircle size={40} color="#22c55e" />;
+              return <ArrowUpCircle size={30} color="#22c55e" />;
             } else if (total < 0) {
-              return <ArrowDownCircle size={40} color="#ef4444" />;
+              return <ArrowDownCircle size={30} color="#ef4444" />;
             } else {
-              return <HorizontalRuleIcon size={40} color="#9ca3af" />;
+              return <HorizontalRuleIcon size={30} color="#9ca3af" />;
             }
           };
 
@@ -249,11 +269,11 @@ const OverviewSection = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
                 {getIcon(total)}
                 <Box>
-                  <Typography variant="h6" color={getColor(total)}>
+                  <Typography variant="h7" color={getColor(total)}>
                     Total
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 600, color: getColor(total) }}>
-                    ${Math.abs(total).toLocaleString()}
+                  <Typography variant="h5" sx={{ fontWeight: 600, color: getColor(total) }}>
+                    {total < 0 ? '-' : '+'}${Math.abs(total).toLocaleString()}
                   </Typography>
                 </Box>
               </CardContent>
@@ -281,14 +301,13 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Closest DealLines of
-              {employee.role === EmployeeRoles.Manager && <span> Business' </span>}
-              {employee.role !== EmployeeRoles.Manager && <span> Your </span>}
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                 Targets
               </Typography>
             </Box>
             <CardContent sx={{ 
-              maxHeight: 200, 
+              maxHeight: 300, 
               overflow: 'auto', 
               '&::-webkit-scrollbar': { width: '8px' }, 
               '&::-webkit-scrollbar-thumb': { 
@@ -300,15 +319,25 @@ const OverviewSection = () => {
               }
             }}>
               <List sx={{ p: 0 }}>
+                {targets.length === 0 && (
+                  <ListItem className='w-full text-center h-full flex flex-col items-center justify-center'>
+                    <Typography variant="body2" color="text.secondary" className='w-full text-center'>
+                      No active targets
+                      </Typography>
+                      </ListItem>
+                )}
+
                 {targets.map((target, index) => {
                   
                   const targetProgress = Math.floor((target.progress / target.goal) * 100);
+                  const TargetIcon = TargetIcons[target.type];
                   
                   return (
                   <ListItem key={index} sx={{ display: 'block', px: 0, py: 1 }}>
                     <Box sx={{ mb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle2" className='flex flex-row items-center'>
+                          <TargetIcon size={16} style={{marginRight:'2px'}} />
                           {target.description}
                         </Typography>
                         <Chip
@@ -329,7 +358,7 @@ const OverviewSection = () => {
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                         <Typography variant="body2" color="text.secondary">
-                          {target.progress.toLocaleString()} / {target.goal.toLocaleString()}
+                          {target.progress.toLocaleString()} / {target.goal.toLocaleString()} {getTargetType(target.type)} {employee.role === EmployeeRoles.Manager && '(average progress)'}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           {targetProgress}%
@@ -371,13 +400,13 @@ const OverviewSection = () => {
                 Top Employees
               </Typography>
 
-              { employee.role !== EmployeeRoles.Manager && <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />
                 <Box>
                   <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{employee.role != EmployeeRoles.Manager ? `#${rank}` : ''} {getRoleName(employee.role)}</Typography>
                   <Typography color="text.secondary" variant="body2">{employee.role != EmployeeRoles.Manager ? `My Overall Rank` : ''}</Typography>
                 </Box>
-              </Box>}
+              </Box>
 
 
             </Box>
@@ -444,6 +473,8 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                 Daily Profit
               </Typography>
             </Box>
@@ -496,7 +527,7 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Daily Customers
+              Business' Daily Customers
               </Typography>
             </Box>
             <CardContent>
@@ -539,6 +570,77 @@ const OverviewSection = () => {
           </Card>
         </Grid>
 
+        {employee.role == EmployeeRoles.Manager && <Grid item xs={12} md={6}>
+  <Card sx={{ 
+    height: '100%',
+    boxShadow: theme.shadows[2],
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[4],
+      transform: 'translateY(-2px)'
+    }
+  }}>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+        Employee Distribution
+      </Typography>
+    </Box>
+    <CardContent>
+      <Box sx={{ height: 300, display: 'flex', justifyContent: 'center' }}>
+        <PieChart
+          series={[
+            {
+              data:[
+                { id:0, label: 'Deal Openers', value: businessSummary.openers },
+                { id:1, label: 'Deal Executors', value: businessSummary.executors }
+              ],
+              highlightScope: { fade: 'global', highlight: 'item' },
+              faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+            }
+          ]}
+          height={300}
+        />
+      </Box>
+    </CardContent>
+  </Card>
+</Grid>}
+
+{employee.role == EmployeeRoles.Manager && <Grid item xs={12} md={6}>
+  <Card sx={{ 
+    height: '100%',
+    boxShadow: theme.shadows[2],
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[4],
+      transform: 'translateY(-2px)'
+    }
+  }}>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+        Deal Status Distribution
+      </Typography>
+    </Box>
+    <CardContent>
+      <Box sx={{ height: 300, display: 'flex', justifyContent: 'center' }}>
+        <PieChart
+          series={
+            [{
+              data:[
+              { id:0, label: 'Open Deals', value: businessSummary.open_deals },
+              { id:1, label: 'Claimed Deals', value: businessSummary.claimed_deals },
+              { id:2, label: 'Closed Won Deals', value: businessSummary.closed_won_deals },
+              { id:3, label: 'Closed Lost Deals', value: businessSummary.closed_lost_deals }
+            ],
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' }
+          }]}
+          height={300}
+        />
+      </Box>
+    </CardContent>
+  </Card>
+</Grid>}
+
         <Grid item xs={12}>
           <Card sx={{ 
             boxShadow: theme.shadows[2],
@@ -550,7 +652,9 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Top Customers by Revenue
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
+                Top 5 Customers by Revenue
               </Typography>
             </Box>
             <CardContent>
@@ -594,6 +698,7 @@ const OverviewSection = () => {
             </CardContent>
           </Card>
         </Grid>
+        
       </Grid>
     </Box>
   );

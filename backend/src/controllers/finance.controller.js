@@ -47,7 +47,7 @@ class FinanceController {
             return res.status(400).json({error: 'All data are required'});
         }
         if(financeData.amount <= 0) {
-            return res.status(400).json({error: 'Amount must be greater than 0, and specify the type.'});
+            return res.status(400).json({error: 'Amount must be greater than 0.'});
         }
         financeData.business_id = req.businessId;
 
@@ -99,6 +99,16 @@ class FinanceController {
 
     getProfitsPerDate = async (req, res) => {
         const finances = await this.financeModel.getProfitsPerDate(req.pool, req.businessId);
+        res.json(finances);
+    }
+
+    getProfitsPerDateForEmployee = async (req, res) => {
+        const finances = await this.financeModel.getProfitsPerDateForEmployee(req.pool, req.employeeId);
+        res.json(finances);
+    }
+
+    getSummaryForEmployee = async (req, res) => {
+        const finances = await this.financeModel.getSummaryForEmployee(req.pool, req.employeeId);
         res.json(finances);
     }
 

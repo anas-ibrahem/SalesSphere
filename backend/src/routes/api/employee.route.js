@@ -25,4 +25,7 @@ router.patch('/', employeeController.updateMyProfile);
 router.patch('/:id', employeeController.updateEmployeeProfile);
 // should be put instead of patch
 
+// to delete an employee
+router.delete('/:id', employeeController.deleteEmployee);
+
 export default router;

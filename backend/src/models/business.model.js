@@ -117,6 +117,90 @@ class BusinessModel {
         }
 
     }
+
+    getSummary = async (pool, businessId) => {
+        try {
+           const openers = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM employee e
+                WHERE e.business_id = $1 AND e.role = 0;
+            `, [businessId]);
+
+            const executors = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM employee e
+                WHERE e.business_id = $1 AND e.role = 1;
+            `, [businessId]);
+
+            const customers = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM customer c
+                WHERE c.business_id = $1;
+            `, [businessId]);
+
+            const open_deals = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM deal d
+                JOIN customer c ON d.customer_id = c.id
+                WHERE c.business_id = $1 AND d.status = 0;
+            `, [businessId]);
+            
+            const claimed_deals = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM deal d
+                JOIN customer c ON d.customer_id = c.id
+                WHERE c.business_id = $1 AND d.status = 1;
+            `, [businessId]);
+
+            const closed_won_deals = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM deal d
+                JOIN customer c ON d.customer_id = c.id
+                WHERE c.business_id = $1 AND d.status = 2;
+            `, [businessId]);
+
+            const closed_lost_deals = await pool.query(`
+                SELECT CAST(COUNT(*) as int) as count
+                FROM deal d
+                JOIN customer c ON d.customer_id = c.id
+                WHERE c.business_id = $1 AND d.status = 3;
+            `, [businessId]);
+
+
+            const income = await pool.query(`
+                SELECT SUM(fr.amount) as total
+                FROM financial_record fr
+                WHERE fr.business_id = $1 AND fr.type = 1;
+            `, [businessId]);
+
+            const expenses = await pool.query(`
+                SELECT SUM(fr.amount) as total
+                FROM financial_record fr
+                WHERE fr.business_id = $1 AND fr.type = 0;
+            `, [businessId]);
+
+            const summary = {
+                openers: openers.rows[0].count,
+                executors: executors.rows[0].count,
+                employees: openers.rows[0].count + executors.rows[0].count,
+                customers: customers.rows[0].count,
+                open_deals: open_deals.rows[0].count,
+                claimed_deals: claimed_deals.rows[0].count,
+                closed_won_deals: closed_won_deals.rows[0].count,
+                closed_lost_deals: closed_lost_deals.rows[0].count,
+                income: income.rows[0].total,
+                expenses: expenses.rows[0].total,
+                net_balance: income.rows[0].total - expenses.rows[0].total
+            };
+
+            return summary;
+
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return {error: 'Failed to get business summary'};
+        }
+    }
 }
 
 export default BusinessModel;

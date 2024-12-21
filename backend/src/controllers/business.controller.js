@@ -96,6 +96,11 @@ class BusinessController {
         }
         res.json(result);
     }
+
+    getSummary = async (req, res) => {
+        const summary = await this.BusinessModel.getSummary(req.pool, req.businessId);
+        res.json(summary);
+    }
 }
 
 

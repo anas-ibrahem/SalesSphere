@@ -4,10 +4,12 @@ import LogsModel from "../models/logs.model.js";
 import TargetModel from "../models/target.model.js";
 import BadgesModel from "../models/badges.model.js";
 import NotificationModel from "../models/notification.model.js";
+import EmployeeModel from "../models/employee.model.js";
 
 
 class DealController {
     constructor() {
+        this.employeeModel = new EmployeeModel({});
         this.dealModel = new DealModel();
         this.logsModel = new LogsModel();
         this.targetModel = new TargetModel();
@@ -15,21 +17,40 @@ class DealController {
         this.notificationModel = new NotificationModel();
     }
     getAll = async (req, res) => {
-        const emps = await this.dealModel.getAll(req.pool, req.businessId);
-        res.json(emps);
+        const emp = await this.employeeModel.getById(req.pool, req.employeeId);
+
+        if(emp.role === 2) { // manager
+            const deals = await this.dealModel.getAll(req.pool, req.businessId);
+            res.json(deals);
+        }
+        else if(emp.role === 1) { // executor
+            const open_deals = await this.dealModel.getAllOpenDeals(req.pool, req.businessId);
+            const emp_deals = await this.dealModel.getEmployeeDeals(req.pool , req.employeeId);
+
+            const deals = [...open_deals, ...emp_deals];
+
+            res.json(deals);
+        }
+        else if(emp.role === 0) { // opener
+            const deals = await this.dealModel.getEmployeeDeals(req.pool, req.employeeId);
+            res.json(deals);
+        }
+        else {
+            res.json({error: 'Invalid Employee Role'});
+        }
     }
     getEmployeeClaimedDeals = async (req, res) => {
-        const emps = await this.dealModel.getEmployeeClaimedDeals(req.pool , req.employeeId);
-        res.json(emps);
+        const deals = await this.dealModel.getEmployeeClaimedDeals(req.pool , req.employeeId);
+        res.json(deals);
     }
 
     getEmployeeClosedDeals = async (req, res) => {
-        const emps = await this.dealModel.getEmployeeClosedDeals(req.pool , req.employeeId);
-        res.json(emps);
+        const deals = await this.dealModel.getEmployeeClosedDeals(req.pool , req.employeeId);
+        res.json(deals);
     }
     getAllOpenDeals = async (req, res) => {
-        const emps = await this.dealModel.getAllOpenDeals(req.pool, req.businessId);
-        res.json(emps);
+        const deals = await this.dealModel.getAllOpenDeals(req.pool, req.businessId);
+        res.json(deals);
     }
 
     getById = async (req, res) => {
@@ -171,16 +192,16 @@ class DealController {
 
     update = async (req, res) => {
         const dealData = req.body;
-        if(!dealData.id) {
+        if(dealData.id == undefined) {
             return res.status(400).json({error: 'Deal ID is required'});
         }
 
-        if(!dealData.title || !dealData.description || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
+        if(dealData.title == undefined || dealData.description == undefined || dealData.due_date == undefined || dealData.expenses == undefined || dealData.customer_budget == undefined) {
             return res.status(400).json({error: 'Deal title, description, due_date, expenses and customer_budget are required'});
         }
 
         const result = await this.dealModel.update(req.pool, dealData);
-        if(!result) {
+        if(result.error) {
             return res.status(400).json({error: 'Something unexpected went wrong'});
         }
         else {
@@ -209,7 +230,7 @@ class DealController {
         }
 
         const result = await this.dealModel.delete(req.pool, deal_id);
-        if(!result) {
+        if(result.error) {
             return res.status(400).json({error: 'Something unexpected went wrong'});
         }
         else {

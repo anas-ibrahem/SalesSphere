@@ -91,6 +91,12 @@ class CustomerController {
         const customers = await this.customerModel.getTopCustomersByRevenue(req.pool, req.businessId);
         res.json(customers);
     }
+
+    getTopCustomersByRevenueForEmployee = async (req, res) => {
+        const customers = await this.customerModel.getTopCustomersByRevenueForEmployee(req.pool, req.employeeId);
+        res.json(customers);
+    }
+    
     update = async (req, res) => {
         const customerData = req.body;
         if(!customerData.email || !validator.isEmail(customerData.email)) {
@@ -121,6 +127,20 @@ class CustomerController {
             }
 
             this.notificationModel.addNotificationToAll(req.pool, req.businessId, notificationData);
+        }
+        res.json(result);
+    }
+
+    delete = async (req, res) => {
+        const result = await this.customerModel.delete(req.pool, req.params.id);
+        if(!result.error) {
+            const logData = {
+                business_id: req.businessId,
+                employee_id: req.employeeId,
+                type: 2,
+                content: `Customer ${result.name} (ID: ${result.id}) has been deleted`
+            }
+            this.logsModel.add(req.pool, logData);
         }
         res.json(result);
     }
