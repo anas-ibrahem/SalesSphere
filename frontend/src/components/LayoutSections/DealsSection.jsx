@@ -13,7 +13,7 @@ function DealsSection() {
   const [reload, setReload] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("date_opened");
+  const [sortBy, setSortBy] = useState("due_date");
   const [DealsData, setDealsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -77,7 +77,7 @@ function DealsSection() {
 
   function handleOnBack() {
     setSearchQuery("");
-    setSortBy("");
+    setSortBy("due_date");
     setSortOrder("asc");
     setCurrentPage(1);
     setFilterStatus("all");
