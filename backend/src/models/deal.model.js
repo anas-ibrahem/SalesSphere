@@ -248,7 +248,7 @@ class DealModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Deal not found'};
             }
 
             return result.rows[0];
@@ -256,7 +256,7 @@ class DealModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Deal not found'};
         }
     }
 

@@ -17,7 +17,7 @@ const AddTarget = ({ onBack }) => {
     start_date: "",
   });
   const navigate = useNavigate();
-  const [isExecuter, setIsExecuter] = useState(false);
+  const [isExecutor, setIsExecutor] = useState(false);
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const AddTarget = ({ onBack }) => {
   };
 
   const handleTypeChange = (type) => {
-    setIsExecuter(type === "1");
+    setIsExecutor(type === "1");
   };
 
   const handleSelectChange = (selectedOptions) => {
@@ -74,13 +74,13 @@ const AddTarget = ({ onBack }) => {
 
   const handleSelectAll = () => {
     const allEmployeeIds = employees
-      .filter((employee) => employee.role === (isExecuter ? 1 : 0))
+      .filter((employee) => employee.role === (isExecutor ? 1 : 0))
       .map((employee) => employee.id);
     setFormValues({ ...formValues, employee_ids: allEmployeeIds });
   };
 
   const employeeOptions = employees
-    .filter((employee) => employee.role === (isExecuter ? 1 : 0))
+    .filter((employee) => employee.role === (isExecutor ? 1 : 0))
     .map((employee) => ({
       value: employee.id,
       label: `${employee.first_name} ${employee.last_name}`,
@@ -104,7 +104,7 @@ const AddTarget = ({ onBack }) => {
           <div
             onClick={() => handleTypeChange("0")}
             className={`p-4 rounded-lg cursor-pointer transition-all ${
-              !isExecuter
+              !isExecutor
                 ? "bg-blue-50 border-2 border-blue-500"
                 : "bg-gray-50 border-2 border-transparent hover:border-gray-200"
             }`}
@@ -112,7 +112,7 @@ const AddTarget = ({ onBack }) => {
             <div className="flex items-center">
               <span
                 className={`font-medium ${
-                  !isExecuter ? "text-blue-500" : "text-gray-600"
+                  !isExecutor ? "text-blue-500" : "text-gray-600"
                 }`}
               >
                 Opener
@@ -122,7 +122,7 @@ const AddTarget = ({ onBack }) => {
           <div
             onClick={() => handleTypeChange("1")}
             className={`p-4 rounded-lg cursor-pointer transition-all ${
-              isExecuter
+              isExecutor
                 ? "bg-blue-50 border-2 border-blue-900"
                 : "bg-gray-50 border-2 border-transparent hover:border-gray-200"
             }`}
@@ -130,10 +130,10 @@ const AddTarget = ({ onBack }) => {
             <div className="flex items-center">
               <span
                 className={`font-medium ${
-                  isExecuter ? "text-blue-900" : "text-gray-600"
+                  isExecutor ? "text-blue-900" : "text-gray-600"
                 }`}
               >
-                Executer
+                Executor
               </span>
             </div>
           </div>
@@ -152,7 +152,7 @@ const AddTarget = ({ onBack }) => {
             className="w-full p-2 border border-gray-300 rounded-md text-lg"
           >
             <option value="">Select Target</option>
-            {isExecuter ? (
+            {isExecutor ? (
               <>
                 <option value={TargetTypes.CloseDeals}>Close Deals</option>
                 <option value={TargetTypes.Revenue}>Revenue</option>

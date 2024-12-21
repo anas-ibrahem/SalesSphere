@@ -149,16 +149,21 @@ CREATE TABLE NOTIFICATION (
 
 CREATE TABLE TARGET (
     id SERIAL PRIMARY KEY,
-    type INT NOT NULL, -- Depends on the event
+    type INT NOT NULL, -- 0 OPEN DEAL, 1 CLOSE DEAL WON, 2 ADD CUSTOMER, 3 REVENUE
     goal INT NOT NULL, -- Requirement to complete the target
     deadline TIMESTAMP NOT NULL,
-    progress INT NOT NULL DEFAULT 0,
     description TEXT NOT NULL,
-    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-    -- Relationships
+CREATE TABLE EMPLOYEE_TARGET (
     employee_id INT NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id)
+    target_id INT NOT NULL,
+    progress INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (employee_id) REFERENCES EMPLOYEE(id),
+    FOREIGN KEY (target_id) REFERENCES TARGET(id),
+    PRIMARY KEY (employee_id, target_id)
 );
 
 

@@ -52,7 +52,7 @@ class NotificationModel {
             `, [id]);
 
             if(result.rows.length === 0) {
-                return {};
+                return {error: 'Notification not found'};
             }
 
             const results = result.rows[0];
@@ -62,7 +62,7 @@ class NotificationModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return {};
+            return {error: 'Notification not found'};
         }
     }
 

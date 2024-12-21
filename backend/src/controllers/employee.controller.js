@@ -127,6 +127,19 @@ class EmployeeController {
         const summary = await this.employeeModel.getAllSummary(req.pool, req.businessId);
         res.json(summary);
     }
+
+    getTopEmployees = async (req, res) => {
+        const employees = await this.employeeModel.getTopEmployees(req.pool, req.businessId);
+        res.json(employees);
+    }
+    getMyRank = async (req, res) => {
+        const role = req.params.role;
+        if(role === undefined) {
+            return res.status(400).json({error: 'Role is required'});
+        }
+        const rank = await this.employeeModel.getMyRank(req.pool, req.employeeId, role);
+        res.json(rank);
+    }
 }
 
 

@@ -1,11 +1,13 @@
 import FinanceModel from "../models/finance.model.js";
 import LogsModel from "../models/logs.model.js";
+import TargetModel from "../models/target.model.js";
 
 
 class FinanceController {
     constructor() {
         this.financeModel = new FinanceModel();
         this.logsModel = new LogsModel();
+        this.targetModel = new TargetModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -59,6 +61,9 @@ class FinanceController {
         }
         this.logsModel.add(req.pool, logData);
 
+        if (financeData.type == 1) // only add progress if it's a profit
+            this.targetModel.addProgress(req.pool, req.employeeId, 3, financeData.amount);
+
         res.json(result);
     }
 
@@ -67,6 +72,10 @@ class FinanceController {
         res.json(finances);
     }
 
+    getProfitsPerDate = async (req, res) => {
+        const finances = await this.financeModel.getProfitsPerDate(req.pool, req.businessId);
+        res.json(finances);
+    }
 
 }
 

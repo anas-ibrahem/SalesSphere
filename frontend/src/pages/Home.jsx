@@ -12,19 +12,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import NotificationsSection from "../components/LayoutSections/NotificationsSection";
 import SettingsSection from "../components/LayoutSections/SettingsSection";
 import BusinessSection from "../components/LayoutSections/BusinessSection";
-import { Dashboard } from "@mui/icons-material";
+import OverviewSection from "../components/LayoutSections/OverviewSection";
 
-function DashBoardOverView() {
-  return (
-    <div>
-      <h1>OverView</h1>
-    </div>
-  );
-}
 
 function Home() {
-  const [activeSection, setActiveSection] = useState("default");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { isAuthenticated, employee } = useContext(UserContext);
   const Navigate = useNavigate();
 
@@ -38,22 +29,12 @@ function Home() {
 
   if (!isAuthenticated) return null;
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
 
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar on the left */}
-      <SideBar
-        onSectionChange={handleSectionChange}
-        isCollapsed={isSidebarCollapsed}
-        toggleSidebar={toggleSidebar}
-      />
+      <SideBar />
 
       {/* Main content area on the right */}
       <div
@@ -73,7 +54,7 @@ function Home() {
             <Route path="/deals/*" element={<DealsSection />} />
             <Route path="/employees/*" element={<EmployeesSection />} />
             <Route path="/customers/*" element={<CustomersSection />} />
-            <Route path="/" element={<DefaultSection />} />
+            <Route path="/" element={<OverviewSection />} />
           </Routes>
         </div>
       </div>
