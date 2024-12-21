@@ -352,7 +352,7 @@ const EmployeeProfile = ({ back }) => {
                         Sort by deadline
                       </button>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
                       {sortedTargets.length > 0 ? (
                         sortedTargets.map((target, index) => {
                           const TargetIcon = TargetIcons[target.type] || Target;
