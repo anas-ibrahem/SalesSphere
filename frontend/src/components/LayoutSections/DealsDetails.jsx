@@ -54,6 +54,7 @@ function DealDetails({ onBack = () => {} }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [canClose, setCanClose] = useState(false);
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -126,19 +127,16 @@ function DealDetails({ onBack = () => {} }) {
         me.id === deal.deal_opener.id &&
         deal.status === DealStatusEnum.Open
     );
+    setCanClose(
+      executer &&
+        deal.deal_executor &&
+        me.id === deal.deal_executor.id &&
+        deal.status === DealStatusEnum.Claimed
+    );
     console.log("Me", me);
     console.log("Deal", deal.deal_opener);
   }, [deal]);
 
-  function handleDeleteDeal() {
-    setIsDeleteModalOpen(false);
-    fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
-      .then(() => {
-        toast.success("Deal deleted successfully");
-        navigate("/home/deals");
-      })
-      .catch(() => toast.error("Error deleting deal"));
-  }
 
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
@@ -158,13 +156,22 @@ function DealDetails({ onBack = () => {} }) {
       })
       .catch(() => toast.error("Error closing deal"));
   }
-  function handelDeleteDeal() {
+
+
+  function handleDeleteDeal() {
+    const token = localStorage.getItem("token");
     fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
-      .then(() => {
-        toast.success("Deal deleted successfully");
-        navigate("/home/deals");
-      })
-      .catch(() => toast.error("Error deleting deal"));
+    .then((data) => {
+      if (data.error)
+      {
+        toast.error(data.error);
+        return;
+      }
+      toast.success("Deal deleted successfully");
+      navigate("/home/deals");
+      setIsDeleteModalOpen(false);
+    })
+    .catch(() => toast.error("Error deleting deal"));
   }
 
   useEffect(() => {
@@ -581,7 +588,7 @@ function DealDetails({ onBack = () => {} }) {
                   </button>
                 )}
 
-                {executer && deal.status === 1 && (
+                {canClose && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
@@ -741,7 +748,7 @@ function DealDetails({ onBack = () => {} }) {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
-                  {executer && deal.status === 1 && (
+                  {canClose && (
                     <button
                       onClick={() => navigate(`new-record`)}
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"

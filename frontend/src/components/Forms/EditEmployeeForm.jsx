@@ -21,7 +21,7 @@ const EditEmployeeForm = ({ employee, onBack }) => {
   });
   const [profilePreview, setProfilePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const { employee: me } = useContext(UserContext);
+  const { employee : me , setEmployee } = useContext(UserContext);
   const navigate = useNavigate();
 
   const cloudName = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
@@ -143,6 +143,9 @@ const EditEmployeeForm = ({ employee, onBack }) => {
         console.error(data.error);
       } else {
         toast.success("Profile updated successfully");
+        if (me.id === employee.id) {
+          setEmployee({...me , ...formData})
+        }
         if (onBack) onBack();
       }
     } catch (error) {
