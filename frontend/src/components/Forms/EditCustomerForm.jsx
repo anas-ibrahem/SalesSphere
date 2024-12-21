@@ -7,32 +7,17 @@ import { useNavigate } from "react-router-dom";
 
 const EditCustomerForm = ({ customer, onBack }) => {
   const [formValues, setFormValues] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phone_number: "",
-    lead_source: "",
-    type: "", // Individual 0 or Company 1
-    address: "",
-    preferred_contact_method: "", // 0 for email, 1 for phone
+    id: customer?.id || "",
+    name: customer?.name || "",
+    email: customer?.email || "",
+    phone_number: customer?.phone_number || "",
+    lead_source: customer?.lead_source || "",
+    type: customer?.type ?? "",
+    address: customer?.address || "",
+    preferred_contact_method: customer?.preferred_contact_method ?? "",
   });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (customer) {
-      setFormValues({
-        id: customer.id || "",
-        name: customer.name || "",
-        email: customer.email || "",
-        phone_number: customer.phone_number || "",
-        lead_source: customer.lead_source || "",
-        type: customer.type || "",
-        address: customer.address || "",
-        preferred_contact_method: customer.preferred_contact_method || "",
-      });
-    }
-  }, [customer]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
