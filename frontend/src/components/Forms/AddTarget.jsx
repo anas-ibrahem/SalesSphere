@@ -24,6 +24,11 @@ const AddTarget = ({ onBack }) => {
     const token = localStorage.getItem("token");
     fetchAPI("/employee/summary/all", "GET", null, token)
       .then((data) => {
+        if (data.error) {
+          toast.error("An error occurred. Please try again.");
+          return;
+        }
+        console.log(data);
         setEmployees(data);
         setLoading(false);
         console.log(data);
@@ -52,6 +57,10 @@ const AddTarget = ({ onBack }) => {
     const token = localStorage.getItem("token");
     fetchAPI("/target/multiple", "POST", formValues, token)
       .then((data) => {
+        if (data.error) {
+          toast.error("An error occurred. Please try again.");
+          return;
+        }
         console.log(data);
         toast.success("Target added successfully");
         onBack();

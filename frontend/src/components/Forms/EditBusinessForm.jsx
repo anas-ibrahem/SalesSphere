@@ -50,16 +50,16 @@ const EditBusinessForm = ({ onBack }) => {
       };
 
       setFormValues({
-        name: business.name || "",
-        email: business.email || "",
-        registration_date: formatDate(business.registration_date) || "",
-        phone_number: business.phone_number || "",
-        city: business.city || "",
-        country: business.country || "",
-        street: business.street || "",
-        website_url: business.website_url || "",
-        industry: business.industry || "",
-        business_logo_url: business.business_logo_url || "",
+        name: business?.name || "",
+        email: business?.email || "",
+        registration_date: formatDate(business?.registration_date) || "",
+        phone_number: business?.phone_number || "",
+        city: business?.city || "",
+        country: business?.country || "",
+        street: business?.street || "",
+        website_url: business?.website_url || "",
+        industry: business?.industry || "",
+        business_logo_url: business?.business_logo_url || "",
       });
 
       if (business.business_logo_url) {

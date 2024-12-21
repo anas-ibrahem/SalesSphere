@@ -35,6 +35,7 @@ import UserContext from "../../context/UserContext";
 import NotFoundPage from "../../pages/NotFoundPage";
 import fetchAPI from "../../utils/fetchAPI";
 import DetailModal from "./DetailModal";
+import { TargetTypes } from "../../utils/Enums";
 
 const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
@@ -363,49 +364,54 @@ const EmployeeProfile = ({ back }) => {
                           const isOverdue = daysUntilDeadline < 0;
                           const progress = calculateProgress(target);
 
-                          return (
+                            return (
                             <div
                               key={index}
                               className="bg-gray-100 p-4 rounded-lg"
                             >
                               <div className="flex items-center gap-2 mb-2">
-                                <TargetIcon className="w-5 h-5 text-purple-500" />
-                                <span className="font-medium">
-                                  {target.description}
-                                </span>
+                              <TargetIcon className="w-5 h-5 text-purple-500" />
+                              <span className="font-medium">
+                                {target.description}
+                              </span>
                               </div>
 
                               <div className="mt-2">
-                                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                                  <span>Target: {target.goal}</span>
-                                  <span>Current: {target.progress || 0}</span>
-                                </div>
-                                <ProgressBar progress={progress} />
-                                <div className="flex justify-between text-sm mt-2">
-                                  <span className="text-gray-600">
-                                    Progress: {progress.toFixed(1)}%
-                                  </span>
-                                  <span
-                                    className={`${
-                                      isOverdue
-                                        ? "text-red-500"
-                                        : "text-gray-600"
-                                    }`}
-                                  >
-                                    {isOverdue
-                                      ? "Overdue"
-                                      : `${daysUntilDeadline} days left`}
-                                  </span>
-                                </div>
-                                <div className="mt-2 text-sm text-gray-600">
-                                  Deadline:{" "}
-                                  {new Date(
-                                    target.deadline
-                                  ).toLocaleDateString()}
-                                </div>
+                              <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Target: {target.goal}</span>
+                                <span>Current: {target.progress || 0}</span>
+                              </div>
+                              <ProgressBar progress={progress} />
+                              <div className="flex justify-between text-sm mt-2">
+                                <span className="text-gray-600">
+                                Progress: {progress.toFixed(1)}%
+                                </span>
+                                <span>
+                                {Object.keys(TargetTypes).find(
+                                  (key) => TargetTypes[key] === target.type
+                                )}
+                                </span>
+                                <span
+                                className={`${
+                                  isOverdue
+                                  ? "text-red-500"
+                                  : "text-gray-600"
+                                }`}
+                                >
+                                {isOverdue
+                                  ? "Overdue"
+                                  : `${daysUntilDeadline} days left`}
+                                </span>
+                              </div>
+                              <div className="mt-2 text-sm text-gray-600">
+                                Deadline:{" "}
+                                {new Date(
+                                target.deadline
+                                ).toLocaleDateString()}
+                              </div>
                               </div>
                             </div>
-                          );
+                            );
                         })
                       ) : (
                         <p className="text-sm text-gray-500">No targets set</p>

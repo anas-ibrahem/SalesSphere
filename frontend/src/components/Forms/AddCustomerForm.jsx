@@ -31,6 +31,10 @@ const AddCustomerForm = ({ onBack }) => {
     fetchAPI("/customer", "POST", formValues, token)
       .then((data) => {
         console.log(data);
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
         toast.success("Customer added successfully");
         onBack();
       })

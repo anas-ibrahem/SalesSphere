@@ -9,6 +9,7 @@ import {
   Pencil,
   TrendingDown,
   Users,
+  Minus,
 } from "lucide-react";
 import { use } from "react";
 import { EmployeeRoles } from "../../utils/Enums";
@@ -17,6 +18,10 @@ import NotFoundPage from "../../pages/NotFoundPage";
 
 const BusinessSection = function () {
   const [business, setBusiness] = useState(null);
+  const [businessSummary, setBusinessSummary] = useState({ openers: 0, executors: 0, customers: 0, open_deals: 0, 
+    claimed_deals: 0, closed_won_deals: 0, closed_lost_deals: 0,
+    income: 0, expenses: 0, net_balance: 0
+  });
   const [loading, setLoading] = useState(true);
   const [businessManager, setBusinessManager] = useState(null);
   const navigate = useNavigate();
@@ -24,11 +29,6 @@ const BusinessSection = function () {
   const { employee: me } = useContext(UserContext);
   const [notFound , setNotFound] = useState(false);
   
-
-  const totalIncome = 5000; // TODO: Fetch from API
-  const totalExpenses = 2000; // TODO: Fetch from API
-  const totalOpenerEmployees = 50; // TODO: Fetch from API
-  const totalExecutorEmployees = 30; // TODO: Fetch from API
 
   useEffect(() => {
     const fetchBusinessData = async () => {
@@ -51,7 +51,33 @@ const BusinessSection = function () {
         setLoading(false);
       }
     };
-    fetchBusinessData();
+  
+    const fetchBusinessDataSummary = async () => {
+      try {
+        const summaryData = await fetchAPI(
+          `/business/summary`,
+          "GET",
+          null,
+          token
+        );
+        if (summaryData.error) {
+          setNotFound(true);
+          return;
+        }
+        setBusinessSummary(summaryData);
+        console.log("summary", summaryData);
+      } catch (error) {
+        console.error("Error fetching business summary:", error);
+      }
+    };
+  
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchBusinessData(), fetchBusinessDataSummary()]);
+      setLoading(false);
+    };
+  
+    fetchData();
   }, [me.business_id, token]);
 
   const handleEditClick = () => {
@@ -155,7 +181,7 @@ const BusinessSection = function () {
                         Number Of Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalOpenerEmployees + totalExecutorEmployees}
+                        {businessSummary.openers + businessSummary.executors}
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
@@ -163,7 +189,7 @@ const BusinessSection = function () {
                         Number Of Opener Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalOpenerEmployees}
+                        {businessSummary.openers }
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
@@ -171,7 +197,7 @@ const BusinessSection = function () {
                         Number Of Executor Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {totalExecutorEmployees}
+                        {businessSummary.executors}
                       </p>
                     </div>
                   </div>
@@ -188,7 +214,7 @@ const BusinessSection = function () {
                       <p className="text-xs text-gray-500">
                         Number Of Customers
                       </p>
-                      <p className="text-lg font-bold">{}</p>
+                      <p className="text-lg font-bold">{businessSummary.customers}</p>
                     </div>
                   </div>
                 </div>
@@ -202,19 +228,19 @@ const BusinessSection = function () {
                   <div className="grid grid-cols-2 gap-4 mt-2">
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">Open Deals</p>
-                      <p className="text-lg font-bold text-yellow-600">{}</p>
+                      <p className="text-lg font-bold text-yellow-600">{businessSummary.open_deals}</p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">Claimed Deals</p>
-                      <p className="text-lg font-bold text-blue-600">{}</p>
+                      <p className="text-lg font-bold text-blue-600">{businessSummary.claimed_deals}</p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">Closed Won Deals</p>
-                      <p className="text-lg font-bold text-green-600">{}</p>
+                      <p className="text-lg font-bold text-green-600">{businessSummary.closed_won_deals}</p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
                       <p className="text-xs text-gray-500">Closed Lost Deals</p>
-                      <p className="text-lg font-bold text-red-600">{}</p>
+                      <p className="text-lg font-bold text-red-600">{businessSummary.closed_lost_deals}</p>
                     </div>
                   </div>
                 </div>
@@ -233,7 +259,7 @@ const BusinessSection = function () {
                         </span>
                       </div>
                       <p className="text-md font-bold text-green-600">
-                        +${totalIncome.toLocaleString()}
+                        +${businessSummary.income.toLocaleString()}
                       </p>
                     </div>
                     <div className="bg-red-50 p-4 rounded-lg">
@@ -244,31 +270,31 @@ const BusinessSection = function () {
                         </span>
                       </div>
                       <p className="text-md font-bold text-red-600">
-                        -${(-totalExpenses).toLocaleString()}
+                        -${(businessSummary.expenses).toLocaleString()}
                       </p>
                     </div>
                     <div
                       className={`p-4 rounded-lg ${
-                        totalIncome + totalExpenses > 0
+                        businessSummary.income + businessSummary.expenses > 0
                           ? "bg-green-50"
-                          : totalIncome + totalExpenses < 0
+                          : businessSummary.income + businessSummary.expenses < 0
                           ? "bg-red-50"
                           : "bg-gray-50"
                       } col-span-2`}
                     >
                       <div className="flex items-center mb-2">
-                        {totalIncome + totalExpenses > 0 ? (
+                        {businessSummary.income + businessSummary.expenses > 0 ? (
                           <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
-                        ) : totalIncome + totalExpenses < 0 ? (
+                        ) : businessSummary.income + businessSummary.expenses < 0 ? (
                           <TrendingDown className="w-5 h-5 text-red-600 mr-2" />
                         ) : (
                           <Minus className="w-5 h-5 text-gray-600 mr-2" />
                         )}
                         <span
                           className={`font-medium ${
-                            totalIncome + totalExpenses > 0
+                            businessSummary.income + businessSummary.expenses > 0
                               ? "text-green-600"
-                              : totalIncome + totalExpenses < 0
+                              : businessSummary.income + businessSummary.expenses < 0
                               ? "text-red-600"
                               : "text-gray-600"
                           }`}
@@ -278,23 +304,23 @@ const BusinessSection = function () {
                       </div>
                       <p
                         className={`text-md font-bold ${
-                          totalIncome + totalExpenses > 0
+                          businessSummary.income + businessSummary.expenses > 0
                             ? "text-green-600"
-                            : totalIncome + totalExpenses < 0
+                            : businessSummary.income + businessSummary.expenses < 0
                             ? "text-red-600"
                             : "text-gray-600"
                         }`}
                       >
-                        {totalIncome + totalExpenses > 0
+                        {businessSummary.income + businessSummary.expenses > 0
                           ? `+$${(
-                              totalIncome + totalExpenses
+                              businessSummary.income + businessSummary.expenses
                             ).toLocaleString()}`
-                          : totalIncome + totalExpenses < 0
+                          : businessSummary.income + businessSummary.expenses < 0
                           ? `-$${(-(
-                              totalIncome + totalExpenses
+                              businessSummary.income + businessSummary.expenses
                             )).toLocaleString()}`
                           : `$${(
-                              totalIncome + totalExpenses
+                              businessSummary.income + businessSummary.expenses
                             ).toLocaleString()}`}
                       </p>
                     </div>

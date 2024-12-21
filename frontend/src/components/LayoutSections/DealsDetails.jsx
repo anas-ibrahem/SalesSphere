@@ -54,11 +54,12 @@ function DealDetails({ onBack = () => {} }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [canClose, setCanClose] = useState(false);
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { employee: me } = useContext(UserContext);
-  const executer = me.role === EmployeeRoles.DealExecutor; 
+  const executer = me.role === EmployeeRoles.DealExecutor;
   const opener = me.role === EmployeeRoles.DealOpener;
 
   const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
@@ -69,7 +70,10 @@ function DealDetails({ onBack = () => {} }) {
         <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
           <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
           <p className="text-gray-600 mb-6">
-            <strong>Are you sure you want to delete this deal? This action cannot be undone.</strong>
+            <strong>
+              Are you sure you want to delete this deal? This action cannot be
+              undone.
+            </strong>
           </p>
           <div className="flex justify-end space-x-3">
             <button
@@ -103,7 +107,7 @@ function DealDetails({ onBack = () => {} }) {
     deal_opener = null,
     id = dealId,
   } = deal;
-  
+
   useEffect(() => {
     if (deal) {
       setEditedDeal({
@@ -114,25 +118,26 @@ function DealDetails({ onBack = () => {} }) {
           : "",
         customer_budget: deal.customer_budget || 0,
         expenses: deal.expenses || 0,
+        id : deal.id
       });
     }
     setCanEdit(opener && deal.deal_opener && me.id === deal.deal_opener.id);
-    setCanDelete(opener && deal.deal_opener && me.id === deal.deal_opener.id && deal.status === DealStatusEnum.Open);
-    console.log("Me" , me)
-    console.log("Deal" , deal.deal_opener)
+    setCanDelete(
+      opener &&
+        deal.deal_opener &&
+        me.id === deal.deal_opener.id &&
+        deal.status === DealStatusEnum.Open
+    );
+    setCanClose(
+      executer &&
+        deal.deal_executor &&
+        me.id === deal.deal_executor.id &&
+        deal.status === DealStatusEnum.Claimed
+    );
+    console.log("Me", me);
+    console.log("Deal", deal.deal_opener);
   }, [deal]);
 
-  
-
-  function handleDeleteDeal() {
-    setIsDeleteModalOpen(false);
-    fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
-      .then(() => {
-        toast.success("Deal deleted successfully");
-        navigate("/home/deals");
-      })
-      .catch(() => toast.error("Error deleting deal"));
-  }
 
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
@@ -152,13 +157,22 @@ function DealDetails({ onBack = () => {} }) {
       })
       .catch(() => toast.error("Error closing deal"));
   }
-  function handelDeleteDeal() {
+
+
+  function handleDeleteDeal() {
+    const token = localStorage.getItem("token");
     fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
-      .then(() => {
-        toast.success("Deal deleted successfully");
-        navigate("/home/deals");
-      })
-      .catch(() => toast.error("Error deleting deal"));
+    .then((data) => {
+      if (data.error)
+      {
+        toast.error(data.error);
+        return;
+      }
+      toast.success("Deal deleted successfully");
+      navigate("/home/deals");
+      setIsDeleteModalOpen(false);
+    })
+    .catch(() => toast.error("Error deleting deal"));
   }
 
   useEffect(() => {
@@ -218,12 +232,34 @@ function DealDetails({ onBack = () => {} }) {
     setReload(!reload);
     navigate(-1);
   };
+
   const handleSaveChanges = async () => {
     try {
-      await fetchAPI(`/deal/${dealId}`, "PUT", editedDeal, token);
-      setDeal({ ...deal, ...editedDeal });
-      setIsEditing(false);
-      toast.success("Deal updated successfully");
+      if (
+        !editedDeal.title ||
+        !editedDeal.description ||
+        !editedDeal.due_date ||
+        !editedDeal.customer_budget ||
+        !editedDeal.expenses
+      ) {
+        return toast.error("All fields are required");
+      }
+      const token = localStorage.getItem("token");
+      
+      console.log("deal edit req" , { ...deal, ...editedDeal })
+      fetchAPI(`/deal`, "PUT", editedDeal, token).then((data) => {
+        if (data.error) {
+          toast.error("Error Updating Deal details", data.error);
+          return;
+        }
+        setIsEditing(false);
+        toast.success("Deal updated successfully");
+        setDeal({ ...deal, ...editedDeal });
+      })
+      .catch((error) => {
+        toast.error("Error Updating Deal details", error);
+      });
+
     } catch (error) {
       console.error("Error updating deal:", error);
       toast.error("Error updating deal");
@@ -243,7 +279,6 @@ function DealDetails({ onBack = () => {} }) {
         </tr>
       );
     }
-  
 
     return financialRecords.map((record, index) => (
       <React.Fragment key={index}>
@@ -412,6 +447,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="text"
                 value={editedDeal.title}
+                required
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, title: e.target.value })
                 }
@@ -427,6 +463,7 @@ function DealDetails({ onBack = () => {} }) {
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, description: e.target.value })
                 }
+                required
                 className="w-full p-2 border rounded"
                 rows="3"
               />
@@ -441,6 +478,7 @@ function DealDetails({ onBack = () => {} }) {
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, due_date: e.target.value })
                 }
+                required
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -451,6 +489,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="number"
                 value={editedDeal.customer_budget}
+                required
                 onChange={(e) =>
                   setEditedDeal({
                     ...editedDeal,
@@ -467,6 +506,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="number"
                 value={editedDeal.expenses}
+                required
                 onChange={(e) =>
                   setEditedDeal({
                     ...editedDeal,
@@ -533,7 +573,7 @@ function DealDetails({ onBack = () => {} }) {
               onClose={() => setIsDeleteModalOpen(false)}
               onConfirm={handleDeleteDeal}
             />
-            {/* Header Section */ }
+            {/* Header Section */}
             <div className="flex justify-between items-center mb-1">
               <button
                 type="button"
@@ -545,13 +585,13 @@ function DealDetails({ onBack = () => {} }) {
 
               <div className="flex space-x-3">
                 {canDelete && (
-                    <button
-                        onClick={() => setIsDeleteModalOpen(true)}
-                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                      >
-                        <Trash2 className="mr-2" />
-                        Delete Deal
-                    </button>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                  >
+                    <Trash2 className="mr-2" />
+                    Delete Deal
+                  </button>
                 )}
                 {executer && deal.status === 0 && (
                   <button
@@ -562,8 +602,7 @@ function DealDetails({ onBack = () => {} }) {
                   </button>
                 )}
 
-
-                {executer && deal.status === 1 && (
+                {canClose && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
@@ -723,7 +762,7 @@ function DealDetails({ onBack = () => {} }) {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
-                  {executer && deal.status === 1 && (
+                  {canClose && (
                     <button
                       onClick={() => navigate(`new-record`)}
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
