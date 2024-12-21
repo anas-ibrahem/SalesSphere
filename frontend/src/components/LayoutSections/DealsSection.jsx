@@ -82,7 +82,7 @@ function DealsSection() {
     setCurrentPage(1);
     setFilterStatus("all");
     setReload(!reload);
-    navigate("/home/deals");
+    navigate(-1);
   }
 
   const getStatusColor = (status) => {
@@ -108,13 +108,10 @@ function DealsSection() {
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">
-                {me.role !== EmployeeRoles.Manager &&
-                <span>Your </span>
-                }
-                 {me.role === EmployeeRoles.Manager &&
-                <span>Business' </span>
-                }
-                Deals</h1>
+                {me.role !== EmployeeRoles.Manager && <span>Your </span>}
+                {me.role === EmployeeRoles.Manager && <span>Business' </span>}
+                Deals
+              </h1>
               {me.role === EmployeeRoles.DealOpener && (
                 <button
                   onClick={() => navigate("add")}
@@ -140,11 +137,13 @@ function DealsSection() {
                 >
                   {tab.label}
                   <span className="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-sm">
-                    {DealsData.filter(
-                      (deal) =>
-                        tab.value === "all" ||
-                        DealStatus[deal.status] === tab.value
-                    ).length}
+                    {
+                      DealsData.filter(
+                        (deal) =>
+                          tab.value === "all" ||
+                          DealStatus[deal.status] === tab.value
+                      ).length
+                    }
                   </span>
                 </button>
               ))}
@@ -184,11 +183,19 @@ function DealsSection() {
               <Card>
                 <List>
                   {loading ? (
-                    <Typography variant="h6" color="blue-gray" className="text-center">
+                    <Typography
+                      variant="h6"
+                      color="blue-gray"
+                      className="text-center"
+                    >
                       Loading...
                     </Typography>
                   ) : currentDeals.length === 0 ? (
-                    <Typography variant="h6" color="blue-gray" className="text-center py-4">
+                    <Typography
+                      variant="h6"
+                      color="blue-gray"
+                      className="text-center py-4"
+                    >
                       No deals found
                     </Typography>
                   ) : (
@@ -210,7 +217,8 @@ function DealsSection() {
                           >
                             <p>Status: {DealStatus[deal.status]}</p>
                             <p>
-                              Due Date: {new Date(deal.due_date).toLocaleDateString()}
+                              Due Date:{" "}
+                              {new Date(deal.due_date).toLocaleDateString()}
                             </p>
                           </Typography>
                           <Typography

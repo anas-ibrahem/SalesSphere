@@ -150,7 +150,7 @@ function TargetsSection() {
     setFilterType("all");
     setCurrentPage(1);
     setReload(!reload);
-    navigate("/home/targets");
+    navigate(-1);
   }
 
   return (

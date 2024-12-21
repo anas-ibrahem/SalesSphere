@@ -60,7 +60,7 @@ const EmployeesSection = () => {
     setSortField("account_creation_date");
     setCurrentPage(1);
     setReload(!reload);
-    navigate("/home/employees");
+    navigate(-1);
   }
   // Filtering logic
   const filterEmployees = employees.filter((employee) => {
@@ -142,7 +142,7 @@ const EmployeesSection = () => {
     indexOfLastEmployee
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
-  const {employee : me } = useContext(UserContext);
+  const { employee: me } = useContext(UserContext);
   const manager = me.role === EmployeeRoles.Manager;
 
   return (
