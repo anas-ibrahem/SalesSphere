@@ -4,7 +4,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import { Crown, TrendingUp, Users, Clock, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import fetchAPI from '../../utils/fetchAPI';
 import UserContext from '../../context/UserContext';
-import { EmployeeRoles } from '../../utils/Enums';
+import { EmployeeRoles, TargetIcons, TargetTypes } from '../../utils/Enums';
 import { PieChart, BarChart, LineChart } from '@mui/x-charts';
 
 const OverviewSection = () => {
@@ -32,10 +32,12 @@ const OverviewSection = () => {
       const dailyCustomersData = await fetchAPI('/customer/metrics', 'GET', null, token);
       setDailyCustomers(dailyCustomersData);
 
-      const customerRevenueMetricsData = await fetchAPI('/customer/metrics/revenue', 'GET', null, token);
+      const customerRevenue_endpoint = employee.role === EmployeeRoles.Manager ? '/customer/metrics/revenue' : '/customer/metrics/revenue/employee';
+      const customerRevenueMetricsData = await fetchAPI(customerRevenue_endpoint, 'GET', null, token);
       setCustomerRevenueMetrics(customerRevenueMetricsData);
 
-      const dailyProfitData = await fetchAPI('/finance/metrics', 'GET', null, token);
+      const dailyPrfit_endpoint = employee.role === EmployeeRoles.Manager ? '/finance/metrics' : '/finance/metrics/employee';
+      const dailyProfitData = await fetchAPI(dailyPrfit_endpoint, 'GET', null, token);
       setDailyProfit(dailyProfitData);
 
       const topEmployeesData = await fetchAPI('/employee/metrics/top', 'GET', null, token);
@@ -87,6 +89,22 @@ const OverviewSection = () => {
         return "Employee";
     }
   };
+
+  const getTargetType = (type) => {
+    switch (type) {
+      case TargetTypes.OpenDeals:
+        return 'deals opened';
+      case TargetTypes.CloseDeals:
+        return 'deals closed';
+      case TargetTypes.AddCustomers:
+        return 'customers added';
+      case TargetTypes.Revenue:
+        return 'revenue';
+      default:
+        return 'target';
+    }
+  };
+
 
   const getDaysUntil = (deadline) => {
     const today = new Date();
@@ -301,15 +319,25 @@ const OverviewSection = () => {
               }
             }}>
               <List sx={{ p: 0 }}>
+                {targets.length === 0 && (
+                  <ListItem className='w-full text-center h-full flex flex-col items-center justify-center'>
+                    <Typography variant="body2" color="text.secondary" className='w-full text-center'>
+                      No active targets
+                      </Typography>
+                      </ListItem>
+                )}
+
                 {targets.map((target, index) => {
                   
                   const targetProgress = Math.floor((target.progress / target.goal) * 100);
+                  const TargetIcon = TargetIcons[target.type];
                   
                   return (
                   <ListItem key={index} sx={{ display: 'block', px: 0, py: 1 }}>
                     <Box sx={{ mb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle2" className='flex flex-row items-center'>
+                          <TargetIcon size={16} style={{marginRight:'2px'}} />
                           {target.description}
                         </Typography>
                         <Chip
@@ -330,7 +358,7 @@ const OverviewSection = () => {
                       </Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                         <Typography variant="body2" color="text.secondary">
-                          {target.progress.toLocaleString()} / {target.goal.toLocaleString()}
+                          {target.progress.toLocaleString()} / {target.goal.toLocaleString()} {getTargetType(target.type)} {employee.role === EmployeeRoles.Manager && '(average progress)'}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           {targetProgress}%
@@ -445,6 +473,8 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                 Daily Profit
               </Typography>
             </Box>
@@ -497,7 +527,7 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Daily Customers
+              Business' Daily Customers
               </Typography>
             </Box>
             <CardContent>
@@ -622,7 +652,9 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Top Customers by Revenue
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
+                Top 5 Customers by Revenue
               </Typography>
             </Box>
             <CardContent>

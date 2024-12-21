@@ -102,6 +102,11 @@ class FinanceController {
         res.json(finances);
     }
 
+    getProfitsPerDateForEmployee = async (req, res) => {
+        const finances = await this.financeModel.getProfitsPerDateForEmployee(req.pool, req.employeeId);
+        res.json(finances);
+    }
+
     getSummaryForEmployee = async (req, res) => {
         const finances = await this.financeModel.getSummaryForEmployee(req.pool, req.employeeId);
         res.json(finances);

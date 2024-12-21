@@ -131,7 +131,7 @@ class CustomerModel {
     getTopCustomersByRevenue = async (pool, business_id) => {
         try {
             const result = await pool.query(`
-                SELECT c.id, c.name, SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END) - SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END) as total_revenue
+                SELECT c.id, c.name, COALESCE(SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END), 0) as total_revenue
                 FROM customer c
                 JOIN deal d
                 ON c.id = d.customer_id
@@ -141,6 +141,28 @@ class CustomerModel {
                 ORDER BY total_revenue DESC
                 LIMIT 5;
             `, [business_id]);
+
+            return result.rows;
+        }
+        catch (error) {
+            console.error('Database query error:', error);
+            return [];
+        }
+    }
+    getTopCustomersByRevenueForEmployee = async (pool, employee_id) => {
+        try {
+            const result = await pool.query(`
+                SELECT c.id, c.name, COALESCE(SUM(CASE WHEN fr.type = 1 THEN fr.amount ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN fr.type = 0 THEN fr.amount ELSE 0 END), 0) as total_revenue
+                FROM customer c
+                JOIN deal d
+                ON c.id = d.customer_id
+                JOIN financial_record fr on d.id = fr.deal_id
+                JOIN employee e on d.deal_executor = e.id OR d.deal_opener = e.id
+                WHERE e.id = $1
+                GROUP BY c.id, c.name
+                ORDER BY total_revenue DESC
+                LIMIT 5;
+            `, [employee_id]);
 
             return result.rows;
         }

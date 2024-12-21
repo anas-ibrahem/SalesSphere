@@ -12,6 +12,7 @@ router.get('/', customerController.getAll);
 
 router.get('/metrics/', customerController.getCustomersPerDate);
 router.get('/metrics/revenue', customerController.getTopCustomersByRevenue);
+router.get('/metrics/revenue/employee/', customerController.getTopCustomersByRevenueForEmployee);
 router.get('/:id', customerController.getById);
 
 // to register a new customer
