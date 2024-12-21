@@ -10,6 +10,7 @@ import { EmployeeRoles } from '../../utils/Enums';
 
 const OverviewSection = () => {
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
   const [dailyCustomers, setDailyCustomers] = useState([]);
   const [customerRevenueMetrics, setCustomerRevenueMetrics] = useState([]);
   const [dailyProfit, setDailyProfit] = useState([]);
@@ -17,60 +18,62 @@ const OverviewSection = () => {
   const [topOpeners, setTopOpeners] = useState([]);
   const [rank, setRank] = useState(0);
   const [targets, setTargets] = useState([]);
-  const [financialMetrics, setFinancialMetrics] = useState({ income: 12, expense: 12 });
+  const [businessSummary, setBusinessSummary] = useState({ openers: 0, executors: 0, customers: 0, open_deals: 0, 
+    claimed_deals: 0, closed_won_deals: 0, closed_lost_deals: 0,
+    income: 0, expenses: 0, net_balance: 0
+  });
 
   const { employee } = useContext(UserContext);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    fetchAPI('/customer/metrics', 'GET', null, token).then((data) => {
-      setDailyCustomers(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+    const fetchMetrics = async () => {
+      try {
+      const dailyCustomersData = await fetchAPI('/customer/metrics', 'GET', null, token);
+      setDailyCustomers(dailyCustomersData);
 
-    fetchAPI('/customer/metrics/revenue', 'GET', null, token).then((data) => {
-      setCustomerRevenueMetrics(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const customerRevenueMetricsData = await fetchAPI('/customer/metrics/revenue', 'GET', null, token);
+      setCustomerRevenueMetrics(customerRevenueMetricsData);
 
-    fetchAPI('/finance/metrics', 'GET', null, token).then((data) => {
-      setDailyProfit(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const dailyProfitData = await fetchAPI('/finance/metrics', 'GET', null, token);
+      setDailyProfit(dailyProfitData);
 
-    fetchAPI('/employee/metrics/top', 'GET', null, token).then((data) => {
-      setTopExecutors(data.executors);
-      setTopOpeners(data.openers);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const topEmployeesData = await fetchAPI('/employee/metrics/top', 'GET', null, token);
+      setTopExecutors(topEmployeesData.executors);
+      setTopOpeners(topEmployeesData.openers);
 
-    fetchAPI('/employee/metrics/rank/'+employee.role, 'GET', null, token).then((data) => {
-      setRank(data.rank);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const rankData = await fetchAPI('/employee/metrics/rank/' + employee.role, 'GET', null, token);
+      setRank(rankData.rank);
 
-    fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token).then((data) => {
-      setTargets(data);
-    }).catch((error) => {
-      console.error("Error fetching metrics:", error);
-    });
+      const targetsData = await fetchAPI(`/target/employee/${employee.id}/active/`, 'GET', null, token);
+      setTargets(targetsData);
 
-    fetchAPI('/finance/metrics/daily', 'GET', null, token).then((data) => {
-      setFinancialMetrics({
-        income: data.income,
-        expense: data.expense
-      });
-    }).catch((error) => {
-      console.error("Error fetching financial metrics:", error);
-    });
+      const businessSummaryData = await fetchAPI('/business/summary', 'GET', null, token);
+      setBusinessSummary(businessSummaryData);
+      } catch (error) {
+      console.error("Error fetching metrics:", error);
+      }
+    };
+
+    fetchMetrics()
+    .then(() =>{ 
+      setIsLoading(false);
+      console.log('Metrics fetched successfully!')
+    })
+    .catch((error) => console.error('Error fetching metrics:', error));
 
   }, [employee.id, employee.role]);
+
+  if(isLoading) {
+    return (
+      <Box sx={{ p: 6 }}>
+        <Typography variant="h5" sx={{ mb: 4, fontWeight: 600, color: '#111830' }}>
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
 
   const getRoleName = (role) => {
     switch (role) {
@@ -121,16 +124,15 @@ const OverviewSection = () => {
       minHeight: '100vh'
     }}>
       <Typography 
-        variant="h4" 
+        variant="h5" 
         sx={{ 
           mb: 4, 
-          fontWeight: 800,
+          fontWeight: 600,
           color: '#111830',
-          borderBottom: `2px solid ${'#111830'}`,
-          paddingBottom: 2
+          paddingBottom: 1
         }}
       >
-        Welcome Saler, Ready To Sale On SalesSphere 🚀
+        Welcome, {employee.first_name} {employee.last_name}
       </Typography>
 
 
@@ -147,15 +149,15 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowUpCircle size={40} color="#22c55e" />
+              <ArrowUpCircle size={30} color="#22c55e" />
               <Box>
-                <Typography variant="h6" color="#22c55e">
+                <Typography variant="h7" color="#22c55e">
                   {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                   {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                   Income
                   </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#22c55e' }}>
-                  ${financialMetrics.income.toLocaleString()}
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#22c55e' }}>
+                  ${businessSummary.income.toLocaleString()}
                 </Typography>
               </Box>
             </CardContent>
@@ -173,16 +175,16 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowDownCircle size={40} color="#ef4444" />
+              <ArrowDownCircle size={30} color="#ef4444" />
               <Box>
-                <Typography variant="h6" color="#ef4444">
+                <Typography variant="h7" color="#ef4444">
                   
                 {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                 {employee.role !== EmployeeRoles.Manager && <span>Your </span>} 
                   
                   Expenses</Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#ef4444' }}>
-                  ${financialMetrics.expense.toLocaleString()}
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#ef4444' }}>
+                  ${businessSummary.expenses.toLocaleString()}
                 </Typography>
               </Box>
             </CardContent>
@@ -192,7 +194,7 @@ const OverviewSection = () => {
         <Grid item xs={24} md={12}>
           {/* Calculate total and determine styling */}
           {(() => {
-          const total = financialMetrics.income - financialMetrics.expense;
+          const total = businessSummary.net_balance;
 
           const getCardStyle = (total) => {
             if (total > 0) {
@@ -230,11 +232,11 @@ const OverviewSection = () => {
 
           const getIcon = (total) => {
             if (total > 0) {
-              return <ArrowUpCircle size={40} color="#22c55e" />;
+              return <ArrowUpCircle size={30} color="#22c55e" />;
             } else if (total < 0) {
-              return <ArrowDownCircle size={40} color="#ef4444" />;
+              return <ArrowDownCircle size={30} color="#ef4444" />;
             } else {
-              return <HorizontalRuleIcon size={40} color="#9ca3af" />;
+              return <HorizontalRuleIcon size={30} color="#9ca3af" />;
             }
           };
 
@@ -249,11 +251,11 @@ const OverviewSection = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
                 {getIcon(total)}
                 <Box>
-                  <Typography variant="h6" color={getColor(total)}>
+                  <Typography variant="h7" color={getColor(total)}>
                     Total
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 600, color: getColor(total) }}>
-                    ${Math.abs(total).toLocaleString()}
+                  <Typography variant="h5" sx={{ fontWeight: 600, color: getColor(total) }}>
+                    {total < 0 ? '-' : '+'}${Math.abs(total).toLocaleString()}
                   </Typography>
                 </Box>
               </CardContent>

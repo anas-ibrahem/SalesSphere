@@ -160,6 +160,30 @@ class EmployeeController {
         const rank = await this.employeeModel.getMyRank(req.pool, req.employeeId, role);
         res.json(rank);
     }
+
+    deleteEmployee = async (req, res) => {
+        const id = req.params.id;
+        if(!id) {
+            return res.status(400).json({error: 'Employee ID is required'});
+        }
+
+        const employee = await this.employeeModel.getById(req.pool, id);
+
+        if(!employee.id) {
+            return res.status(400).json({error: 'Employee not found'});
+        }
+
+        const result = await this.employeeModel.deleteEmployee(req.pool, id);
+        if(result) {
+            const logData = {
+                business_id: req.businessId,
+                type: 1,
+                content: `Employee ${employee.first_name} ${employee.last_name} (ID: ${id}) was deleted`
+            }
+            this.logsModel.add(req.pool, logData);
+        }
+        res.json(result);
+    }
 }
 
 

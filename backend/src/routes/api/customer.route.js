@@ -21,6 +21,9 @@ router.post('/', customerController.add);
 // to update a customer
 router.put('/', customerController.update);
 
+// to delete a customer
+router.delete('/:id', customerController.delete);
+
 
 
 export default router;

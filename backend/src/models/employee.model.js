@@ -539,6 +539,30 @@ class EmployeeModel {
             return {rank: 0};
         }
     }
+
+    deleteEmployee = async (pool, employee_id) => {
+        try {
+            await pool.query('BEGIN');
+
+            await pool.query(`
+                DELETE FROM employee_profile
+                WHERE employee_id = $1;
+            `, [employee_id]);
+
+            await pool.query(`
+                DELETE FROM employee
+                WHERE id = $1;
+            `, [employee_id]);
+
+            await pool.query('COMMIT');
+            return {success: true};
+        }
+        catch (error) {
+            await pool.query('ROLLBACK');
+            console.error('Database query error:', error);
+            return {error: 'Failed to delete employee'};
+        }
+    }
     
 }
 

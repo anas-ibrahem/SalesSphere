@@ -180,7 +180,7 @@ class DealController {
         }
 
         const result = await this.dealModel.update(req.pool, dealData);
-        if(!result) {
+        if(result.error) {
             return res.status(400).json({error: 'Something unexpected went wrong'});
         }
         else {
@@ -209,7 +209,7 @@ class DealController {
         }
 
         const result = await this.dealModel.delete(req.pool, deal_id);
-        if(!result) {
+        if(result.error) {
             return res.status(400).json({error: 'Something unexpected went wrong'});
         }
         else {
