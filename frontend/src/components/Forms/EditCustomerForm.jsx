@@ -12,9 +12,9 @@ const EditCustomerForm = ({ customer, onBack }) => {
     email: customer.email || "",
     phone_number: customer.phone_number || "",
     lead_source: customer.lead_source || "",
-    type: customer.type ?? "",
+    type: customer.type.toString() ,
     address: customer.address || "",
-    preferred_contact_method: customer.preferred_contact_method ?? "",
+    preferred_contact_method: customer.preferred_contact_method.toString(),
   });
 
   const navigate = useNavigate();

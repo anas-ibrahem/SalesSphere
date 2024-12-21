@@ -118,6 +118,7 @@ function DealDetails({ onBack = () => {} }) {
           : "",
         customer_budget: deal.customer_budget || 0,
         expenses: deal.expenses || 0,
+        id : deal.id
       });
     }
     setCanEdit(opener && deal.deal_opener && me.id === deal.deal_opener.id);
@@ -231,6 +232,7 @@ function DealDetails({ onBack = () => {} }) {
     setReload(!reload);
     navigate(-1);
   };
+
   const handleSaveChanges = async () => {
     try {
       if (
@@ -242,10 +244,22 @@ function DealDetails({ onBack = () => {} }) {
       ) {
         return toast.error("All fields are required");
       }
-      await fetchAPI(`/deal`, "PUT", editedDeal, token);
-      setDeal({ ...deal, ...editedDeal });
-      setIsEditing(false);
-      toast.success("Deal updated successfully");
+      const token = localStorage.getItem("token");
+      
+      console.log("deal edit req" , { ...deal, ...editedDeal })
+      fetchAPI(`/deal`, "PUT", editedDeal, token).then((data) => {
+        if (data.error) {
+          toast.error("Error Updating Deal details", data.error);
+          return;
+        }
+        setIsEditing(false);
+        toast.success("Deal updated successfully");
+        setDeal({ ...deal, ...editedDeal });
+      })
+      .catch((error) => {
+        toast.error("Error Updating Deal details", error);
+      });
+
     } catch (error) {
       console.error("Error updating deal:", error);
       toast.error("Error updating deal");

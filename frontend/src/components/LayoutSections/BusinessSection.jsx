@@ -214,7 +214,7 @@ const BusinessSection = function () {
                       <p className="text-xs text-gray-500">
                         Number Of Customers
                       </p>
-                      <p className="text-lg font-bold">{}</p>
+                      <p className="text-lg font-bold">{businessSummary.customers}</p>
                     </div>
                   </div>
                 </div>
