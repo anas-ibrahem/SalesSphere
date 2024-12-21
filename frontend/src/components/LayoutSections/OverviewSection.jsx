@@ -281,14 +281,13 @@ const OverviewSection = () => {
           }}>
             <Box sx={{ p: 2 }}>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
-                Closest DealLines of
-              {employee.role === EmployeeRoles.Manager && <span> Business' </span>}
-              {employee.role !== EmployeeRoles.Manager && <span> Your </span>}
+              {employee.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                 Targets
               </Typography>
             </Box>
             <CardContent sx={{ 
-              maxHeight: 200, 
+              maxHeight: 300, 
               overflow: 'auto', 
               '&::-webkit-scrollbar': { width: '8px' }, 
               '&::-webkit-scrollbar-thumb': { 
@@ -371,13 +370,13 @@ const OverviewSection = () => {
                 Top Employees
               </Typography>
 
-              { employee.role !== EmployeeRoles.Manager && <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />
                 <Box>
                   <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{employee.role != EmployeeRoles.Manager ? `#${rank}` : ''} {getRoleName(employee.role)}</Typography>
                   <Typography color="text.secondary" variant="body2">{employee.role != EmployeeRoles.Manager ? `My Overall Rank` : ''}</Typography>
                 </Box>
-              </Box>}
+              </Box>
 
 
             </Box>
