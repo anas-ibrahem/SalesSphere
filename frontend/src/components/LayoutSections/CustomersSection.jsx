@@ -216,13 +216,6 @@ const CustomersSection = () => {
                             <Typography
                               variant="small"
                               color="gray"
-                              className="font-normal"
-                            >
-                              {customer.email}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              color="gray"
                               className="font-normal flex justify-between"
                             >
                               <p>{getCustomerType(customer.type)}</p>

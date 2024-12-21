@@ -1,11 +1,13 @@
 import TargetModel from "../models/target.model.js";
 import LogsModel from "../models/logs.model.js";
+import NotificationModel from "../models/notification.model.js";
 
 
 class TargetController {
     constructor() {
         this.targetModel = new TargetModel();
         this.logsModel = new LogsModel();
+        this.notificationModel = new NotificationModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -72,6 +74,14 @@ class TargetController {
                 content: 'A new target has been assigned'
             }
             this.logsModel.add(req.pool, logData);
+
+            const notificationData = {
+                title: 'New Target Assigned',
+                content: `The target "${targetData.description}" has been assigned to you.`,
+                type: 4,
+                priority: 1
+            }
+            this.notificationModel.addNotification(req.pool, targetData.employee_id, notificationData);
         }
         res.json(result);
     }
@@ -97,6 +107,14 @@ class TargetController {
                 content: 'A new target has been assigned to multiple employees'
             }
             this.logsModel.add(req.pool, logData);
+
+            const notificationData = {
+                title: 'New Target Assigned',
+                content: `The target "${targetData.description}" has been assigned to you.`,
+                type: 4,
+                priority: 1
+            }
+            this.notificationModel.addNotificationToMultiple(req.pool, targetData.employee_ids, notificationData);
         }
 
         res.json(result);

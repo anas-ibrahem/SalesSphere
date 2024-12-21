@@ -307,13 +307,14 @@ class DealModel {
                 UPDATE deal
                 SET status = 1, deal_executor = $1, date_claimed = CURRENT_TIMESTAMP
                 WHERE id = $2
+                RETURNING id, deal_opener, title;
             `, [employeeId, dealId]);
 
-            return result.rowCount > 0;
+            return result.rows[0];
         }
         catch (error) {
             console.error('Database query error:', error);
-            return false;
+            return { error: 'Error claiming deal' };
         }
     }
 

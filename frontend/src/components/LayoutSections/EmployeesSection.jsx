@@ -163,13 +163,6 @@ const EmployeesSection = () => {
                     <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
                     <span className="text-lg">Add Employee</span>
                   </button>
-                  <button
-                    onClick={() => navigate("addTarget")}
-                    className="flex items-center px-4 border rounded bg-blue-500 text-white hover:bg-blue-600"
-                  >
-                    <i className="fas fa-plus text-xl mr-2 pb-[3px]"></i>
-                    <span className="text-lg">Add Target</span>
-                  </button>
                 </div>
               )}
             </div>

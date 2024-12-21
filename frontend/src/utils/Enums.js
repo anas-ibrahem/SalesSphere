@@ -17,11 +17,16 @@ import {
   Flag,
   BookCheck,
   Rocket,
+  CircleUserRound,
+  CircleDollarSign,
   Clock,
   CheckCircle2,
   AlertCircle,
   Briefcase,
 } from "lucide-react";
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import AddCardIcon from '@mui/icons-material/AddCard';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
 
 const EmployeeRoles = {
   DealOpener: 0,
@@ -42,7 +47,6 @@ const BadgeTypes = {
   AddCustomers: 2,
   Revenue: 3,
   Badges: 4,
-  TopEmployee: 5,
 };
 
 const VerificationStatus = {
@@ -62,6 +66,15 @@ const ContactTypes = {
 };
 
 const DealStatus = ["Open", "Claimed", "Closed Won", "Closed Lost"];
+
+const DealStatusEnum = 
+{
+  Open: 0,
+  Claimed: 1,
+  ClosedWon: 2,
+  ClosedLost: 3,
+};
+
 
 const PaymentMethods = {
   Cash: 0,
@@ -107,12 +120,11 @@ const LogTypes = {
 
 // Mapping of Badge Types to Icons
 const BadgeIcons = {
-  [BadgeTypes.OpenDeals]: Target,
-  [BadgeTypes.CloseDeals]: CheckCircle2,
-  [BadgeTypes.AddCustomers]: UserPlus,
-  [BadgeTypes.Revenue]: HandCoins,
-  [BadgeTypes.Badges]: Trophy,
-  [BadgeTypes.TopEmployee]: Rocket,
+  [BadgeTypes.OpenDeals]: AddCardIcon,
+  [BadgeTypes.CloseDeals]:  CreditScoreIcon,
+  [BadgeTypes.AddCustomers]: CircleUserRound,
+  [BadgeTypes.Revenue]: CircleDollarSign,
+  [BadgeTypes.Badges]: WorkspacePremiumIcon,
 };
 
 // Mapping of Target Types to Icons
@@ -153,5 +165,6 @@ export {
   TargetTypes,
   TargetIcons,
   BusinessTypes,
+  DealStatusEnum,
   LogTypes,
 };

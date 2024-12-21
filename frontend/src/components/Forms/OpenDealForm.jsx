@@ -235,13 +235,14 @@ const OpenDealForm = ({ onBack }) => {
 
         <div className="mb-4">
           <label htmlFor="description" className="block mb-1 text-gray-600">
-            Description (Optional)
+            Description *
           </label>
           <textarea
             id="description"
             name="description"
             value={formValues.description}
             onChange={handleChange}
+            required
             className="w-full p-2 border border-gray-300 rounded-md text-lg"
           />
         </div>

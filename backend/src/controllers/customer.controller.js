@@ -3,6 +3,8 @@ import bcypt from 'bcryptjs';
 import validator from 'validator';
 import LogsModel from "../models/logs.model.js";
 import TargetModel from "../models/target.model.js";
+import BadgesModel from "../models/badges.model.js";
+import NotificationModel from "../models/notification.model.js";
 
 
 class CustomerController {
@@ -10,6 +12,8 @@ class CustomerController {
         this.customerModel = new CustomerModel({});
         this.logsModel = new LogsModel();
         this.targetModel = new TargetModel();
+        this.badgesModel = new BadgesModel();
+        this.notificationModel = new NotificationModel();
     }
 
     // Please use arrow function to bind 'this' to the class
@@ -53,6 +57,27 @@ class CustomerController {
             }
             this.logsModel.add(req.pool, logData);
             this.targetModel.addProgress(req.pool, req.employeeId, 2);
+
+            const notificationData = {
+                title: 'New Customer Added',
+                content: `New customer ${customerData.name} has been added`,
+                priority: 0,
+                type: 1
+            }
+
+            this.notificationModel.addNotificationToAll(req.pool, req.businessId, notificationData);
+
+            const badges = await this.badgesModel.checkCustomerAdded(req.pool, req.employeeId);
+            if(badges.length > 0) {
+                const notificationData2 = {
+                    title: 'You earned new badges!',
+                    content: `You have earned new badges: ${badges.map(badge => badge).join(', ')}`,
+                    priority: 0,
+                    type: 5
+                }
+
+                this.notificationModel.addNotification(req.pool, req.employeeId, notificationData2);
+            }
         }
         res.json(result);
     }
@@ -68,10 +93,6 @@ class CustomerController {
     }
     update = async (req, res) => {
         const customerData = req.body;
-        //const customerId = req.params.id;
-        //const businessId = req.businessId;
-        //customerData.business_id = businessId;
-        //customerData.id = customerId;
         if(!customerData.email || !validator.isEmail(customerData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
@@ -91,6 +112,15 @@ class CustomerController {
                 content: 'Customer was updated'
             }
             this.logsModel.add(req.pool, logData);
+
+            const notificationData = {
+                title: 'Customer Updated',
+                content: `Customer ${result.name} has been updated`,
+                priority: 0,
+                type: 1
+            }
+
+            this.notificationModel.addNotificationToAll(req.pool, req.businessId, notificationData);
         }
         res.json(result);
     }

@@ -155,7 +155,7 @@ class CustomerModel {
                 UPDATE customer
                 SET name = $1, phone_number = $2, email = $3, address = $4, type = $5, lead_source = $6, preferred_contact_method = $7
                 WHERE id = $8
-                RETURNING id;
+                RETURNING id, name;
             `, [this.name, this.phone_number, this.email, this.address, this.type, this.lead_source, this.preferred_contact_method, this.id]);
 
             if(result.rows.length === 0) {

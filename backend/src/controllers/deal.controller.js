@@ -2,6 +2,8 @@ import e from "express";
 import DealModel from "../models/deal.model.js";
 import LogsModel from "../models/logs.model.js";
 import TargetModel from "../models/target.model.js";
+import BadgesModel from "../models/badges.model.js";
+import NotificationModel from "../models/notification.model.js";
 
 
 class DealController {
@@ -9,6 +11,8 @@ class DealController {
         this.dealModel = new DealModel();
         this.logsModel = new LogsModel();
         this.targetModel = new TargetModel();
+        this.badgesModel = new BadgesModel();
+        this.notificationModel = new NotificationModel();
     }
     getAll = async (req, res) => {
         const emps = await this.dealModel.getAll(req.pool, req.businessId);
@@ -57,6 +61,27 @@ class DealController {
             }
             this.logsModel.add(req.pool, logData);
             this.targetModel.addProgress(req.pool, req.employeeId, 0);
+            const notificationData = {
+                title: 'New Deal Opened',
+                content: `New Deal: ${dealData.title} has been opened`,
+                priority: 0,
+                type: 2
+            }
+
+            this.notificationModel.addNotificationToExecutors(req.pool, req.businessId, notificationData);
+
+            const badges = await this.badgesModel.checkDealOpened(req.pool, req.employeeId);
+            if(badges.length > 0) {
+                const notificationData2 = {
+                    title: 'You earned new badges!',
+                    content: `You have earned new badges: ${badges.map(badge => badge).join(', ')}`,
+                    priority: 0,
+                    type: 5
+                }
+
+                this.notificationModel.addNotification(req.pool, req.employeeId, notificationData2);
+            }
+
         }
         res.json(result);
     }
@@ -68,7 +93,7 @@ class DealController {
         }
 
         const result = await this.dealModel.claim(req.pool, dealData.id , req.employeeId);
-        if (!result)
+        if (result.error)
             return res.status(400).json({error: 'Something unexpected went wrong!'});
         else {
             const logData = {
@@ -79,6 +104,15 @@ class DealController {
                 content: 'Deal claimed'
             }
             this.logsModel.add(req.pool, logData);
+
+            const notificationData = {
+                title: 'Your deal was claimed',
+                content: `Deal: ${result.title} was claimed by an employee`,
+                priority: 0,
+                type: 2
+            }
+
+            this.notificationModel.addNotification(req.pool, result.deal_opener, notificationData);
         }
         res.json({message : 'Deal claimed successfully'});
     }
@@ -107,6 +141,18 @@ class DealController {
             this.logsModel.add(req.pool, logData);
             if(dealData.status === 2) {
                 this.targetModel.addProgress(req.pool, req.employeeId, 1);
+
+                const badges = await this.badgesModel.checkDealClosed(req.pool, req.employeeId);
+                if(badges.length > 0) {
+                    const notificationData = {
+                        title: 'You earned new badges!',
+                        content: `You have earned new badges: ${badges.map(badge => badge).join(', ')}`,
+                        priority: 0,
+                        type: 5
+                    }
+
+                    this.notificationModel.addNotification(req.pool, req.employeeId, notificationData);
+                }
             }
         }
 

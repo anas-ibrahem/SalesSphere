@@ -149,7 +149,7 @@ const EditBusinessForm = ({ onBack }) => {
       if (data.error) toast.error("An error occurred. Please try again.");
       else {
         toast.success("Business updated successfully");
-        onBack();
+        if (onBack) onBack();
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");

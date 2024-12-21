@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { use } from "react";
 import { EmployeeRoles } from "../../utils/Enums";
+import NotFoundPage from "../../pages/NotFoundPage";
+
 
 const BusinessSection = function () {
   const [business, setBusiness] = useState(null);
@@ -20,6 +22,8 @@ const BusinessSection = function () {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { employee: me } = useContext(UserContext);
+  const [notFound , setNotFound] = useState(false);
+  
 
   const totalIncome = 5000; // TODO: Fetch from API
   const totalExpenses = 2000; // TODO: Fetch from API
@@ -35,6 +39,10 @@ const BusinessSection = function () {
           null,
           token
         );
+        if (businessData.error) {
+          setNotFound(true);
+          return;
+        }
         setBusiness(businessData);
         console.log(businessData);
       } catch (error) {
@@ -49,10 +57,16 @@ const BusinessSection = function () {
   const handleEditClick = () => {
     navigate("/home/settings/");
   };
+  if (notFound)
+    {
+      return <NotFoundPage message =  {"Business Not Found"}/>;
+    }
 
   if (loading) {
     return <p className="m-8">Loading...</p>;
   }
+
+    
 
   return (
     <Routes>

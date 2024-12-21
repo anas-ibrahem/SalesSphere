@@ -146,7 +146,11 @@ const OverviewSection = () => {
               }
             }}>
               <List sx={{ p: 0 }}>
-                {targets.map((target, index) => (
+                {targets.map((target, index) => {
+                  
+                  const targetProgress = Math.floor((target.progress / target.goal) * 100);
+                  
+                  return (
                   <ListItem key={index} sx={{ display: 'block', px: 0, py: 1 }}>
                     <Box sx={{ mb: 1 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
@@ -174,24 +178,25 @@ const OverviewSection = () => {
                           {target.progress.toLocaleString()} / {target.goal.toLocaleString()}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {Math.floor((target.progress / target.goal) * 100)}%
+                          {targetProgress}%
                         </Typography>
                       </Box>
                       <LinearProgress
                         variant="determinate"
-                        value={Math.floor((target.progress / target.goal) * 100)}
+                        value={Math.min(targetProgress, 100)}
                         sx={{
                           height: 6,
                           borderRadius: 1,
                           backgroundColor: 'rgba(0,0,0,0.1)',
                           '& .MuiLinearProgress-bar': {
-                            backgroundColor: getProgressColor(Math.floor((target.progress / target.goal) * 100)),
+                            backgroundColor: getProgressColor(targetProgress),
                           },
                         }}
                       />
                     </Box>
                   </ListItem>
-                ))}
+                )})
+              }
               </List>
             </CardContent>
           </Card>
@@ -207,8 +212,8 @@ const OverviewSection = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>#{rank} {getRoleName(employee.role)}</Typography>
-                  <Typography color="text.secondary" variant="body2">My Overall Rank</Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{employee.role != EmployeeRoles.Manager ? `#${rank}` : ''} {getRoleName(employee.role)}</Typography>
+                  <Typography color="text.secondary" variant="body2">{employee.role != EmployeeRoles.Manager ? `My Overall Rank` : ''}</Typography>
                 </Box>
               </Box>
             </Box>
