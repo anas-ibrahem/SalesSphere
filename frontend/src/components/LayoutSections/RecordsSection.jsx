@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Search, Clock, ArrowUpDown } from "lucide-react";
 import Pagination from '../Pagination';
 import fetchAPI from "../../utils/fetchAPI";
-import { PaymentMethods } from "../../utils/Enums";
+import { EmployeeRoles, PaymentMethods } from "../../utils/Enums";
 import {FinancialRecordTypes} from "../../utils/Enums";
+import UserContext from "../../context/UserContext";
 
 const getTypeString = (type) => {
   return type === FinancialRecordTypes.Income ? "Income" : "Expense";
@@ -35,6 +36,7 @@ function RecordsSection() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [records, setRecords] = useState([]); 
+  const {employee : me} = useContext(UserContext);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -62,10 +64,17 @@ function RecordsSection() {
     return matchesType && matchesSearch;
   });
 
-  // Sorting logic
+  // Updated sorting logic to handle Income/Expense properly
   const sortedRecords = filteredRecords.sort((a, b) => {
     if (sortField === "amount") {
-      return (sortOrder === "asc" ? 1 : -1) * (parseFloat(a.amount) - parseFloat(b.amount));
+      // Convert amounts to numbers with proper sign based on type
+      const amountA = Number(a.type) === FinancialRecordTypes.Income 
+        ? parseFloat(a.amount) 
+        : -parseFloat(a.amount);
+      const amountB = Number(b.type) === FinancialRecordTypes.Income 
+        ? parseFloat(b.amount) 
+        : -parseFloat(b.amount);
+      return (sortOrder === "asc" ? 1 : -1) * (amountA - amountB);
     }
     return (sortOrder === "asc" ? 1 : -1) * (new Date(a.transaction_date) - new Date(b.transaction_date));
   });
@@ -98,7 +107,14 @@ function RecordsSection() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto w-full">
-        <h1 className="text-3xl font-bold mb-8">Financial Records</h1>
+      <h1 className="text-2xl font-bold mb-4">
+          
+          {me.role !== EmployeeRoles.Manager &&
+            <span>Your </span>}
+                      
+          {me.role === EmployeeRoles.Manager &&
+            <span>Business' </span>}
+          Financial Records</h1>
 
         {/* Filters and Search Bar */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
