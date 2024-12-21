@@ -25,14 +25,14 @@ const CustomersSection = () => {
   const CustomersPerPage = 4;
   const navigate = useNavigate();
   const { employee: me } = useContext(UserContext);
-  const canAddCustomer = (me.role === EmployeeRoles.DealOpener);
+  const canAddCustomer = me.role === EmployeeRoles.DealOpener;
 
   // Deal status styles matching the deals section
   const dealStatusStyles = {
     open: "text-blue-500",
     claimed: "text-yellow-500",
     closedWon: "text-green-500",
-    closedLost: "text-red-500"
+    closedLost: "text-red-500",
   };
 
   useEffect(() => {
@@ -65,9 +65,11 @@ const CustomersSection = () => {
   }, [reload]);
 
   const getCustomerType = (typeValue) => {
-    return Object.keys(CustomerTypes).find(
-      (key) => CustomerTypes[key] === typeValue
-    ) || "Unknown";
+    return (
+      Object.keys(CustomerTypes).find(
+        (key) => CustomerTypes[key] === typeValue
+      ) || "Unknown"
+    );
   };
 
   const filterCustomers = customers.filter((customer) => {
@@ -87,7 +89,7 @@ const CustomersSection = () => {
     setSortOrder("asc");
     setCurrentPage(1);
     setReload(!reload);
-    navigate("/home/customers");
+    navigate(-1);
   }
 
   const sortedCustomers = [...filterCustomers].sort((a, b) => {
@@ -227,10 +229,12 @@ const CustomersSection = () => {
                             >
                               <p className="mr-28">
                                 Registration Date:{" "}
-                                {new Date(customer.registration_date).toLocaleDateString()}
+                                {new Date(
+                                  customer.registration_date
+                                ).toLocaleDateString()}
                               </p>
                             </Typography>
-                            
+
                             {/* Deals summary with consistent colors */}
                             <div className="flex space-x-6 mt-2 font-medium">
                               <span className={dealStatusStyles.open}>

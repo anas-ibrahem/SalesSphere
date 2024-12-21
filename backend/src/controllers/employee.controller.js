@@ -113,11 +113,11 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address || !empData.hire_date || !empData.birth_date || !empData.role) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
-        if(!req.params.id || isNaN(req.params.id)) {
+        if(req.params.id === undefined || isNaN(req.params.id)) {
             return res.status(400).json({error: 'A numeric employee ID is required'});
         }
 

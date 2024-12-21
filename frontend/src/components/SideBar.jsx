@@ -39,7 +39,7 @@ const usersections = [
   {
     route: "/home/business",
     icon: Business,
-    roles: [EmployeeRoles.Manager],
+    roles: [EmployeeRoles.Manager ],
     title: "Business Profile",
   },
   {
@@ -63,13 +63,13 @@ const usersections = [
   {
     route: "/home/employees",
     icon: Users,
-    roles: [EmployeeRoles.Manager],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealOpener , EmployeeRoles.DealExecutor],
     title: "Employees",
   },
   {
     route: "/home/customers",
     icon: UsersRound,
-    roles: [EmployeeRoles.DealOpener , EmployeeRoles.Manager],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealOpener , EmployeeRoles.DealExecutor],
     title: "Customers",
   },
   {
