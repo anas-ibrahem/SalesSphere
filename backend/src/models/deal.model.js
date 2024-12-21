@@ -330,7 +330,7 @@ class DealModel {
         }
         catch (error) {
             console.error('Database query error:', error);
-            return false;
+            return { error: 'Error deleting deal' };
         }
     }
 
@@ -451,11 +451,11 @@ class DealModel {
                 WHERE id = $6
             `, [dealData.title, dealData.description, dealData.due_date, dealData.expenses, dealData.customer_budget, dealData.id]);
 
-            return result.rowCount > 0;
+            return { success: result.rowCount > 0 };
         }
         catch (error) {
             console.error('Database query error:', error);
-            return false;
+            return { error: 'Error deleting deal' };
         }
     }
 
@@ -466,11 +466,11 @@ class DealModel {
                 WHERE id = $1
             `, [id]);
 
-            return result.rowCount > 0;
+            return { success: result.rowCount > 0 };
         }
         catch (error) {
             console.error('Database query error:', error);
-            return false;
+            return { error: 'Error deleting deal' };
         }
     }
 

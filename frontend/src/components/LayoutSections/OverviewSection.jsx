@@ -121,16 +121,15 @@ const OverviewSection = () => {
       minHeight: '100vh'
     }}>
       <Typography 
-        variant="h4" 
+        variant="h5" 
         sx={{ 
           mb: 4, 
-          fontWeight: 800,
+          fontWeight: 600,
           color: '#111830',
-          borderBottom: `2px solid ${'#111830'}`,
-          paddingBottom: 2
+          paddingBottom: 1
         }}
       >
-        Welcome Saler, Ready To Sale On SalesSphere 🚀
+        Welcome, {employee.first_name} {employee.last_name}
       </Typography>
 
 
@@ -147,14 +146,14 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowUpCircle size={40} color="#22c55e" />
+              <ArrowUpCircle size={30} color="#22c55e" />
               <Box>
-                <Typography variant="h6" color="#22c55e">
+                <Typography variant="h7" color="#22c55e">
                   {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                   {employee.role !== EmployeeRoles.Manager && <span>Your </span>}
                   Income
                   </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#22c55e' }}>
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#22c55e' }}>
                   ${financialMetrics.income.toLocaleString()}
                 </Typography>
               </Box>
@@ -173,15 +172,15 @@ const OverviewSection = () => {
             }
           }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
-              <ArrowDownCircle size={40} color="#ef4444" />
+              <ArrowDownCircle size={30} color="#ef4444" />
               <Box>
-                <Typography variant="h6" color="#ef4444">
+                <Typography variant="h7" color="#ef4444">
                   
                 {employee.role === EmployeeRoles.Manager && <span>Total </span>}
                 {employee.role !== EmployeeRoles.Manager && <span>Your </span>} 
                   
                   Expenses</Typography>
-                <Typography variant="h4" sx={{ fontWeight: 600, color: '#ef4444' }}>
+                <Typography variant="h5" sx={{ fontWeight: 600, color: '#ef4444' }}>
                   ${financialMetrics.expense.toLocaleString()}
                 </Typography>
               </Box>
@@ -230,11 +229,11 @@ const OverviewSection = () => {
 
           const getIcon = (total) => {
             if (total > 0) {
-              return <ArrowUpCircle size={40} color="#22c55e" />;
+              return <ArrowUpCircle size={30} color="#22c55e" />;
             } else if (total < 0) {
-              return <ArrowDownCircle size={40} color="#ef4444" />;
+              return <ArrowDownCircle size={30} color="#ef4444" />;
             } else {
-              return <HorizontalRuleIcon size={40} color="#9ca3af" />;
+              return <HorizontalRuleIcon size={30} color="#9ca3af" />;
             }
           };
 
@@ -249,10 +248,10 @@ const OverviewSection = () => {
               <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
                 {getIcon(total)}
                 <Box>
-                  <Typography variant="h6" color={getColor(total)}>
+                  <Typography variant="h7" color={getColor(total)}>
                     Total
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: 600, color: getColor(total) }}>
+                  <Typography variant="h5" sx={{ fontWeight: 600, color: getColor(total) }}>
                     ${Math.abs(total).toLocaleString()}
                   </Typography>
                 </Box>
