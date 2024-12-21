@@ -9,14 +9,35 @@ import { useContext } from "react";
 import UserContext from "../../context/UserContext";
 import AddTarget from "../Forms/AddTarget";
 
-const ProgressBar = ({ progress, color = "blue" }) => (
-  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
-    <div
-      className={`bg-${color}-600 h-2.5 rounded-full`}
-      style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-    />
-  </div>
-);
+const ProgressBar = ({ progress, color = "blue" }) => {
+  const normalizedProgress = Math.min(100, Math.max(0, progress));
+  const isOverAchieved = progress > 100;
+  
+  return (
+    <div className="w-full">
+      <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1 relative overflow-hidden">
+        <div
+          className={`h-2.5 rounded-full transition-all duration-300 ${
+            isOverAchieved ? 'bg-green-500' : `bg-${color}-600`
+          }`}
+          style={{ width: `${normalizedProgress}%` }}
+        />
+        {isOverAchieved && (
+          <div className="absolute top-0 right-0 h-full w-2 bg-green-300 animate-pulse" />
+        )}
+      </div>
+      <div className="flex justify-between text-xs text-gray-500">
+        <span>0%</span>
+        <span className={`font-medium ${
+          isOverAchieved ? 'text-green-600' : `text-${color}-600`
+        }`}>
+          {progress.toFixed(1)}% {isOverAchieved && '(Exceeded)'}
+        </span>
+        <span>100%</span>
+      </div>
+    </div>
+  );
+};
 
 function TargetsSection() {
   const [reload, setReload] = useState(false);
@@ -292,19 +313,21 @@ function TargetsSection() {
                             </div>
 
                             <ProgressBar
-                              progress={progress}
+                              progress={(target.average_progress / target.goal) * 100}
                               color={getTypeColor(target.type).split("-")[1]}
                             />
-
+                            
                             <div className="flex justify-between mt-2">
                               <Typography variant="small" className="font-medium">
-                                Progress: {progress.toFixed(1)}% of {target.goal}
+                                Progress: {target.average_progress.toLocaleString()} of {target.goal.toLocaleString()}
                                 {target.type === TargetTypes.Revenue && "$"}
                               </Typography>
                               <Typography variant="small" color="gray" className="font-normal">
                                 {target.employee_count} Assignees
                               </Typography>
                             </div>
+                            
+
 
                             <Typography variant="small" color="gray" className="font-normal flex justify-between mt-1">
                               <span>Start: {new Date(target.start_date).toLocaleDateString()}</span>
