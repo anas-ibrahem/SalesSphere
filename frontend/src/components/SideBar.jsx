@@ -29,7 +29,7 @@ import UserContext from "../context/UserContext";
 
 const usersections = [
   {
-    route: "/home/",
+    route: "/home",
     icon: Leaderboard,
     roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener, EmployeeRoles.Manager],
     title: "Overview",
@@ -87,13 +87,13 @@ const adminsections = [
   },
 ];
 
-export default function SideBar({
-  onSectionChange,
-  isCollapsed,
-  toggleSidebar,
-  type = "user",
-}) {
+export default function SideBar({ type = "user" }) {
   const [selectedSection, setSelectedSection] = useState(0);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   const { employee, notificationCount } = useContext(UserContext);
 

@@ -15,8 +15,6 @@ import BusinessSection from "../components/LayoutSections/BusinessSection";
 import OverviewSection from "../components/LayoutSections/OverviewSection";
 
 function Home() {
-  const [activeSection, setActiveSection] = useState("default");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { isAuthenticated, employee } = useContext(UserContext);
   const Navigate = useNavigate();
 
@@ -30,22 +28,12 @@ function Home() {
 
   if (!isAuthenticated) return null;
 
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
 
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar on the left */}
-      <SideBar
-        onSectionChange={handleSectionChange}
-        isCollapsed={isSidebarCollapsed}
-        toggleSidebar={toggleSidebar}
-      />
+      <SideBar />
 
       {/* Main content area on the right */}
       <div
