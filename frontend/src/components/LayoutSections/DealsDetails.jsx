@@ -58,7 +58,7 @@ function DealDetails({ onBack = () => {} }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { employee: me } = useContext(UserContext);
-  const executer = me.role === EmployeeRoles.DealExecutor; 
+  const executer = me.role === EmployeeRoles.DealExecutor;
   const opener = me.role === EmployeeRoles.DealOpener;
 
   const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
@@ -69,7 +69,10 @@ function DealDetails({ onBack = () => {} }) {
         <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
           <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
           <p className="text-gray-600 mb-6">
-            <strong>Are you sure you want to delete this deal? This action cannot be undone.</strong>
+            <strong>
+              Are you sure you want to delete this deal? This action cannot be
+              undone.
+            </strong>
           </p>
           <div className="flex justify-end space-x-3">
             <button
@@ -103,7 +106,7 @@ function DealDetails({ onBack = () => {} }) {
     deal_opener = null,
     id = dealId,
   } = deal;
-  
+
   useEffect(() => {
     if (deal) {
       setEditedDeal({
@@ -117,12 +120,15 @@ function DealDetails({ onBack = () => {} }) {
       });
     }
     setCanEdit(opener && deal.deal_opener && me.id === deal.deal_opener.id);
-    setCanDelete(opener && deal.deal_opener && me.id === deal.deal_opener.id && deal.status === DealStatusEnum.Open);
-    console.log("Me" , me)
-    console.log("Deal" , deal.deal_opener)
+    setCanDelete(
+      opener &&
+        deal.deal_opener &&
+        me.id === deal.deal_opener.id &&
+        deal.status === DealStatusEnum.Open
+    );
+    console.log("Me", me);
+    console.log("Deal", deal.deal_opener);
   }, [deal]);
-
-  
 
   function handleDeleteDeal() {
     setIsDeleteModalOpen(false);
@@ -220,7 +226,16 @@ function DealDetails({ onBack = () => {} }) {
   };
   const handleSaveChanges = async () => {
     try {
-      await fetchAPI(`/deal/${dealId}`, "PUT", editedDeal, token);
+      if (
+        !editedDeal.title ||
+        !editedDeal.description ||
+        !editedDeal.due_date ||
+        !editedDeal.customer_budget ||
+        !editedDeal.expenses
+      ) {
+        return toast.error("All fields are required");
+      }
+      await fetchAPI(`/deal`, "PUT", editedDeal, token);
       setDeal({ ...deal, ...editedDeal });
       setIsEditing(false);
       toast.success("Deal updated successfully");
@@ -243,7 +258,6 @@ function DealDetails({ onBack = () => {} }) {
         </tr>
       );
     }
-  
 
     return financialRecords.map((record, index) => (
       <React.Fragment key={index}>
@@ -412,6 +426,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="text"
                 value={editedDeal.title}
+                required
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, title: e.target.value })
                 }
@@ -427,6 +442,7 @@ function DealDetails({ onBack = () => {} }) {
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, description: e.target.value })
                 }
+                required
                 className="w-full p-2 border rounded"
                 rows="3"
               />
@@ -441,6 +457,7 @@ function DealDetails({ onBack = () => {} }) {
                 onChange={(e) =>
                   setEditedDeal({ ...editedDeal, due_date: e.target.value })
                 }
+                required
                 className="w-full p-2 border rounded"
               />
             </div>
@@ -451,6 +468,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="number"
                 value={editedDeal.customer_budget}
+                required
                 onChange={(e) =>
                   setEditedDeal({
                     ...editedDeal,
@@ -467,6 +485,7 @@ function DealDetails({ onBack = () => {} }) {
               <input
                 type="number"
                 value={editedDeal.expenses}
+                required
                 onChange={(e) =>
                   setEditedDeal({
                     ...editedDeal,
@@ -533,7 +552,7 @@ function DealDetails({ onBack = () => {} }) {
               onClose={() => setIsDeleteModalOpen(false)}
               onConfirm={handleDeleteDeal}
             />
-            {/* Header Section */ }
+            {/* Header Section */}
             <div className="flex justify-between items-center mb-1">
               <button
                 type="button"
@@ -545,13 +564,13 @@ function DealDetails({ onBack = () => {} }) {
 
               <div className="flex space-x-3">
                 {canDelete && (
-                    <button
-                        onClick={() => setIsDeleteModalOpen(true)}
-                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                      >
-                        <Trash2 className="mr-2" />
-                        Delete Deal
-                    </button>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                  >
+                    <Trash2 className="mr-2" />
+                    Delete Deal
+                  </button>
                 )}
                 {executer && deal.status === 0 && (
                   <button
@@ -561,7 +580,6 @@ function DealDetails({ onBack = () => {} }) {
                     Claim Deal
                   </button>
                 )}
-
 
                 {executer && deal.status === 1 && (
                   <div className="flex space-x-2">
