@@ -15,7 +15,7 @@ class TargetController {
     // Please use arrow function to bind 'this' to the class
 
     getAll = async (req, res) => {
-        const emp = await this.employeeModel.getById(req.pool, req.params.id);
+        const emp = await this.employeeModel.getById(req.pool, req.employeeId);
         if(emp.role === 2) { // manager
             const targets = await this.targetModel.getAll(req.pool, req.businessId);
             return res.json(targets);

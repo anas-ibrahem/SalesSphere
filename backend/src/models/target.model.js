@@ -228,7 +228,7 @@ class TargetModel {
             await pool.query(`ROLLBACK;`);
 
             console.error('Database query error:', error);
-            return [];
+            return {error: 'Failed to add target'};
         }
     }
     

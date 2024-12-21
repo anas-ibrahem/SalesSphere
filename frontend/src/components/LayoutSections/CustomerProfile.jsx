@@ -91,9 +91,9 @@ const CustomerProfile = ({ back }) => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const { employee:me } = useContext(UserContext);
-  const [canEditandDelete , setCanEditandDelete] = useState(false);
-  const [notFound , setNotFound] = useState(false);
+  const { employee: me } = useContext(UserContext);
+  const [canEditandDelete, setCanEditandDelete] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -101,26 +101,23 @@ const CustomerProfile = ({ back }) => {
     const token = localStorage.getItem('token');
     fetchAPI(`/customer/${customerId}`, 'GET', null, token)
       .then((data) => {
-        if (data.error)
-          {
-            setNotFound(true);
-            return;
-          }
+        if (data.error) {
+          setNotFound(true);
+          return;
+        }
         console.log(data);
         setCustomer(data);
-        setCanEditandDelete(customer && ( me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id));
-        console.log("A&A" , me.role , me.id , customer.added_by.employee_id);
+        setCanEditandDelete(me.role === EmployeeRoles.Manager || me.id === data.added_by.employee_id);
       })
       .catch((error) => {
         console.error("Error fetching customer details:", error);
       });
-  }, [customerId , isEditing, reload , customer]);
+  }, [customerId, isEditing, reload, me]);
 
-  if (notFound)
-    {
-      return <NotFoundPage message =  {"Customer Not Found"}/>;
-    }
-    
+  if (notFound) {
+    return <NotFoundPage message={"Customer Not Found"} />;
+  }
+
   if (!customer) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }

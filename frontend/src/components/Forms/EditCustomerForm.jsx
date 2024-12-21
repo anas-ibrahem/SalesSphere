@@ -7,32 +7,17 @@ import { useNavigate } from "react-router-dom";
 
 const EditCustomerForm = ({ customer, onBack }) => {
   const [formValues, setFormValues] = useState({
-    id: "",
-    name: "",
-    email: "",
-    phone_number: "",
-    lead_source: "",
-    type: "", // Individual 0 or Company 1
-    address: "",
-    preferred_contact_method: "", // 0 for email, 1 for phone
+    id: customer.id || "",
+    name: customer.name || "",
+    email: customer.email || "",
+    phone_number: customer.phone_number || "",
+    lead_source: customer.lead_source || "",
+    type: customer.type.toString() ,
+    address: customer.address || "",
+    preferred_contact_method: customer.preferred_contact_method.toString(),
   });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (customer) {
-      setFormValues({
-        id: customer.id || "",
-        name: customer.name || "",
-        email: customer.email || "",
-        phone_number: customer.phone_number || "",
-        lead_source: customer.lead_source || "",
-        type: customer.type || "",
-        address: customer.address || "",
-        preferred_contact_method: customer.preferred_contact_method || "",
-      });
-    }
-  }, [customer]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,11 +29,11 @@ const EditCustomerForm = ({ customer, onBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formValues);
+    console.log("hi" , formValues);
     const token = localStorage.getItem("token");
     fetchAPI("/customer", "PUT", formValues, token)
       .then((data) => {
-        console.log(data);
+        console.log("Cry " , data);
         if (data.error) {
           toast.error("An error occurred. Please try again.");
         } else {

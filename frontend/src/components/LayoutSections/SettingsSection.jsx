@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -17,6 +17,10 @@ const SettingsSection = () => {
   const { employee : me } = useContext(UserContext);
   const isManager = me.role === EmployeeRoles.Manager; 
   const [activeTab, setActiveTab] = useState(isManager ? "Business" : "Profile");
+
+  useEffect(() => {
+    console.log("refresh")
+  }, [me]);
 
   const BusinessSettings = () => (
     <div className="w-full max-w-3xl mx-auto space-y-6">
