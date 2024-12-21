@@ -67,6 +67,15 @@ const ContactTypes = {
 
 const DealStatus = ["Open", "Claimed", "Closed Won", "Closed Lost"];
 
+const DealStatusEnum = 
+{
+  Open: 0,
+  Claimed: 1,
+  ClosedWon: 2,
+  ClosedLost: 3,
+};
+
+
 const PaymentMethods = {
   Cash: 0,
   Card: 1,
@@ -156,5 +165,6 @@ export {
   TargetTypes,
   TargetIcons,
   BusinessTypes,
+  DealStatusEnum,
   LogTypes,
 };

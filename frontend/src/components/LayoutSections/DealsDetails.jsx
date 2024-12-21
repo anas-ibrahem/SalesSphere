@@ -7,11 +7,12 @@ import {
   TrendingDown,
   Save,
   X,
+  Trash2,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { DealStatus, EmployeeRoles } from "../../utils/Enums";
+import { DealStatus, DealStatusEnum, EmployeeRoles } from "../../utils/Enums";
 import { useContext } from "react";
 import UserContext from "../../context/UserContext";
 import fetchAPI from "../../utils/fetchAPI";
@@ -50,10 +51,44 @@ function DealDetails({ onBack = () => {} }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { employee: me } = useContext(UserContext);
+  const executer = me.role === EmployeeRoles.DealExecutor; 
+  const opener = me.role === EmployeeRoles.DealOpener;
+
+  const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
+          <p className="text-gray-600 mb-6">
+            <strong>Are you sure you want to delete this deal? This action cannot be undone.</strong>
+          </p>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const {
     title = "Untitled Deal",
@@ -81,15 +116,23 @@ function DealDetails({ onBack = () => {} }) {
         expenses: deal.expenses || 0,
       });
     }
+    setCanEdit(opener && deal.deal_opener && me.id === deal.deal_opener.id);
+    setCanDelete(opener && deal.deal_opener && me.id === deal.deal_opener.id && deal.status === DealStatusEnum.Open);
     console.log("Me" , me)
-    console.log("Deal" , deal)
+    console.log("Deal" , deal.deal_opener)
   }, [deal]);
 
   
-  const executer = me.role === EmployeeRoles.DealExecutor; 
-  const opener = me.role === EmployeeRoles.DealOpener;
-  const canEdit = opener && me.id === deal.deal_opener.id;
 
+  function handleDeleteDeal() {
+    setIsDeleteModalOpen(false);
+    fetchAPI(`/deal/${dealId}`, "DELETE", null, token)
+      .then(() => {
+        toast.success("Deal deleted successfully");
+        navigate("/home/deals");
+      })
+      .catch(() => toast.error("Error deleting deal"));
+  }
 
   function handelClaimDeal() {
     fetchAPI(`/deal/claim`, "POST", { id }, token)
@@ -200,6 +243,7 @@ function DealDetails({ onBack = () => {} }) {
         </tr>
       );
     }
+  
 
     return financialRecords.map((record, index) => (
       <React.Fragment key={index}>
@@ -484,7 +528,12 @@ function DealDetails({ onBack = () => {} }) {
               dealStatus={closingDealStatus}
             />
 
-            {/* Header Section */}
+            <DeleteConfirmationModal
+              isOpen={isDeleteModalOpen}
+              onClose={() => setIsDeleteModalOpen(false)}
+              onConfirm={handleDeleteDeal}
+            />
+            {/* Header Section */ }
             <div className="flex justify-between items-center mb-1">
               <button
                 type="button"
@@ -495,15 +544,16 @@ function DealDetails({ onBack = () => {} }) {
               </button>
 
               <div className="flex space-x-3">
-                {opener && deal.status === 0 && (
-                  <button
-                    onClick={handelDeleteDeal}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-                  >
-                    Delete Deal
-                  </button>
+                {canDelete && (
+                    <button
+                        onClick={() => setIsDeleteModalOpen(true)}
+                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                      >
+                        <Trash2 className="mr-2" />
+                        Delete Deal
+                    </button>
                 )}
-                {executor && deal.status === 0 && (
+                {executer && deal.status === 0 && (
                   <button
                     onClick={handelClaimDeal}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -512,7 +562,8 @@ function DealDetails({ onBack = () => {} }) {
                   </button>
                 )}
 
-                {executor && deal.status === 1 && (
+
+                {executer && deal.status === 1 && (
                   <div className="flex space-x-2">
                     <select
                       className="px-4 py-2 border rounded"
@@ -672,7 +723,7 @@ function DealDetails({ onBack = () => {} }) {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold">Financial Records</h2>
-                  {executor && deal.status === 1 && (
+                  {executer && deal.status === 1 && (
                     <button
                       onClick={() => navigate(`new-record`)}
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"

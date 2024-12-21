@@ -2,7 +2,7 @@ import React, { useState, useContext , useEffect } from "react";
 import { 
   Star, Medal, UserPlus, TrendingUp, BarChart2, List, X, User, UsersRound, 
   Trophy, Target, HandCoins, DollarSign, MapPin, Calendar, Flag, BookCheck, 
-  Rocket, Clock, CheckCircle2, AlertCircle, Briefcase, Pencil 
+  Rocket, Clock, CheckCircle2, AlertCircle, Briefcase, Pencil, Trash2 
 } from "lucide-react";
 import { useParams, useNavigate, Routes, Route } from "react-router-dom";
 import fetchAPI from '../../utils/fetchAPI';
@@ -52,15 +52,50 @@ const AddedByProfile = ({ addedBy }) => {
   );
 };
 
+const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg max-w-md w-full p-6">
+        <div className="text-xl font-bold mb-4">Confirm Delete</div>
+        <div className="mb-6">
+          <p className="text-gray-700 mb-2">
+            Are you sure you want to delete this customer? This action cannot be undone.
+          </p>
+          <p className="text-gray-700">
+            <strong>All associated data including deals and contacts will be permanently removed.</strong>
+          </p>
+        </div>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const CustomerProfile = ({ back }) => {
   const { customerId } = useParams();
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const { employee:me } = useContext(UserContext);
-  const [canEdit , setCanEdit] = useState(false);
+  const [canEditandDelete , setCanEditandDelete] = useState(false);
   const [notFound , setNotFound] = useState(false);
   const [reload, setReload] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -73,21 +108,22 @@ const CustomerProfile = ({ back }) => {
           }
         console.log(data);
         setCustomer(data);
-        setCanEdit(me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id);
+        setCanEditandDelete(customer && ( me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id));
+        console.log("A&A" , me.role , me.id , customer.added_by.employee_id);
       })
       .catch((error) => {
         console.error("Error fetching customer details:", error);
       });
-  }, [customerId , isEditing, reload]);
+  }, [customerId , isEditing, reload , customer]);
 
   if (notFound)
     {
       return <NotFoundPage message =  {"Customer Not Found"}/>;
     }
     
-    if (!customer) {
-      return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
+  if (!customer) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   // Calculate customer registration duration
   const registrationDate = new Date(customer.registration_date);
@@ -108,12 +144,37 @@ const CustomerProfile = ({ back }) => {
     setReload(!reload);
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    const token = localStorage.getItem("token");
+    fetchAPI(`/customer/${customerId}`, "DELETE", null, token)
+      .then((data) => {
+        if (data.error) {
+          console.error("Error deleting customer:", data.error);
+          return;
+        }
+        navigate("/home/customers");
+      })
+      .catch((error) => {
+        console.error("Error deleting customer:", error);
+      });
+  };
+
   return (
     <Routes>
       <Route
         path="/"
         element={
             <div className="bg-white m-0 rounded shadow-xl w-full h-screen flex flex-col overflow-hidden">
+              {/* Modals */}
+              <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteConfirm}
+              />
               <div className="relative h-[120px] bg-gradient-to-r from-green-300 to-blue-500 flex-shrink-0">
                 <button
                   onClick={back}
@@ -125,17 +186,25 @@ const CustomerProfile = ({ back }) => {
                 >
                   Back
                 </button>
-                {canEdit && 
-                    <button
-                  onClick={handleEditClick}
-                  className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 
-                  select-none appearance-none items-center 
-                  justify-center space-x-1 rounded border border-gray-200
-                   bg-white px-3 py-2 text-sm font-medium text-gray-800 transition 
-                   hover:border-gray-300 active:bg-white hover:bg-gray-100"
-                >
-                  <Pencil className="w-4 h-4 mr-1" /> Edit
-                </button> 
+                {canEditandDelete && 
+                    <>
+                      <button
+                        onClick={handleEditClick}
+                        className="absolute top-6 right-6 inline-flex w-auto cursor-pointer 
+                        select-none appearance-none items-center 
+                        justify-center space-x-1 rounded border border-gray-200
+                        bg-white px-3 py-2 text-sm font-medium text-gray-800 transition 
+                        hover:border-gray-300 active:bg-white hover:bg-gray-100"
+                      >
+                        <Pencil className="w-4 h-4 mr-1" /> Edit
+                      </button>
+                      <button
+                        onClick={handleDeleteClick}
+                        className="absolute top-6 right-[7rem] inline-flex items-center justify-center space-x-1 rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-white hover:bg-red-600 transition-colors shadow-sm"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" /> Delete
+                      </button>
+                    </>
                 }
 
               </div>
