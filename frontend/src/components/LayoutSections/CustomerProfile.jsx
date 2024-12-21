@@ -11,6 +11,7 @@ import { ContactTypes } from "../../utils/Enums";
 import EditCustomerForm from "../Forms/EditCustomerForm";
 import UserContext from "../../context/UserContext";
 import { EmployeeRoles } from "../../utils/Enums";
+import NotFoundPage from "../../pages/NotFoundPage";
 
 const AddedByProfile = ({ addedBy }) => {
   const navigate = useNavigate();
@@ -58,11 +59,17 @@ const CustomerProfile = ({ back }) => {
   const [isEditing, setIsEditing] = useState(false);
   const { employee:me } = useContext(UserContext);
   const [canEdit , setCanEdit] = useState(false);
+  const [notFound , setNotFound] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     fetchAPI(`/customer/${customerId}`, 'GET', null, token)
       .then((data) => {
+        if (data.error)
+          {
+            setNotFound(true);
+            return;
+          }
         console.log(data);
         setCustomer(data);
         setCanEdit(me.role === EmployeeRoles.Manager || me.id === customer.added_by.employee_id);
@@ -72,9 +79,14 @@ const CustomerProfile = ({ back }) => {
       });
   }, [customerId , isEditing]);
 
-  if (!customer) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
+  if (notFound)
+    {
+      return <NotFoundPage message =  {"Customer Not Found"}/>;
+    }
+    
+    if (!customer) {
+      return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    }
 
   // Calculate customer registration duration
   const registrationDate = new Date(customer.registration_date);

@@ -13,7 +13,8 @@ import NotificationsSection from "../components/LayoutSections/NotificationsSect
 import SettingsSection from "../components/LayoutSections/SettingsSection";
 import BusinessSection from "../components/LayoutSections/BusinessSection";
 import OverviewSection from "../components/LayoutSections/OverviewSection";
-
+import NotFoundPage from "./NotFoundPage";
+import TargetsSection from "../components/LayoutSections/TargetsSection";
 
 function Home() {
   const { isAuthenticated, employee } = useContext(UserContext);
@@ -28,8 +29,6 @@ function Home() {
   }, [isAuthenticated, Navigate]);
 
   if (!isAuthenticated) return null;
-
-
 
   return (
     <div className="flex h-screen">
@@ -51,9 +50,11 @@ function Home() {
             <Route path="/notifications" element={<NotificationsSection />} />
             <Route path="/settings" element={<SettingsSection />} />
             <Route path="/deals/*" element={<DealsSection />} />
+            <Route path="/targets/*" element={<TargetsSection />} />
             <Route path="/employees/*" element={<EmployeesSection />} />
             <Route path="/customers/*" element={<CustomersSection />} />
             <Route path="/" element={<OverviewSection />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </div>

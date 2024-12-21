@@ -27,6 +27,7 @@ import {
 } from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 
 const usersections = [
   {
@@ -46,6 +47,12 @@ const usersections = [
     icon: BusinessCenter,
     roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
     title: "Deals",
+  },
+  {
+    route: "/home/targets",
+    icon: TrackChangesIcon,
+    roles: [EmployeeRoles.Manager],
+    title: "Targets",
   },
   {
     route: "/home/records",
