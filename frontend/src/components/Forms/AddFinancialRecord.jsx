@@ -6,7 +6,7 @@ import fetchAPI from "../../utils/fetchAPI";
 import { PaymentMethods } from "../../utils/Enums";
 import { FinancialRecordTypes } from "../../utils/Enums";
 
-const AddFinancialRecord = ({ deal }) => {
+const AddFinancialRecord = ({ deal, onBack }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -41,7 +41,7 @@ const AddFinancialRecord = ({ deal }) => {
         token
       );
       toast.success("Financial record added successfully");
-      navigate(-1);
+      onBack();
     } catch (error) {
       console.error("Error adding financial record:", error);
       toast.error("Error adding financial record");

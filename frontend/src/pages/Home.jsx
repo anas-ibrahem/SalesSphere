@@ -14,6 +14,7 @@ import SettingsSection from "../components/LayoutSections/SettingsSection";
 import BusinessSection from "../components/LayoutSections/BusinessSection";
 import OverviewSection from "../components/LayoutSections/OverviewSection";
 
+
 function Home() {
   const { isAuthenticated, employee } = useContext(UserContext);
   const Navigate = useNavigate();
@@ -44,6 +45,7 @@ function Home() {
       >
         <div className="max-h-full overflow-y-auto ">
           <Routes>
+            <Route path="/dashboard" element={<DashBoardOverView />} />
             <Route path="/business" element={<BusinessSection />} />
             <Route path="/logs" element={<LogsSection />} />
             <Route path="/records" element={<RecordsSection />} />

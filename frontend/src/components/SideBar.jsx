@@ -18,6 +18,7 @@ import {
   BusinessCenter,
   Leaderboard,
   Logout,
+  Dashboard,
   NotificationAddRounded,
   NotificationImportant,
   Notifications,
@@ -37,37 +38,37 @@ const usersections = [
   {
     route: "/home/business",
     icon: Business,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Business Profile",
   },
   {
     route: "/home/deals",
     icon: BusinessCenter,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
     title: "Deals",
   },
   {
     route: "/home/records",
     icon: DollarSign,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager , EmployeeRoles.DealExecutor],
     title: "Financial Records",
   },
   {
     route: "/home/employees",
     icon: Users,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Employees",
   },
   {
     route: "/home/customers",
     icon: UsersRound,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.DealOpener , EmployeeRoles.Manager],
     title: "Customers",
   },
   {
     route: "/home/logs",
     icon: FileText,
-    roles: [EmployeeRoles.DealExecutor, EmployeeRoles.DealOpener],
+    roles: [EmployeeRoles.Manager],
     title: "Logs",
   },
 ];
@@ -148,7 +149,7 @@ export default function SideBar({ type = "user" }) {
       <ul className="flex-grow space-y-2 px-2">
         {(type == "admin" ? adminsections : usersections).map(
           (section, index) => {
-            //if (section.roles.length === 0 || section.roles.includes(EmployeeRoles.DealExecutor)) {
+            if (section.roles.length === 0 || section.roles.includes(employee.role)) {
             return (
               <li key={index}>
                 <Link
@@ -170,7 +171,7 @@ export default function SideBar({ type = "user" }) {
                 </Link>
               </li>
             );
-            //}
+            }
           }
         )}
       </ul>

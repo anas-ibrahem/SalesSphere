@@ -32,7 +32,7 @@ const AddCustomerForm = ({ onBack }) => {
       .then((data) => {
         console.log(data);
         toast.success("Customer added successfully");
-        navigate(-1);
+        onBack();
       })
       .catch((error) => {
         toast.error("An error occurred. Please try again.");
