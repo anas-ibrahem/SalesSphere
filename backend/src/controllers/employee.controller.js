@@ -20,7 +20,7 @@ class EmployeeController {
     }
 
     getById = async (req, res) => {
-        const emp = await this.employeeModel.getById(req.pool, req.params.id);
+        const emp = await this.employeeModel.getById(req.pool, req.params.id, req.businessId);
         res.json(emp);
     }
 
@@ -151,7 +151,7 @@ class EmployeeController {
 
     getSummary = async (req, res) => {
         const id = req.params.id;
-        const summary = await this.employeeModel.getSummary(req.pool, id);
+        const summary = await this.employeeModel.getSummary(req.pool, id, req.businessId);
         res.json(summary);
     }
 
@@ -179,7 +179,7 @@ class EmployeeController {
             return res.status(400).json({error: 'Employee ID is required'});
         }
 
-        const employee = await this.employeeModel.getById(req.pool, id);
+        const employee = await this.employeeModel.getById(req.pool, id, req.businessId);
 
         if(!employee.id) {
             return res.status(400).json({error: 'Employee not found'});
