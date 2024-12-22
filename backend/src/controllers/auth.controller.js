@@ -109,9 +109,6 @@ class AuthController {
         if(!empData.email || !empData.code || !empData.newPassword || !empData.confirmPassword) {
             return res.status(400).json({error: 'All fields are required'});
         }
-        if(empData.currentPassword.trim() === '' || empData.newPassword.trim() === '' || empData.confirmPassword.trim() === '' || empData.code.trim() === '') {
-            return res.status(400).json({error: 'All fields are required'});
-        }
 
         if(empData.newPassword !== empData.confirmPassword) {
             return res.status(400).json({error: 'Passwords do not match'});
