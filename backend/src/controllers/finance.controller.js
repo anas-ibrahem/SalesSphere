@@ -46,6 +46,11 @@ class FinanceController {
         if(financeData.amount === undefined || financeData.description === undefined || financeData.deal_id === undefined || financeData.type === undefined || financeData.payment_method === undefined) {
             return res.status(400).json({error: 'All data are required'});
         }
+
+        if(financeData.description.trim() === '') {
+            return res.status(400).json({error: 'description is required'});
+        }
+        
         if(financeData.amount <= 0) {
             return res.status(400).json({error: 'Amount must be greater than 0.'});
         }

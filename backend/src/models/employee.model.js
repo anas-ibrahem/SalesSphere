@@ -20,6 +20,10 @@ class EmployeeModel {
         this.business_id = business_id;
     }
 
+    setRole = (role) => {
+        this.role = role;
+    }
+
     getAll = async (pool, business_id) => {
         try {
             const result = await pool.query(`

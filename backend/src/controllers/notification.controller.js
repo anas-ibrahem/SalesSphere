@@ -10,8 +10,12 @@ class NotificationController {
 
     addNotification = async (req, res) => {
         const notificationData = req.body;
-        if(!notificationData.recipient || !notificationData.content || !notificationData.title || !notificationData.priority || !notificationData.type) {
+        if(notificationData.recipient === undefined || notificationData.content === undefined || notificationData.title === undefined || notificationData.priority === undefined || notificationData.type === undefined) {
             return res.status(400).json({error: 'All data are required'});
+        }
+
+        if(notificationData.content.trim() === '' || notificationData.title.trim() === '') {
+            return res.status(400).json({error: 'Title and content are required'});
         }
 
         const result = await this.noticationModel.addNotification(req.pool, notificationData);
