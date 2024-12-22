@@ -22,7 +22,7 @@ const AddTarget = ({ onBack }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetchAPI("/employee/summary/all", "GET", null, token)
+    fetchAPI("/employee/", "GET", null, token)
       .then((data) => {
         if (data.error) {
           toast.error("An error occurred. Please try again.");
