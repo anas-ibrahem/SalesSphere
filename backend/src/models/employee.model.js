@@ -367,15 +367,40 @@ class EmployeeModel {
 
     getAllSummary = async (pool, business_id) => {
         try {
-           // same as getSummary but for all employees
-              const result = await pool.query(`
-                 SELECT *
-                 FROM employee e
-                 LEFT JOIN employee_profile ep
-                 ON e.id = ep.employee_id
-                 WHERE e.business_id = $1;
-                `, [business_id]);
-    
+    const result = await pool.query(`
+        SELECT e.*, ep.*, 
+            COALESCE(open_deals.open_deals_count, 0) AS open_deals_count,
+            COALESCE(claimed_deals.claimed_deals_count, 0) AS claimed_deals_count,
+            COALESCE(closed_won_deals.closed_won_deals_count, 0) AS closed_won_deals_count,
+            COALESCE(closed_lost_deals.closed_lost_deals_count, 0) AS closed_lost_deals_count
+        FROM employee e
+        LEFT JOIN employee_profile ep ON e.id = ep.employee_id
+        LEFT JOIN (
+            SELECT deal_opener, CAST(COUNT(*) as INT) AS open_deals_count
+            FROM deal
+            WHERE status = 0
+            GROUP BY deal_opener
+        ) open_deals ON e.id = open_deals.deal_opener
+        LEFT JOIN (
+            SELECT deal_executor, CAST(COUNT(*) as INT) AS claimed_deals_count
+            FROM deal
+            WHERE status = 1
+            GROUP BY deal_executor
+        ) claimed_deals ON e.id = claimed_deals.deal_executor
+        LEFT JOIN (
+            SELECT deal_executor, CAST(COUNT(*) as INT) AS closed_won_deals_count
+            FROM deal
+            WHERE status = 2
+            GROUP BY deal_executor
+        ) closed_won_deals ON e.id = closed_won_deals.deal_executor
+        LEFT JOIN (
+            SELECT deal_executor, CAST(COUNT(*) as INT) AS closed_lost_deals_count
+            FROM deal
+            WHERE status = 3
+            GROUP BY deal_executor
+        ) closed_lost_deals ON e.id = closed_lost_deals.deal_executor
+        WHERE e.business_id = $1;
+    `, [business_id]);
                 const employees = result.rows.map(row => {
                  // clean up the result object
                  if(row['hashed_password']) {
@@ -385,20 +410,16 @@ class EmployeeModel {
                  if(row['employee_id']) {
                       delete row['employee_id'];
                  }
+
+                    row.deals = {
+                        open_deals_count: row.open_deals_count || 0,
+                        claimed_deals_count: row.claimed_deals_count || 0,
+                        closed_won_deals_count: row.closed_won_deals_count || 0,
+                        closed_lost_deals_count: row.closed_lost_deals_count || 0
+                    };
     
                  return row;
                 });
-    
-                for (let i = 0; i < employees.length; i++) {
-                 const employee = employees[i];
-                 const summary = await this.getSummary(pool, employee.id);
-                    employee.badges = summary.badges;
-                    employee.deals = summary.deals;
-                    employee.customers = summary.customers;
-                    employee.targets = summary.targets;
-
-                    employees[i] = employee;
-                }
 
                 return employees;
         }
