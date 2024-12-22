@@ -400,6 +400,12 @@ const OverviewSection = () => {
                 Top Employees
               </Typography>
 
+                <Tooltip title="This section shows the top employees based on their related succcesfully closed deals.">
+                <Typography variant="body2" color="text.secondary">
+                  (Hover for more info)
+                </Typography>
+                </Tooltip>
+
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />
                 <Box>
