@@ -157,7 +157,7 @@ export default function SideBar({ type = "user" }) {
       <ul className="flex-grow space-y-2 px-2">
         {(type == "admin" ? adminsections : usersections).map(
           (section, index) => {
-            if (section.roles.length === 0 || section.roles.includes(employee.role)) {
+            if (type == "admin" || section.roles.length === 0 || section.roles.includes(employee.role)) {
             return (
               <li key={index}>
                 <Link
