@@ -74,6 +74,11 @@ function DealDetails({ onBack = () => {} }) {
               Are you sure you want to delete this deal? This action cannot be
               undone.
             </strong>
+
+            <strong>
+              {" "}
+              Note that : Records will be deleted as well. As it's not a closed deal yet!
+            </strong>
           </p>
           <div className="flex justify-end space-x-3">
             <button
@@ -169,7 +174,7 @@ function DealDetails({ onBack = () => {} }) {
         return;
       }
       toast.success("Deal deleted successfully");
-      navigate("/home/deals");
+      onBack();
       setIsDeleteModalOpen(false);
     })
     .catch(() => toast.error("Error deleting deal"));

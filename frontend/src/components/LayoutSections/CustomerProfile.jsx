@@ -64,7 +64,7 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
             Are you sure you want to delete this customer? This action cannot be undone.
           </p>
           <p className="text-gray-700">
-            <strong>All associated data including deals and contacts will be permanently removed.</strong>
+            <strong>All associated data including deals will be permanently removed.</strong>
           </p>
         </div>
         <div className="flex justify-end gap-3">
@@ -150,13 +150,13 @@ const CustomerProfile = ({ back }) => {
     fetchAPI(`/customer/${customerId}`, "DELETE", null, token)
       .then((data) => {
         if (data.error) {
-          console.error("Error deleting customer:", data.error);
+          console.error("Error deleting customer", data.error);
           return;
         }
-        navigate("/home/customers");
+        back();
       })
       .catch((error) => {
-        console.error("Error deleting customer:", error);
+        console.error("Error deleting customer", error);
       });
   };
 
