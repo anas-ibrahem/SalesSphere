@@ -11,6 +11,7 @@ router.get('/', DealController.getAll);
 router.get('/claimed', DealController.getEmployeeClaimedDeals);
 router.get('/closed', DealController.getEmployeeClosedDeals);
 router.get('/open', DealController.getAllOpenDeals);
+router.get('/open/me', DealController.getEmployeeOpenDeals);
 router.get('/:id', DealController.getById);
 
 router.get('/employee/:id', DealController.getEmployeeDeals);

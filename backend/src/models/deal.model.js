@@ -143,7 +143,7 @@ class DealModel {
             JOIN customer c ON d.customer_id = c.id
             JOIN employee_profile e2 ON d.deal_opener = e2.employee_id
             LEFT JOIN employee_profile e ON d.deal_executor = e.employee_id
-            WHERE d.status = 1 AND d.deal_executor = $1
+            WHERE d.status = 1 AND (d.deal_executor = $1 OR d.deal_opener = $1)
             ` , [employeeId]);
             return result.rows;
         }
@@ -194,7 +194,7 @@ class DealModel {
             JOIN customer c ON d.customer_id = c.id
             JOIN employee_profile e2 ON d.deal_opener = e2.employee_id
             LEFT JOIN employee_profile e ON d.deal_executor = e.employee_id
-            WHERE (d.status = 2 OR d.status = 3) AND d.deal_executor = $1
+            WHERE (d.status = 2 OR d.status = 3) AND (d.deal_executor = $1 OR d.deal_opener = $1)
             ` , [employeeId]);
             return result.rows;
         }
