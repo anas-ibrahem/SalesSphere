@@ -77,6 +77,7 @@ class BusinessModel {
             const businessId = bresult.rows[0].id;
 
             this.business_manager.setBusinessId(businessId);
+            this.business_manager.setRole(2);
             
             const newEmp = await this.business_manager.register(pool);
 

@@ -41,18 +41,31 @@ class BusinessController {
             return res.status(400).json({error: 'Business: All fields are required'});
         }
 
+        if(businessData.name.trim() === '' || businessData.phone_number.trim() === '' || businessData.country.trim() === '' || businessData.industry.trim() === '') {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
         if(!businessData.business_logo_url || !businessData.managerid_card_url || !businessData.manager_personal_photo_url) {
             return res.status(400).json({error: 'Business: All files are required'});
+        }
+
+        if(businessData.business_logo_url.trim() === '' || businessData.managerid_card_url.trim() === '' || businessData.manager_personal_photo_url.trim() === '') {
+            return res.status(400).json({error: 'All files are required'});
         }
 
         if(!empData.email || !validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Employee: Email is required'});
         }
-        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date || !empData.role) {
+        
+        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.address || !empData.birth_date) {
             return res.status(400).json({error: 'Employee: All fields are required'});
         }
 
-        if(!empData.password) {
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '' || empData.birth_date.trim() === '') {
+            return res.status(400).json({error: 'Employee: All fields are required'});
+        }
+
+        if(!empData.password || empData.password.trim() === '') {
             return res.status(400).json({error: 'Password is required'});
         }
 
@@ -70,7 +83,7 @@ class BusinessController {
             const logData = {
                 business_id: result.businessId,
                 type: 0,
-                content: 'Business registered'
+                content: 'Business registered, Welcome to Sales Sphere!'
             }
             this.logsModel.add(req.pool, logData);
         }
@@ -82,6 +95,10 @@ class BusinessController {
         const businessData = req.body;
 
         if(!businessData.phone_number || !businessData.city || !businessData.street || !businessData.website_url || !businessData.business_logo_url) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(businessData.phone_number.trim() === '' || businessData.city.trim() === '' || businessData.street.trim() === '' || businessData.website_url.trim() === '' || businessData.business_logo_url.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 

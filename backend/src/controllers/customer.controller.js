@@ -35,7 +35,11 @@ class CustomerController {
             return res.status(400).json({error: 'Email is required'});
         }
 
-        if(!customerData.name || !customerData.phone_number || !customerData.type || !customerData.lead_source || !customerData.preferred_contact_method) {
+        if(customerData.name === undefined || customerData.phone_number === undefined || customerData.type === undefined || customerData.lead_source === undefined || customerData.preferred_contact_method === undefined) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(customerData.name.trim() === '' || customerData.email.trim() === '' || customerData.phone_number.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -103,7 +107,11 @@ class CustomerController {
             return res.status(400).json({error: 'Invalid email address'});
         }
 
-        if(!customerData.name || !customerData.phone_number || !customerData.type || !customerData.lead_source || !customerData.preferred_contact_method) {
+        if(customerData.name === undefined || customerData.phone_number === undefined || customerData.type === undefined || customerData.lead_source === undefined || customerData.preferred_contact_method === undefined) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(customerData.name.trim() === '' || customerData.email.trim() === '' || customerData.phone_number.trim() === ''|| customerData.lead_source.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
         
