@@ -64,8 +64,8 @@ class CustomerModel {
                 ON c.id = cw.customer_id AND cw.status = 2
                 LEFT JOIN deal cl
                 ON c.id = cl.customer_id AND cl.status = 3
-                WHERE c.id = $1
-                GROUP BY c.id and c.business_id = $2;
+                WHERE c.id = $1 and c.business_id = $2
+                GROUP BY c.id;
             `, [id, business_id]);
 
             if(result.rows.length === 0) {
