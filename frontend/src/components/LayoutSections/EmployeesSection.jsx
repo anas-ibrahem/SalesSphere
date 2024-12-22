@@ -29,13 +29,13 @@ const EmployeesSection = () => {
   const [loading, setLoading] = useState(true);
   const EmployeesPerPage = 4;
   const navigate = useNavigate();
+  const { employee: me } = useContext(UserContext);
+  const manager = me.role === EmployeeRoles.Manager;
 
-  // Fetch employees from API
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetchAPI("/employee/summary/all", "GET", null, token)
       .then((data) => {
-        console.log(data);
         setEmployees(data);
         setLoading(false);
       })
@@ -53,6 +53,45 @@ const EmployeesSection = () => {
     );
   };
 
+  const getSortOptions = (filterType) => {
+    if (!manager) {
+      return [
+        { value: "name", label: "Name" },
+        { value: "account_creation_date", label: "Creation Date" },
+      ];
+    }
+
+    const commonOptions = [
+      { value: "name", label: "Name" },
+      { value: "account_creation_date", label: "Creation Date" },
+    ];
+
+    switch (filterType) {
+      case "DealOpener":
+        return [
+          ...commonOptions,
+          { value: "open_deals_count", label: "Opened Deals" },
+        ];
+      case "DealExecutor":
+        return [
+          ...commonOptions,
+          { value: "claimed_deals", label: "Claimed Deals" },
+          { value: "closed_deals", label: "Closed Deals" },
+          { value: "closed_lost_deals_count", label: "Closed Lost Deals" },
+          { value: "closed_won_deals_count", label: "Closed Won Deals" },
+        ];
+      default:
+        return commonOptions;
+    }
+  };
+
+  useEffect(() => {
+    const validOptions = getSortOptions(filterType).map(option => option.value);
+    if (!validOptions.includes(sortField)) {
+      setSortField("account_creation_date");
+    }
+  }, [filterType, sortField]);
+
   function handleOnBack() {
     setSearchQuery("");
     setSortOrder("asc");
@@ -62,7 +101,7 @@ const EmployeesSection = () => {
     setReload(!reload);
     navigate(-1);
   }
-  // Filtering logic
+
   const filterEmployees = employees.filter((employee) => {
     const roleType = getRoleType(employee.role);
     return (
@@ -74,20 +113,28 @@ const EmployeesSection = () => {
     );
   });
 
-  // Sorting logic
   const sortedEmployees = [...filterEmployees].sort((a, b) => {
+    if (!manager) {
+      // Only allow sorting by name and creation date for non-managers
+      switch (sortField) {
+        case "account_creation_date":
+          const aDate = new Date(a.account_creation_date);
+          const bDate = new Date(b.account_creation_date);
+          return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+        case "name":
+          return sortOrder === "asc"
+            ? a.first_name.localeCompare(b.first_name)
+            : b.first_name.localeCompare(a.first_name);
+        default:
+          return 0;
+      }
+    }
+
     switch (sortField) {
       case "account_creation_date":
         const aDate = new Date(a.account_creation_date);
         const bDate = new Date(b.account_creation_date);
         return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-
-      case "total_customers":
-        const aCustomers = a.customers?.customers_count || 0;
-        const bCustomers = b.customers?.customers_count || 0;
-        return sortOrder === "asc"
-          ? aCustomers - bCustomers
-          : bCustomers - aCustomers;
 
       case "closed_deals":
         const aClosedDeals = a.deals?.closed_won_deals_count || 0;
@@ -97,8 +144,8 @@ const EmployeesSection = () => {
           : bClosedDeals - aClosedDeals;
 
       case "claimed_deals":
-        const aClaimedDeals = a.deals?.claimed_deals_count || 0;
-        const bClaimedDeals = b.deals?.claimed_deals_count || 0;
+        const aClaimedDeals = a.claimed_deals_count || 0;
+        const bClaimedDeals = b.claimed_deals_count || 0;
         return sortOrder === "asc"
           ? aClaimedDeals - bClaimedDeals
           : bClaimedDeals - aClaimedDeals;
@@ -134,7 +181,6 @@ const EmployeesSection = () => {
     }
   });
 
-  // Pagination logic
   const indexOfLastEmployee = currentPage * EmployeesPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - EmployeesPerPage;
   const currentEmployees = sortedEmployees.slice(
@@ -142,8 +188,6 @@ const EmployeesSection = () => {
     indexOfLastEmployee
   );
   const totalPages = Math.ceil(sortedEmployees.length / EmployeesPerPage);
-  const { employee: me } = useContext(UserContext);
-  const manager = me.role === EmployeeRoles.Manager;
 
   return (
     <Routes>
@@ -153,7 +197,6 @@ const EmployeesSection = () => {
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">Business' Employees</h1>
-
               {manager && (
                 <div className="flex space-x-2">
                   <button
@@ -167,12 +210,15 @@ const EmployeesSection = () => {
               )}
             </div>
 
-            {/* Filter and Sort Controls */}
             <div className="flex justify-between mb-4">
               <div className="flex space-x-4">
-                {/* Role Filter */}
                 <select
-                  onChange={(e) => setFilterType(e.target.value)}
+                  onChange={(e) => {
+                    setFilterType(e.target.value);
+                    // Reset sort field when changing filter type
+                    setSortField("account_creation_date");
+                  }}
+                  value={filterType}
                   className="p-2 border rounded"
                 >
                   <option value="All">All Types</option>
@@ -183,49 +229,37 @@ const EmployeesSection = () => {
                   ))}
                 </select>
 
-                {/* Sort Field */}
                 <select
                   onChange={(e) => setSortField(e.target.value)}
+                  value={sortField}
                   className="p-2 border rounded"
                 >
-                  <option value="account_creation_date">Creation Date</option>
-                  <option value="name">Name</option>
-                  {filterType === "DealOpener" && (
-                    <>
-                      <option value="total_customers">Total Customers</option>
-                      <option value="open_deals_count">Open Deals</option>
-                    </>
-                  )}
-                  {filterType === "DealExecutor" && (
-                    <option value="claimed_deals">Claimed Deals</option>
-                  )}
-                  <option value="closed_deals">Closed Deals</option>
-                  <option value="closed_lost_deals_count">
-                    Closed Lost Deals
-                  </option>
-                  <option value="closed_won_deals_count">
-                    Closed Won Deals
-                  </option>
+                  {getSortOptions(filterType).map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
+
                 <select
                   onChange={(e) => setSortOrder(e.target.value)}
+                  value={sortOrder}
                   className="p-2 border rounded"
                 >
                   <option value="asc">Ascending</option>
                   <option value="desc">Descending</option>
                 </select>
 
-                {/* Search Input */}
                 <input
                   type="text"
                   placeholder="Search employees..."
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchQuery}
                   className="p-2 border rounded flex-grow"
                 />
               </div>
             </div>
 
-            {/* Employees Table */}
             <div className="flex-grow overflow-y-auto">
               <Card>
                 <List>
@@ -281,54 +315,46 @@ const EmployeesSection = () => {
                                   getRoleType(employee.role).slice(4)}
                             </p>
                           </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            {getRoleType(employee.role) === "DealOpener" && (
-                              <p className="mr-28">
-                                Total Customers:{" "}
-                                {employee.customers?.customers_count || 0}
-                              </p>
-                            )}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            {getRoleType(employee.role) === "DealExecutor" && (
-                              <p className="mr-28">
-                                Claimed Deals:{" "}
-                                {employee.deals?.claimed_deals_count || 0}
-                              </p>
-                            )}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            {getRoleType(employee.role) !== "Manager" && (
-                              <p>
-                                Deals:
-                                {getRoleType(employee.role) ===
-                                  "DealOpener" && (
-                                  <span>
-                                    {" "}
-                                    Open:{" "}
-                                    {employee.deals?.open_deals_count || 0} ,
-                                  </span>
+                          {manager && (
+                            <>
+                              <Typography
+                                variant="small"
+                                color="gray"
+                                className="font-normal flex justify-between"
+                              >
+                                {getRoleType(employee.role) === "DealExecutor" && (
+                                  <p className="mr-28">
+                                    Claimed Deals:{" "}
+                                    {employee?.claimed_deals_count || 0}
+                                  </p>
                                 )}
-                                <span> </span>
-                                Closed Won:{" "}
-                                {employee.deals?.closed_won_deals_count || 0} ,
-                                Closed Lost:{" "}
-                                {employee.deals?.closed_lost_deals_count || 0}
-                              </p>
-                            )}
-                          </Typography>
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                color="gray"
+                                className="font-normal flex justify-between"
+                              >
+                                {getRoleType(employee.role) !== "Manager" && (
+                                  <p>
+                                    Deals:
+                                    {getRoleType(employee.role) === "DealOpener" && (
+                                      <span>
+                                        {" "}
+                                        Opened: {employee?.open_deals_count || 0} 
+                                      </span>
+                                    )}
+                                    <span> </span>
+                                    {getRoleType(employee.role) === "DealExecutor" && (
+                                      <>
+                                        Closed Won: {employee?.closed_won_deals_count || 0} ,
+                                        Closed Lost: {employee?.closed_lost_deals_count || 0}
+                                      </>
+                                    )}    
+                                  </p>
+                                )}
+                              </Typography>
+                            </>
+                          )}
                         </div>
                       </ListItem>
                     ))
@@ -337,7 +363,6 @@ const EmployeesSection = () => {
               </Card>
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
