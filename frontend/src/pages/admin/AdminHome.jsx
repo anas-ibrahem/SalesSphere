@@ -38,15 +38,9 @@ function AdminHome() {
       {/* Main content area on the right */}
       <div
         className={`
-        flex flex-col flex-grow 
-        duration-300 
-      `}
-        style={{
-          backgroundColor: "#f5f5f5",
-          width: isSidebarCollapsed
-            ? "calc(100% - 60px)"
-            : "calc(100% - 250px)",
-        }}
+          flex flex-col flex-grow 
+          duration-300 
+        `}
       >
         <div className="max-h-full overflow-y-auto p-3">
           <h1>Welcome, Amr</h1>
