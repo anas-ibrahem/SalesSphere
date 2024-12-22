@@ -181,7 +181,7 @@ const BusinessSection = function () {
                         Number Of Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {businessSummary.openers + businessSummary.executors}
+                        {businessSummary.openers - businessSummary.executors}
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
@@ -275,26 +275,26 @@ const BusinessSection = function () {
                     </div>
                     <div
                       className={`p-4 rounded-lg ${
-                        businessSummary.income + businessSummary.expenses > 0
+                        businessSummary.income - businessSummary.expenses > 0
                           ? "bg-green-50"
-                          : businessSummary.income + businessSummary.expenses < 0
+                          : businessSummary.income - businessSummary.expenses < 0
                           ? "bg-red-50"
                           : "bg-gray-50"
                       } col-span-2`}
                     >
                       <div className="flex items-center mb-2">
-                        {businessSummary.income + businessSummary.expenses > 0 ? (
+                        {businessSummary.income - businessSummary.expenses > 0 ? (
                           <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
-                        ) : businessSummary.income + businessSummary.expenses < 0 ? (
+                        ) : businessSummary.income - businessSummary.expenses < 0 ? (
                           <TrendingDown className="w-5 h-5 text-red-600 mr-2" />
                         ) : (
                           <Minus className="w-5 h-5 text-gray-600 mr-2" />
                         )}
                         <span
                           className={`font-medium ${
-                            businessSummary.income + businessSummary.expenses > 0
+                            businessSummary.income - businessSummary.expenses > 0
                               ? "text-green-600"
-                              : businessSummary.income + businessSummary.expenses < 0
+                              : businessSummary.income - businessSummary.expenses < 0
                               ? "text-red-600"
                               : "text-gray-600"
                           }`}
@@ -304,23 +304,23 @@ const BusinessSection = function () {
                       </div>
                       <p
                         className={`text-md font-bold ${
-                          businessSummary.income + businessSummary.expenses > 0
+                          businessSummary.income - businessSummary.expenses > 0
                             ? "text-green-600"
-                            : businessSummary.income + businessSummary.expenses < 0
+                            : businessSummary.income - businessSummary.expenses < 0
                             ? "text-red-600"
                             : "text-gray-600"
                         }`}
                       >
-                        {businessSummary.income + businessSummary.expenses > 0
+                        {businessSummary.income - businessSummary.expenses > 0
                           ? `+$${(
-                              businessSummary.income + businessSummary.expenses
+                              businessSummary.income - businessSummary.expenses
                             ).toLocaleString()}`
-                          : businessSummary.income + businessSummary.expenses < 0
+                          : businessSummary.income - businessSummary.expenses < 0
                           ? `-$${(-(
-                              businessSummary.income + businessSummary.expenses
+                              businessSummary.income - businessSummary.expenses
                             )).toLocaleString()}`
                           : `$${(
-                              businessSummary.income + businessSummary.expenses
+                              businessSummary.income - businessSummary.expenses
                             ).toLocaleString()}`}
                       </p>
                     </div>
