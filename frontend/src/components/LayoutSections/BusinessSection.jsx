@@ -181,7 +181,7 @@ const BusinessSection = function () {
                         Number Of Employees
                       </p>
                       <p className="text-lg font-bold">
-                        {businessSummary.openers - businessSummary.executors}
+                        {businessSummary.openers + businessSummary.executors}
                       </p>
                     </div>
                     <div className="bg-gray-100 p-3 rounded-lg">
