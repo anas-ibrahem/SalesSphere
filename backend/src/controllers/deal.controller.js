@@ -17,7 +17,7 @@ class DealController {
         this.notificationModel = new NotificationModel();
     }
     getAll = async (req, res) => {
-        const emp = await this.employeeModel.getById(req.pool, req.employeeId);
+        const emp = await this.employeeModel.getById(req.pool, req.employeeId, req.businessId);
 
         if(emp.role === 2) { // manager
             const deals = await this.dealModel.getAll(req.pool, req.businessId);

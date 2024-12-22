@@ -20,7 +20,7 @@ class EmployeeController {
     }
 
     getById = async (req, res) => {
-        const emp = await this.employeeModel.getById(req.pool, req.params.id);
+        const emp = await this.employeeModel.getById(req.pool, req.params.id, req.businessId);
         res.json(emp);
     }
 
@@ -92,11 +92,11 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
-        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '') {
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -121,11 +121,11 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
-        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '') {
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -151,7 +151,7 @@ class EmployeeController {
 
     getSummary = async (req, res) => {
         const id = req.params.id;
-        const summary = await this.employeeModel.getSummary(req.pool, id);
+        const summary = await this.employeeModel.getSummary(req.pool, id, req.businessId);
         res.json(summary);
     }
 
@@ -179,7 +179,7 @@ class EmployeeController {
             return res.status(400).json({error: 'Employee ID is required'});
         }
 
-        const employee = await this.employeeModel.getById(req.pool, id);
+        const employee = await this.employeeModel.getById(req.pool, id, req.businessId);
 
         if(!employee.id) {
             return res.status(400).json({error: 'Employee not found'});

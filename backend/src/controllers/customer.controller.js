@@ -24,7 +24,7 @@ class CustomerController {
     }
 
     getById = async (req, res) => {
-        const emp = await this.customerModel.getById(req.pool, req.params.id);
+        const emp = await this.customerModel.getById(req.pool, req.params.id, req.businessId);
         res.json(emp);
     }
 
