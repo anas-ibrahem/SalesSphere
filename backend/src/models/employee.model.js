@@ -378,7 +378,6 @@ class EmployeeModel {
         LEFT JOIN (
             SELECT deal_opener, CAST(COUNT(*) as INT) AS open_deals_count
             FROM deal
-            WHERE status = 0
             GROUP BY deal_opener
         ) open_deals ON e.id = open_deals.deal_opener
         LEFT JOIN (
