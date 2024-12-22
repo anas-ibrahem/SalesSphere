@@ -13,7 +13,7 @@ class AuthController {
     login = async (req, res) => {
         const empData = req.body;
 
-        if(!empData.email || !empData.password) {
+        if(!empData.email || !empData.password || empData.email.trim() === '' || adminData.password.trim() === '') {
             return res.status(400).json({error: 'Email and password are required'});
         }
 
@@ -35,7 +35,7 @@ class AuthController {
 
     changePassword = async (req, res) => {
         const empData = req.body;
-        if(!empData.currentPassword || !empData.newPassword || !empData.confirmPassword) {
+        if(!empData.currentPassword || !empData.newPassword || !empData.confirmPassword || empData.currentPassword.trim() === '' || empData.newPassword.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -90,7 +90,7 @@ class AuthController {
 
     forgotPassword = async (req, res) => {
         const empData = req.body;
-        if(!empData.email) {
+        if(!empData.email|| empData.email.trim() === '') {
             return res.status(400).json({error: 'Email is required'});
         }
 
@@ -107,6 +107,9 @@ class AuthController {
     resetPassword = async (req, res) => {
         const empData = req.body;
         if(!empData.email || !empData.code || !empData.newPassword || !empData.confirmPassword) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+        if(empData.currentPassword.trim() === '' || empData.newPassword.trim() === '' || empData.confirmPassword.trim() === '' || empData.code.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 

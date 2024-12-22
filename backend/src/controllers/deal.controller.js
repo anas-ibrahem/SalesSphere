@@ -66,8 +66,12 @@ class DealController {
             return res.status(400).json({error: 'Customer ID is required'});
         }
 
-        if(!dealData.title || !dealData.due_date || !dealData.expenses || !dealData.customer_budget) {
+        if(dealData.title === undefined || dealData.due_date === undefined || dealData.expenses === undefined || dealData.customer_budget === undefined || dealData.description === undefined) {
             return res.status(400).json({error: 'Deal title, due_date, expenses and customer_budget are required'});
+        }
+
+        if(dealData.title.trim() === '' || dealData.due_date.trim() === '' || dealData.description.trim() === '') {
+            return res.status(400).json({error: 'Deal title and due_date are required'});
         }
 
         const result = await this.dealModel.add(req.pool, dealData, req.employeeId);
@@ -109,7 +113,7 @@ class DealController {
 
     claim = async (req, res) => {
         const dealData = req.body;
-        if(!dealData.id) {
+        if(dealData.id === undefined) {
             return res.status(400).json({error: 'Deal ID is required'});
         }
 
@@ -140,11 +144,11 @@ class DealController {
 
     close = async (req, res) => {
         const dealData = req.body;
-        if(!dealData.id) {
+        if(dealData.id === undefined) {
             return res.status(400).json({error: 'Deal ID is required'});
         }
 
-        if(!dealData.status) {
+        if(dealData.status === undefined) {
             return res.status(400).json({error: 'Deal status is required'});
         }
 
@@ -199,6 +203,10 @@ class DealController {
         if(dealData.title == undefined || dealData.description == undefined || dealData.due_date == undefined || dealData.expenses == undefined || dealData.customer_budget == undefined) {
             return res.status(400).json({error: 'Deal title, description, due_date, expenses and customer_budget are required'});
         }
+        
+        if(dealData.title.trim() === '' || dealData.due_date.trim() === '' || dealData.description.trim() === '') {
+            return res.status(400).json({error: 'Deal title and due_date are required'});
+        }
 
         const result = await this.dealModel.update(req.pool, dealData);
         if(result.error) {
@@ -219,13 +227,13 @@ class DealController {
 
     delete = async (req, res) => {
         const deal_id = req.params.id;
-        if(!deal_id) {
+        if(deal_id === undefined) {
             return res.status(400).json({error: 'Deal ID is required'});
         }
 
         const deal = await this.dealModel.getById(req.pool, deal_id);
 
-        if(!deal.id) {
+        if(deal.id === undefined) {
             return res.status(400).json({error: 'Deal not found'});
         }
 

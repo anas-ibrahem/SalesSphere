@@ -76,6 +76,10 @@ class TargetController {
             return res.status(400).json({error: 'All data are required'});
         }
 
+        if(targetData.description.trim() === '') {
+            return res.status(400).json({error: 'Description is required'});
+        }
+
         const result = await this.targetModel.add(req.pool, targetData);
         if(!result.error) {
             const logData = {
@@ -103,6 +107,10 @@ class TargetController {
         
         if(targetData.type === undefined || targetData.goal === undefined || targetData.deadline === undefined || targetData.description === undefined || targetData.employee_ids === undefined || targetData.start_date === undefined) {
             return res.status(400).json({error: 'All data are required'});
+        }
+
+        if(targetData.description.trim() === '') {
+            return res.status(400).json({error: 'Description is required'});
         }
 
         if(targetData.employee_ids.length === 0) {
@@ -140,6 +148,10 @@ class TargetController {
         }
         if(targetData.type === undefined || targetData.goal === undefined || targetData.deadline === undefined || targetData.description === undefined || targetData.employee_id === undefined || targetData.start_date === undefined) {
             return res.status(400).json({error: 'All data are required'});
+        }
+
+        if(targetData.description.trim() === '') {
+            return res.status(400).json({error: 'Description is required'});
         }
 
         const result = await this.targetModel.edit(req.pool, targetData);

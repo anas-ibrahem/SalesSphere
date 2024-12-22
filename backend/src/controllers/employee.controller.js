@@ -27,16 +27,20 @@ class EmployeeController {
     register = async (req, res) => {
         const empData = req.body;
 
-        if(!empData.email || !validator.isEmail(empData.email)) {
+        if(empData.email === undefined || !validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Email is required'});
         }
 
-        if(!empData.first_name || !empData.last_name || !empData.phone_number || !empData.hire_date || !empData.birth_date || !empData.role) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.phone_number === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
-        if(!empData.password) {
+        if(empData.password === undefined) {
             return res.status(400).json({error: 'Password is required'});
+        }
+
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '' || empData.password.trim() === '') {
+            return res.status(400).json({error: 'All fields are required'});
         }
 
         empData.hashed_password = await bcypt.hash(empData.password, 10);
@@ -88,7 +92,11 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(!empData.first_name || !empData.last_name || !empData.email || !empData.phone_number || !empData.address) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -114,6 +122,10 @@ class EmployeeController {
             return res.status(400).json({error: 'Invalid email address'});
         }
         if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
+            return res.status(400).json({error: 'All fields are required'});
+        }
+
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
@@ -163,7 +175,7 @@ class EmployeeController {
 
     deleteEmployee = async (req, res) => {
         const id = req.params.id;
-        if(!id) {
+        if(id === undefined) {
             return res.status(400).json({error: 'Employee ID is required'});
         }
 

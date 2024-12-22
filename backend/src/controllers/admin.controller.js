@@ -75,12 +75,12 @@ class AdminController {
             return res.status(400).json({error: 'Invalid admin data'});
         }
 
-        if(!adminData.username) {
+        if(adminData.username === undefined || adminData.username.trim() === '') {
             return res.status(400).
             json({error: 'Username is required'});
         }
 
-        if(!adminData.email || !adminData.password) {
+        if(!adminData.email || !adminData.password || adminData.email.trim() === '' || adminData.password.trim() === '') {
             return res.status(400).json({error: 'Email and password are required'});
         }
 
@@ -104,7 +104,7 @@ class AdminController {
             return res.status(400).json({error: 'Invalid admin data'});
         }
 
-        if(!adminData.email) {
+        if(adminData.email === undefined || adminData.email.trim() === '') {
             return res.status(400).json({error: 'Email is required'});
         }
 
