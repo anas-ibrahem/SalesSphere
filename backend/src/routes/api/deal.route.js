@@ -13,6 +13,11 @@ router.get('/closed', DealController.getEmployeeClosedDeals);
 router.get('/open', DealController.getAllOpenDeals);
 router.get('/:id', DealController.getById);
 
+
+router.get('/open/saleh', DealController.getSalehOpenDeals);
+router.get('/claimed/saleh', DealController.getSalehClaimedDeals);
+router.get('/closed/saleh', DealController.getSalehClosedDeals);
+
 router.get('/employee/:id', DealController.getEmployeeDeals);
 router.get('/customer/:id', DealController.getCustomerDeals);
 

@@ -59,6 +59,22 @@ class DealController {
     }
 
 
+    getSalehOpenDeals = async (req, res) => {
+        const deals = await this.dealModel.getSalehOpenDeals(req.pool, req.employeeId);
+        res.json(deals);
+    }
+
+    getSalehClaimedDeals = async (req, res) => {
+        const deals = await this.dealModel.getSalehClaimedDeals(req.pool, req.employeeId);
+        res.json(deals);
+    }
+
+    getSalehClosedDeals = async (req, res) => {
+        const deals = await this.dealModel.getSalehClosedDeals(req.pool, req.employeeId);
+        res.json(deals);
+    }
+
+
 
     add = async (req, res) => {
         const dealData = req.body;
