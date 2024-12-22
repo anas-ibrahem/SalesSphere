@@ -410,13 +410,6 @@ class EmployeeModel {
                       delete row['employee_id'];
                  }
 
-                    row.deals = {
-                        open_deals_count: row.open_deals_count || 0,
-                        claimed_deals_count: row.claimed_deals_count || 0,
-                        closed_won_deals_count: row.closed_won_deals_count || 0,
-                        closed_lost_deals_count: row.closed_lost_deals_count || 0
-                    };
-    
                  return row;
                 });
 
