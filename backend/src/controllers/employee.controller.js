@@ -121,11 +121,11 @@ class EmployeeController {
         if(!validator.isEmail(empData.email)) {
             return res.status(400).json({error: 'Invalid email address'});
         }
-        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.address === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
+        if(empData.first_name === undefined || empData.last_name === undefined || empData.email === undefined || empData.phone_number === undefined || empData.hire_date === undefined || empData.birth_date === undefined || empData.role === undefined) {
             return res.status(400).json({error: 'All fields are required'});
         }
 
-        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.address.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '') {
+        if(empData.first_name.trim() === '' || empData.last_name.trim() === '' || empData.email.trim() === '' || empData.phone_number.trim() === '' || empData.hire_date.trim() === '' || empData.birth_date.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 
