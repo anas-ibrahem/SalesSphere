@@ -24,6 +24,7 @@ import {
   Notifications,
   Person2,
   Settings,
+  SupervisorAccount,
 } from "@mui/icons-material";
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
@@ -68,7 +69,7 @@ const usersections = [
   },
   {
     route: "/home/customers",
-    icon: UsersRound,
+    icon: SupervisorAccount,
     roles: [EmployeeRoles.Manager , EmployeeRoles.DealOpener , EmployeeRoles.DealExecutor],
     title: "Customers",
   },
