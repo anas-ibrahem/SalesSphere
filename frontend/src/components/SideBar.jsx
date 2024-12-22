@@ -224,7 +224,7 @@ export default function SideBar({ type = "user" }) {
         )}
 
         <Link
-          to="/logout"
+          to={type == "admin" ? "/admin/logout" : "/logout"}
           className="flex items-center py-2 px-4 rounded w-full text-left"
         >
           <Logout className="hover:text-gray-300" />
