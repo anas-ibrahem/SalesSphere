@@ -28,7 +28,7 @@ const LogsSection = () => {
   const [filterType, setFilterType] = useState(-1);
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
-  const LogsPerPage = 10;
+  const LogsPerPage = 20;
 
 
   // Fetch logs from API
