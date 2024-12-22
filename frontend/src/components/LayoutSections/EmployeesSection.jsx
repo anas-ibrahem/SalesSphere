@@ -54,6 +54,13 @@ const EmployeesSection = () => {
   };
 
   const getSortOptions = (filterType) => {
+    if (!manager) {
+      return [
+        { value: "name", label: "Name" },
+        { value: "account_creation_date", label: "Creation Date" },
+      ];
+    }
+
     const commonOptions = [
       { value: "name", label: "Name" },
       { value: "account_creation_date", label: "Creation Date" },
@@ -68,6 +75,7 @@ const EmployeesSection = () => {
       case "DealExecutor":
         return [
           ...commonOptions,
+          { value: "claimed_deals", label: "Claimed Deals" },
           { value: "closed_deals", label: "Closed Deals" },
           { value: "closed_lost_deals_count", label: "Closed Lost Deals" },
           { value: "closed_won_deals_count", label: "Closed Won Deals" },
@@ -106,6 +114,22 @@ const EmployeesSection = () => {
   });
 
   const sortedEmployees = [...filterEmployees].sort((a, b) => {
+    if (!manager) {
+      // Only allow sorting by name and creation date for non-managers
+      switch (sortField) {
+        case "account_creation_date":
+          const aDate = new Date(a.account_creation_date);
+          const bDate = new Date(b.account_creation_date);
+          return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+        case "name":
+          return sortOrder === "asc"
+            ? a.first_name.localeCompare(b.first_name)
+            : b.first_name.localeCompare(a.first_name);
+        default:
+          return 0;
+      }
+    }
+
     switch (sortField) {
       case "account_creation_date":
         const aDate = new Date(a.account_creation_date);
@@ -120,8 +144,8 @@ const EmployeesSection = () => {
           : bClosedDeals - aClosedDeals;
 
       case "claimed_deals":
-        const aClaimedDeals = a.deals?.claimed_deals_count || 0;
-        const bClaimedDeals = b.deals?.claimed_deals_count || 0;
+        const aClaimedDeals = a.claimed_deals_count || 0;
+        const bClaimedDeals = b.claimed_deals_count || 0;
         return sortOrder === "asc"
           ? aClaimedDeals - bClaimedDeals
           : bClaimedDeals - aClaimedDeals;
@@ -189,7 +213,11 @@ const EmployeesSection = () => {
             <div className="flex justify-between mb-4">
               <div className="flex space-x-4">
                 <select
-                  onChange={(e) => setFilterType(e.target.value)}
+                  onChange={(e) => {
+                    setFilterType(e.target.value);
+                    // Reset sort field when changing filter type
+                    setSortField("account_creation_date");
+                  }}
                   value={filterType}
                   className="p-2 border rounded"
                 >
@@ -287,49 +315,46 @@ const EmployeesSection = () => {
                                   getRoleType(employee.role).slice(4)}
                             </p>
                           </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            {getRoleType(employee.role) === "DealExecutor" && (
-                              <p className="mr-28">
-                                Claimed Deals:{" "}
-                                {employee?.claimed_deals_count || 0}
-                              </p>
-                            )}
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            color="gray"
-                            className="font-normal flex justify-between"
-                          >
-                            {getRoleType(employee.role) !== "Manager" && (
-                              <p>
-                                Deals:
-                                {getRoleType(employee.role) === "DealOpener" && (
-                                  <span>
-                                    {" "}
-                                    Opened: {employee?.open_deals_count || 0} 
-                                  </span>
-                                )}
-                                <span> </span>
+                          {manager && (
+                            <>
+                              <Typography
+                                variant="small"
+                                color="gray"
+                                className="font-normal flex justify-between"
+                              >
                                 {getRoleType(employee.role) === "DealExecutor" && (
-                                  <>
-                                    Closed Won: {employee?.closed_won_deals_count || 0} ,
-                                    Closed Lost: {employee?.closed_lost_deals_count || 0}
-                                  </>
-                                )}    
-                              </p>
-                            )}
-                          </Typography>
+                                  <p className="mr-28">
+                                    Claimed Deals:{" "}
+                                    {employee?.claimed_deals_count || 0}
+                                  </p>
+                                )}
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                color="gray"
+                                className="font-normal flex justify-between"
+                              >
+                                {getRoleType(employee.role) !== "Manager" && (
+                                  <p>
+                                    Deals:
+                                    {getRoleType(employee.role) === "DealOpener" && (
+                                      <span>
+                                        {" "}
+                                        Opened: {employee?.open_deals_count || 0} 
+                                      </span>
+                                    )}
+                                    <span> </span>
+                                    {getRoleType(employee.role) === "DealExecutor" && (
+                                      <>
+                                        Closed Won: {employee?.closed_won_deals_count || 0} ,
+                                        Closed Lost: {employee?.closed_lost_deals_count || 0}
+                                      </>
+                                    )}    
+                                  </p>
+                                )}
+                              </Typography>
+                            </>
+                          )}
                         </div>
                       </ListItem>
                     ))
