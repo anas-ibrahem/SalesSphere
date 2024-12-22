@@ -574,8 +574,8 @@ class EmployeeModel {
             await pool.query(`
                 UPDATE deal
                 SET status = 0, deal_executor = NULL
-                WHERE deal_executor = $1 AND status = 1;
-            `, [employee_id]);
+                WHERE deal_executor is NULL AND status = 1;
+            `);
 
             await pool.query('COMMIT');
             return {success: true};
