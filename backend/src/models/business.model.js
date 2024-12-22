@@ -169,13 +169,13 @@ class BusinessModel {
 
 
             const income = await pool.query(`
-                SELECT SUM(fr.amount) as total
+                SELECT COALESCE(SUM(fr.amount), 0) as total
                 FROM financial_record fr
                 WHERE fr.business_id = $1 AND fr.type = 1;
             `, [businessId]);
 
             const expenses = await pool.query(`
-                SELECT SUM(fr.amount) as total
+                SELECT COALESCE(SUM(fr.amount), 0) as total
                 FROM financial_record fr
                 WHERE fr.business_id = $1 AND fr.type = 0;
             `, [businessId]);
