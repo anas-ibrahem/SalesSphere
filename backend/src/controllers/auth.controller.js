@@ -13,7 +13,7 @@ class AuthController {
     login = async (req, res) => {
         const empData = req.body;
 
-        if(!empData.email || !empData.password || empData.email.trim() === '' || adminData.password.trim() === '') {
+        if(!empData.email || !empData.password || empData.email.trim() === '' || empData.password.trim() === '') {
             return res.status(400).json({error: 'Email and password are required'});
         }
 
