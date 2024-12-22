@@ -313,21 +313,21 @@ class EmployeeModel {
             const claimed_deals_result = await pool.query(`
                 SELECT CAST(COUNT(cd.id) AS INT) as claimed_deals_count
                 FROM deal cd
-                WHERE cd.deal_executor = $1 AND cd.status = 1;
+                WHERE (cd.deal_executor = $1 or od.deal_opener = $1) AND cd.status = 1;
             `, [employee_id]);
 
             const closed_won_deals_result = await pool.query(`
                 SELECT 
                     CAST(COUNT(cw.id) AS INT) as closed_won_deals_count
                 FROM deal cw
-                WHERE cw.deal_executor = $1 AND cw.status = 2;
+                WHERE (cd.deal_executor = $1 or od.deal_opener = $1) AND cw.status = 2;
             `, [employee_id]);
 
             const closed_lost_deals_result = await pool.query(`
                 SELECT 
                     CAST(COUNT(cl.id) AS INT) as closed_lost_deals_count
                 FROM deal cl
-                WHERE cl.deal_executor = $1 AND cl.status = 3;
+                WHERE (cd.deal_executor = $1 or od.deal_opener = $1) AND cl.status = 3;
             `, [employee_id]);
 
             const deals_result = {
@@ -378,7 +378,6 @@ class EmployeeModel {
         LEFT JOIN (
             SELECT deal_opener, CAST(COUNT(*) as INT) AS open_deals_count
             FROM deal
-            WHERE status = 0
             GROUP BY deal_opener
         ) open_deals ON e.id = open_deals.deal_opener
         LEFT JOIN (
@@ -411,13 +410,6 @@ class EmployeeModel {
                       delete row['employee_id'];
                  }
 
-                    row.deals = {
-                        open_deals_count: row.open_deals_count || 0,
-                        claimed_deals_count: row.claimed_deals_count || 0,
-                        closed_won_deals_count: row.closed_won_deals_count || 0,
-                        closed_lost_deals_count: row.closed_lost_deals_count || 0
-                    };
-    
                  return row;
                 });
 

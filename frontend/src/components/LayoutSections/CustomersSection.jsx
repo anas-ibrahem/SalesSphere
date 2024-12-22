@@ -139,9 +139,7 @@ const CustomersSection = () => {
           <section className="bg-white p-6 shadow-md h-screen flex flex-col max-h-screen overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold mb-4">
-                {me.role !== EmployeeRoles.Manager && <span>Your </span>}
-                {me.role === EmployeeRoles.Manager && <span>Business' </span>}
-                Customers
+                Business' Customers
               </h1>
 
               {canAddCustomer && (

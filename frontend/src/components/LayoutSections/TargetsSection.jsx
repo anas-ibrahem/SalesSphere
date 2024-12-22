@@ -171,7 +171,13 @@ function TargetsSection() {
         element={
           <section className="bg-white p-6 shadow-md h-screen flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold mb-4">Business' Targets</h1>
+              <h1 className="text-2xl font-bold mb-4">
+                
+              {me.role === EmployeeRoles.Manager && <span>Business' </span>}
+              {me.role !== EmployeeRoles.Manager && <span>Your </span>}
+
+                
+                Targets</h1>
               {me.role === EmployeeRoles.Manager && (
                 <button
                   onClick={() => navigate("addTarget")}
