@@ -156,6 +156,7 @@ const EmployeeProfile = ({ back }) => {
 
   const totalDeals =
     (employee.deals?.closed_won_deals_count || 0) +
+    (employee.deals?.open_deals_count || 0) +
     (employee.deals?.closed_lost_deals_count || 0);
 
   const successRate =
