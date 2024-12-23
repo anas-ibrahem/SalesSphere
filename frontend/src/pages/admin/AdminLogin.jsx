@@ -198,19 +198,6 @@ import toast from 'react-hot-toast';
                   >
                     Sign In
                   </Button>
-
-                  <Box
-                    sx={{ 
-                      display: 'flex', 
-                      flexDirection: 'column',
-                      alignItems: 'left', 
-                      mt: 2 
-                    }}
-                  >
-                    <Link href="#" variant="body2" disabled={isSubmitting}>
-                      Forgot password?
-                    </Link>
-                  </Box>
                 </Form>
               )}
             </Formik>

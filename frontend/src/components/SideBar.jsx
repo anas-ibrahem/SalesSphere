@@ -29,6 +29,7 @@ import {
 import { Badge } from "@mui/material";
 import UserContext from "../context/UserContext";
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import AdminContext from "../context/AdminContext";
 
 const usersections = [
   {
@@ -91,7 +92,7 @@ const adminsections = [
   {
     route: "/admin/admins",
     icon: AdminPanelSettings,
-    roles: [AdminPrivileges.Normal, AdminPrivileges.Super],
+    roles: [AdminPrivileges.Super],
     title: "Manage Admins",
   },
 ];
@@ -105,6 +106,10 @@ export default function SideBar({ type = "user" }) {
   };
 
   const { employee, notificationCount } = useContext(UserContext);
+  let admin;
+  if (type == "admin") {
+    admin = useContext(AdminContext).admin;
+  }
 
   useEffect(() => {
     // check current route and set selected section accordingly
@@ -157,7 +162,8 @@ export default function SideBar({ type = "user" }) {
       <ul className="flex-grow space-y-2 px-2">
         {(type == "admin" ? adminsections : usersections).map(
           (section, index) => {
-            if (type == "admin" || section.roles.length === 0 || section.roles.includes(employee.role)) {
+            if (section.roles.length === 0 || (type == "admin" && (section.roles.includes(admin?.privilege))) 
+              ||(type != "admin" && section.roles.includes(employee?.role))) {
             return (
               <li key={index}>
                 <Link
@@ -224,7 +230,7 @@ export default function SideBar({ type = "user" }) {
         )}
 
         <Link
-          to="/logout"
+          to={type == "admin" ? "/admin/logout" : "/logout"}
           className="flex items-center py-2 px-4 rounded w-full text-left"
         >
           <Logout className="hover:text-gray-300" />

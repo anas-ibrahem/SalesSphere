@@ -13,12 +13,38 @@ const ProgressBar = ({ progress, color = "blue" }) => {
   const normalizedProgress = Math.min(100, Math.max(0, progress));
   const isOverAchieved = progress > 100;
   
+  const getColorClass = (color) => {
+    const colorMap = {
+      blue: "bg-blue-600",
+      green: "bg-green-600",
+      yellow: "bg-yellow-600",
+      purple: "bg-purple-600",
+      pink: "bg-pink-600",
+      red: "bg-red-600",
+      gray: "bg-gray-600"
+    };
+    return colorMap[color] || colorMap.blue;
+  };
+
+  const getTextColorClass = (color) => {
+    const colorMap = {
+      blue: "text-blue-600",
+      green: "text-green-600",
+      yellow: "text-yellow-600",
+      purple: "text-purple-600",
+      pink: "text-pink-600",
+      red: "text-red-600",
+      gray: "text-gray-600"
+    };
+    return colorMap[color] || colorMap.blue;
+  };
+
   return (
     <div className="w-full">
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1 relative overflow-hidden">
         <div
           className={`h-2.5 rounded-full transition-all duration-300 ${
-            isOverAchieved ? 'bg-green-500' : `bg-${color}-600`
+            getColorClass(color)
           }`}
           style={{ width: `${normalizedProgress}%` }}
         />
@@ -29,7 +55,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
       <div className="flex justify-between text-xs text-gray-500">
         <span>0%</span>
         <span className={`font-medium ${
-          isOverAchieved ? 'text-green-600' : `text-${color}-600`
+          getTextColorClass(color)
         }`}>
           {progress.toFixed(1)}% {isOverAchieved && '(Exceeded)'}
         </span>
@@ -38,6 +64,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
     </div>
   );
 };
+
 
 function TargetsSection() {
   const [reload, setReload] = useState(false);
@@ -328,9 +355,13 @@ function TargetsSection() {
                                 Progress: {target.average_progress.toLocaleString()} of {target.goal.toLocaleString()}
                                 {target.type === TargetTypes.Revenue && "$"}
                               </Typography>
-                              <Typography variant="small" color="gray" className="font-normal">
+                              {
+                              me.role === EmployeeRoles.Manager &&        
+                                <Typography variant="small" color="gray" className="font-normal">
                                 {target.employee_count} Assignees
                               </Typography>
+                              }
+                     
                             </div>
                             
 
