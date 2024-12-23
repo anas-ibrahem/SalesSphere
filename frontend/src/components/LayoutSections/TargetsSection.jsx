@@ -355,9 +355,13 @@ function TargetsSection() {
                                 Progress: {target.average_progress.toLocaleString()} of {target.goal.toLocaleString()}
                                 {target.type === TargetTypes.Revenue && "$"}
                               </Typography>
-                              <Typography variant="small" color="gray" className="font-normal">
+                              {
+                              me.role === EmployeeRoles.Manager &&        
+                                <Typography variant="small" color="gray" className="font-normal">
                                 {target.employee_count} Assignees
                               </Typography>
+                              }
+                     
                             </div>
                             
 
