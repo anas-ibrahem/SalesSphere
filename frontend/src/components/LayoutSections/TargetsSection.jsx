@@ -44,7 +44,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1 relative overflow-hidden">
         <div
           className={`h-2.5 rounded-full transition-all duration-300 ${
-            isOverAchieved ? 'bg-green-500' : getColorClass(color)
+            getColorClass(color)
           }`}
           style={{ width: `${normalizedProgress}%` }}
         />
@@ -55,7 +55,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
       <div className="flex justify-between text-xs text-gray-500">
         <span>0%</span>
         <span className={`font-medium ${
-          isOverAchieved ? 'text-green-600' : getTextColorClass(color)
+          getTextColorClass(color)
         }`}>
           {progress.toFixed(1)}% {isOverAchieved && '(Exceeded)'}
         </span>
