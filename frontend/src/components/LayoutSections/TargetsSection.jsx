@@ -39,6 +39,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
     return colorMap[color] || colorMap.blue;
   };
 
+  
   return (
     <div className="w-full">
       <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1 relative overflow-hidden">
