@@ -85,11 +85,14 @@ class EmployeeModel {
         }
     }
 
-    getById = async (pool, id) => {
+    getById = async (pool, id, business_id) => {
         const emp = await this.getByIdForAuth(pool, id);
         if(emp) {
             if(emp['hashed_password']) {
                 delete emp['hashed_password'];
+            }
+            if(emp['business_id'] !== business_id) {
+                return {error: 'Employee not found'};
             }
         }
 
@@ -131,6 +134,9 @@ class EmployeeModel {
         if(emp) {
             if(emp['hashed_password']) {
                 delete emp['hashed_password'];
+            }
+            if(emp['business_id'] !== business_id) {
+                return {error: 'Employee not found'};
             }
         }
         return emp;
@@ -273,15 +279,15 @@ class EmployeeModel {
         }
     }
 
-    getSummary = async (pool, employee_id) => {
+    getSummary = async (pool, employee_id, business_id) => {
         try {
             const result = await pool.query(`
                 SELECT *
                 FROM employee e
                 LEFT JOIN employee_profile ep
                 ON e.id = ep.employee_id
-                WHERE e.id = $1;
-            `, [employee_id]);
+                WHERE e.id = $1 AND e.business_id = $2;
+            `, [employee_id, business_id]);
 
             if(result.rows.length === 0) {
                 return {error: 'Employee not found'};

@@ -80,7 +80,7 @@ class AuthController {
             return res.status(400).json({error: 'Invalid employee ID'});
         }
 
-        const emp = await this.employeeModel.getById(req.pool, req.employeeId);
+        const emp = await this.employeeModel.getById(req.pool, req.employeeId, req.businessId);
         if(emp.verified === 0) 
             return res.status(400).json({error: 'Account not verified, Please wait until an adminstrator approves your account', status: 0});
         else if(emp.verified === 2)
@@ -107,9 +107,6 @@ class AuthController {
     resetPassword = async (req, res) => {
         const empData = req.body;
         if(!empData.email || !empData.code || !empData.newPassword || !empData.confirmPassword) {
-            return res.status(400).json({error: 'All fields are required'});
-        }
-        if(empData.currentPassword.trim() === '' || empData.newPassword.trim() === '' || empData.confirmPassword.trim() === '' || empData.code.trim() === '') {
             return res.status(400).json({error: 'All fields are required'});
         }
 

@@ -47,7 +47,7 @@ class CustomerModel {
         }
     }
 
-    getById = async (pool, id) => {
+    getById = async (pool, id, business_id) => {
         try {
             const result = await pool.query(`
                 SELECT c.*,
@@ -64,9 +64,9 @@ class CustomerModel {
                 ON c.id = cw.customer_id AND cw.status = 2
                 LEFT JOIN deal cl
                 ON c.id = cl.customer_id AND cl.status = 3
-                WHERE c.id = $1
+                WHERE c.id = $1 and c.business_id = $2
                 GROUP BY c.id;
-            `, [id]);
+            `, [id, business_id]);
 
             if(result.rows.length === 0) {
                 return {error: 'Customer not found'};
