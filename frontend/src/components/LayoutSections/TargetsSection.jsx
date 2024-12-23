@@ -39,6 +39,7 @@ const ProgressBar = ({ progress, color = "blue" }) => {
   );
 };
 
+
 function TargetsSection() {
   const [reload, setReload] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
