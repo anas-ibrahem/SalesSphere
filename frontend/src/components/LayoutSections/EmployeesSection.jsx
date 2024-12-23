@@ -224,7 +224,7 @@ const EmployeesSection = () => {
                   <option value="All">All Types</option>
                   {Object.values(EmployeeRoles).map((role) => (
                     <option key={role} value={getRoleType(role)}>
-                      {getRoleType(role)}
+                      {getRoleType(role).replace(/([a-z])([A-Z])/g, '$1 $2')}
                     </option>
                   ))}
                 </select>
