@@ -396,9 +396,18 @@ const OverviewSection = () => {
             }
           }}>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
+              <div className="flex flex-col">
+              <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 Top Employees
               </Typography>
+
+                <Tooltip title="This section shows the top employees based on their related succcesfully closed deals.">
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  (Hover for more info)
+                </Typography>
+                </Tooltip>
+              </div>
+              
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, pl: 2 }}>
                 <Crown size={32} color="#FFD700" />

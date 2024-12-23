@@ -205,12 +205,13 @@ const AddFinancialRecord = ({ deal, onBack }) => {
           {/* Description Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              Description *
             </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
+              required
               rows={3}
               className="py-2 px-3 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base"
               placeholder="Enter description..."

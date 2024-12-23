@@ -140,7 +140,6 @@ const EditEmployeeForm = ({ employee, onBack }) => {
       console.log("data", formData);
       if (data.error) {
         toast.error("An error occurred. Please try again.");
-        console.error(data.error);
       } else {
         toast.success("Profile updated successfully");
         if (me.id === employee.id) {

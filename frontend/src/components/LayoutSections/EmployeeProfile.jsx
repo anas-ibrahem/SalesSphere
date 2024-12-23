@@ -36,6 +36,7 @@ import NotFoundPage from "../../pages/NotFoundPage";
 import fetchAPI from "../../utils/fetchAPI";
 import DetailModal from "./DetailModal";
 import { TargetTypes } from "../../utils/Enums";
+import { toast } from "react-hot-toast";
 
 const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
@@ -52,8 +53,13 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
           <p className="text-gray-700">
             <strong>
               {" "}
-              All associated data including deals, targets, and badges will be
-              permanently removed.
+              Make sure no deals or added customers associated exists,
+              All badges and targets will be deleted.
+            </strong>
+
+            <strong>
+              {" "}
+              If the employee has currently claimed not closed deal will be back as open!
             </strong>
           </p>
         </div>
@@ -156,6 +162,7 @@ const EmployeeProfile = ({ back }) => {
 
   const totalDeals =
     (employee.deals?.closed_won_deals_count || 0) +
+    (employee.deals?.open_deals_count || 0) +
     (employee.deals?.closed_lost_deals_count || 0);
 
   const successRate =
@@ -202,10 +209,10 @@ const EmployeeProfile = ({ back }) => {
     fetchAPI(`/employee/${employeeId}`, "DELETE", null, token)
       .then((data) => {
         if (data.error) {
-          console.error("Error deleting employee:", data.error);
+          toast.error("Error deleting employee", data.error);
           return;
         }
-        navigate("/home/employees");
+        back();
       })
       .catch((error) => {
         console.error("Error deleting employee:", error);
