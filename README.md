@@ -176,7 +176,7 @@ Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy
 </div>
 
 ### Mobile App
-#### Login Panel & Deal Opener Overview
+#### Login Panel & Deal Executor Overview
 <div align="center">
   <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mlogin.jpg" height = "500"  alt="mobile-image" />
   <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/moverview.png" height = "500"  alt="mobile-image" />
