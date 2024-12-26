@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:paddingHorizontal="24dp"
+    android:paddingTop="24dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:text="Close Deal"
         android:textStyle="bold"
         android:textSize="@dimen/size_h1"
-        android:textColor="@color/primaryColor"/>
+        android:textColor="@color/primary"/>
 
     <TextView
         android:layout_width="match_parent"

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvCustomer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/margin_small"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/cvDealOverView"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/md_theme_outlineVariant"
+    app:cardElevation="@dimen/card_elevation">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding">
+
+        <ImageView
+            android:id="@+id/ivCustomerType"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/md_theme_surfaceVariant"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCustomerEmail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
+            app:tint="@color/primary"
+            tools:src="@drawable/ic_badge_customer" />
+
+
+        <TextView
+            android:id="@+id/tvCustomerName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
+            android:fontFamily="@font/poppins"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/primary"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_h2"
+            app:layout_constraintEnd_toStartOf="@+id/btnContactCustomer"
+            app:layout_constraintStart_toEndOf="@id/ivCustomerType"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="John Smith" />
+
+        <TextView
+            android:id="@+id/tvCustomerEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            android:textSize="@dimen/size_h3"
+            app:layout_constraintEnd_toStartOf="@+id/btnContactCustomer"
+            app:layout_constraintStart_toEndOf="@id/ivCustomerType"
+            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+            tools:text="JohnDoe@work.outlook.com" />
+
+        <ImageButton
+            android:id="@+id/btnContactCustomer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/call_button_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCustomerEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
+            app:tint="@color/primary"
+            tools:src="@drawable/ic_email_customer" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

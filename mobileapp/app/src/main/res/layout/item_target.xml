@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:strokeColor="@color/md_theme_outlineVariant"
+    app:strokeWidth="1dp"
+    app:cardElevation="@dimen/card_elevation"
+    android:layout_marginBottom="@dimen/margin_tiny"
+    android:layout_marginEnd="@dimen/margin_small"
+    app:cardCornerRadius="@dimen/card_padding">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/card_padding">
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/tvTargetDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            tools:text="Close 10 deals"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/size_h3"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/chipDaysLeft"
+            app:layout_constraintEnd_toStartOf="@+id/chipDaysLeft"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/chipDaysLeft" />
+
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipDaysLeft"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="15 days left"
+            android:textColor="@color/expenses"
+            android:textSize="@dimen/size_h5"
+            app:chipBackgroundColor="@color/bg_expenses"
+            app:chipIcon="@drawable/ic_deadline"
+            app:chipIconEnabled="true"
+            app:chipIconSize="15dp"
+            app:chipIconTint="@color/expenses"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Progress Text -->
+        <TextView
+            android:id="@+id/tvProgressNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:fontFamily="@font/poppins"
+            tools:text="6/10"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            android:textSize="@dimen/size_h3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTargetDescription" />
+
+        <TextView
+            android:id="@+id/tvProgressPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            tools:text="80%"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            android:textSize="@dimen/size_h3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvProgressNumber" />
+
+
+        <!-- Progress Bar -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            tools:progress="80"
+            app:indicatorColor="@color/status_claimed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvProgressNumber"
+            app:trackCornerRadius="8dp"
+            app:trackThickness="8dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

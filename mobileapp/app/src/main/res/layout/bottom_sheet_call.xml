@@ -6,22 +6,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:padding="24dp">
+    android:padding="@dimen/card_padding">
 
     <!-- Bottom Sheet Handle -->
     <View
         android:layout_width="32dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/margin_big"
         android:background="@drawable/bottom_sheet_handle"/>
 
     <TextView
+        android:id="@+id/tvCustomerName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/poppins"
-        android:textColor="@color/primaryColor"
+        android:textColor="@color/primary"
         android:text="Call Customer"
         android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
 
@@ -37,14 +38,14 @@
             android:layout_height="24dp"
             android:layout_marginEnd="12dp"
             android:src="@drawable/ic_phone"
-            app:tint="@color/primaryColor" />
+            app:tint="@color/primary" />
 
         <TextView
-            android:id="@+id/phoneNumberText"
+            android:id="@+id/phoneNumberTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/primaryColor"
+            android:textColor="@color/primary"
             android:textSize="@dimen/size_h2"
             android:text="01025599324"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
@@ -61,7 +62,7 @@
         android:text="Call" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/cancelButton"
+        android:id="@+id/btnCancel"
         style="@style/Widget.Material3.Button.TextButton"
         android:backgroundTint="@color/md_theme_surfaceVariant"
         android:layout_width="match_parent"

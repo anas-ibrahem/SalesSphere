@@ -2,6 +2,7 @@ package com.example.salessphere.network
 
 import AuthInterceptor
 import android.content.Context
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,10 +21,12 @@ object RetrofitClient {
                 .addInterceptor(AuthInterceptor(context)) // Add the AuthInterceptor
                 .addInterceptor(loggingInterceptor)
                 .build()
+            val gson = GsonBuilder()
+                .create()
             retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
 
         }

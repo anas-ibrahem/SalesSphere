@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/card_padding_small">
+
+        <ImageView
+            android:id="@+id/ivType"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            tools:src="@drawable/ic_income"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAmount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvAmount"
+            app:tint="@color/money" />
+
+        <TextView
+            android:id="@+id/tvAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="+$5,000"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/money"
+            android:textSize="@dimen/size_h1"
+            android:layout_marginStart="@dimen/margin_medium"
+            app:layout_constraintStart_toEndOf="@+id/ivType"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTypeAndPaymentMethod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_h3"
+            android:fontFamily="@font/poppins"
+            android:layout_marginTop="@dimen/margin_tiny"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            app:layout_constraintStart_toStartOf="@+id/tvAmount"
+            app:layout_constraintTop_toBottomOf="@+id/tvAmount"
+            tools:text="Income - Bank Transfer" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textSize="@dimen/size_h4"
+            android:layout_marginTop="@dimen/margin_tiny"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            app:layout_constraintStart_toStartOf="@+id/tvTypeAndPaymentMethod"
+            app:layout_constraintTop_toBottomOf="@+id/tvTypeAndPaymentMethod"
+            tools:text="Mar 15, 2024" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
