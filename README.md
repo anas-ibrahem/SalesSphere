@@ -61,14 +61,13 @@ The mobile app is an extension of the website, designed for employees to manage 
 ### Mobile App
 - **Platform**: Android
 - **Language**: Kotlin
-- **Developer**: Saleh
 
 ---
 
 ## Team
-- **Saleh**: Mobile Developer (Kotlin)
-- **Frontend Team**: Worked on React, MUI, Tailwind for the website.
-- **Backend Team**: Collaborated on the Express.js backend and PostgreSQL database.
+- **Mobile**: [Saleh](https://github.com/salehahmed99)
+- **Website Frontend**: [Amr Samy](https://github.com/AmrSamy59), [Anas Ibrahem](https://github.com/anas-ibrahem), [Abdallah Ayman](https://github.com/AbdallahAyman03)
+- **Backend**: [Amr Samy](https://github.com/AmrSamy59), [Anas Ibrahem](https://github.com/anas-ibrahem), [Abdallah Ayman](https://github.com/AbdallahAyman03), [Saleh](https://github.com/salehahmed99)
 
 ---
 
