@@ -3,6 +3,10 @@
 
 Sales Sphere is a comprehensive web and mobile application designed for small-to-medium-sized businesses focused on sales operations. The platform provides tailored features for different types of users to manage and optimize their sales processes.
 
+Yow will find the Mobile app download link within the landing page 😁😁
+
+[https://sales-sphere-site.vercel.app/](https://sales-sphere-site.vercel.app/)
+
 [https://sales-sphere.amrsamy.tech/](https://sales-sphere.amrsamy.tech/)
 
 ---
@@ -76,6 +80,7 @@ Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy
 
 ---
 ## Test Accounts
+* Please Don't Submit Any Personal data or documents
 
 | Role               | email/username          | Password           |
 |--------------------|-------------------------|--------------------|
