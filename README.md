@@ -178,22 +178,37 @@ Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy
 ### Mobile App
 #### Login Panel & Deal Opener Overview
 <div align="center">
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mlogin.jpg" height = "500"  alt="mobile-image" />
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/moverview2.jpg" height = "500"  alt="mobile-image" />
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/moverview2.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mlogin.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/moverview.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/moverview2.png" height = "500"  alt="mobile-image" />
 </div>
 
-#### Deals & Customers
+#### Deals
 <div align="center">
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mdeals.jpg" height = "500"  alt="mobile-image" />
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mdeal.jpg" height = "500"  alt="mobile-image" />
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mcustomers.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mdeals.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mdeal.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mdeal2.png" height = "500"  alt="mobile-image" />
+</div>
+
+
+#### Customers
+<div align="center">
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mcustomers.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mcall.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/memail.png" height = "500"  alt="mobile-image" />
 </div>
 
 #### Notifications & Badges
 <div align="center">
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mnotifications.jpg" height = "500"  alt="mobile-image" />
-  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mbadges.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mnotifications.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mbadges.jpg" height = "500"  alt="mobile-image" />
+</div>
+
+
+#### Profile
+<div align="center">
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/mprofile.png" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/salehahmed99/SalesSphere/blob/main/readme-assets/meditprofile.png" height = "500"  alt="mobile-image" />
 </div>
 
 ---
