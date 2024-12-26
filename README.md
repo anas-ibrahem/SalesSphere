@@ -3,7 +3,7 @@
 
 Sales Sphere is a comprehensive web and mobile application designed for small-to-medium-sized businesses focused on sales operations. The platform provides tailored features for different types of users to manage and optimize their sales processes.
 
-[Deployed Preview](https://sales-sphere.amrsamy.tech/)
+[https://sales-sphere.amrsamy.tech/](https://sales-sphere.amrsamy.tech/)
 
 ---
 
@@ -73,7 +73,7 @@ The mobile app is an extension of the website, designed for employees to manage 
 ---
 
 ## Deployed Preview
-Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy.tech/)
+Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy.tech/), [Admin Panel](https://sales-sphere.amrsamy.tech/admin)
 
 ---
 ## Test Accounts
@@ -172,7 +172,25 @@ Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy
 </div>
 
 ### Mobile App
-![Mobile App Placeholder](./images/mobile-app-placeholder.png)
+#### Login Panel & Deal Opener Overview
+<div align="center">
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mlogin.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/moverview2.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/moverview2.jpg" height = "500"  alt="mobile-image" />
+</div>
+
+#### Deals & Customers
+<div align="center">
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mdeals.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mdeal.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mcustomers.jpg" height = "500"  alt="mobile-image" />
+</div>
+
+#### Notifications & Badges
+<div align="center">
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mnotifications.jpg" height = "500"  alt="mobile-image" />
+  <img src="https://github.com/AmrSamy59/SalesSphere/blob/main/readme-assets/mbadges.jpg" height = "500"  alt="mobile-image" />
+</div>
 
 ---
 
