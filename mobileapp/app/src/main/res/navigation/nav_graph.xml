@@ -20,4 +20,9 @@
         android:name="com.example.salessphere.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/customersFragment"
+        android:name="com.example.salessphere.fragments.CustomersFragment"
+        android:label="fragment_customers"
+        tools:layout="@layout/fragment_customers" />
 </navigation>

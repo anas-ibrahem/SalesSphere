@@ -17,5 +17,34 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvNoDealsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_page"
+            android:fontFamily="@font/poppins"
+            tools:text="No Open Deals"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/size_h1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Subtitle/Call to Action -->
+        <TextView
+            android:id="@+id/tvNoDealsSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:gravity="center"
+            tools:text="No active deals available. Please check back later."
+            android:textColor="@color/img_btn_selected"
+            android:textSize="@dimen/size_h3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNoDealsTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

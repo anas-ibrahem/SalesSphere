@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <!-- This space will scroll away -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/circle_background"
+                    android:backgroundTint="@color/green"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.7" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <!-- This container will stay fixed -->
+            <LinearLayout
+                android:id="@+id/profileContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:elevation="4dp"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_profile" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="Hello Saleh!"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <!-- Your scrollable content goes here -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                tools:context=".fragments.HomeFragment">
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cvFinancialSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/md_theme_outlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/card_padding">
+
+                        <TextView
+                            android:id="@+id/tvSummaryTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins"
+                            android:text="Financial Summary"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <!-- Income Card -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/incomeCard"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            app:cardBackgroundColor="@color/bg_money"
+                            app:cardCornerRadius="@dimen/card_corner_radius"
+                            app:cardElevation="0dp"
+                            app:layout_constraintEnd_toStartOf="@+id/expensesCard"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvSummaryTitle"
+                            app:strokeColor="@color/md_theme_outlineVariant"
+                            app:strokeWidth="1dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="@dimen/margin_medium">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/ic_income"
+                                    app:tint="@color/money" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalIncome"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:maxLines="1"
+                                    android:text="$8,500"
+                                    android:textColor="@color/money"
+                                    android:textSize="@dimen/size_h3"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="My Income"
+                                    android:textColor="@color/money"
+                                    android:textSize="@dimen/size_h3" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Expenses Card -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/expensesCard"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_small"
+                            app:cardBackgroundColor="@color/bg_expenses"
+                            app:cardCornerRadius="@dimen/card_corner_radius"
+                            app:cardElevation="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/incomeCard"
+                            app:layout_constraintTop_toTopOf="@id/incomeCard">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="@dimen/margin_medium">
+
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/ic_expenses"
+                                    app:tint="@color/expenses" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalExpenses"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:maxLines="1"
+                                    android:text="$5,500"
+                                    android:textColor="@color/expenses"
+                                    android:textSize="@dimen/size_h3"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="My Expenses"
+                                    android:textColor="@color/expenses"
+                                    android:textSize="@dimen/size_h3" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Net Profit Card -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cvProfit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            app:cardBackgroundColor="@color/bg_money"
+                            app:cardCornerRadius="@dimen/card_corner_radius"
+                            app:cardElevation="0dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/incomeCard">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="@dimen/margin_medium">
+
+                                <ImageView
+                                    android:id="@+id/ivNetBalance"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:src="@drawable/ic_income"
+                                    app:tint="@color/money" />
+
+                                <TextView
+                                    android:id="@+id/tvNetBalance"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:maxLines="1"
+                                    android:text="$8,500"
+                                    android:textColor="@color/money"
+                                    android:textSize="@dimen/size_h2"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvNetBalanceTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Profit"
+                                    android:textColor="@color/money"
+                                    android:textSize="@dimen/size_h2" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- Current Targets Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/targetsCard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cvFinancialSummary"
+                    app:strokeColor="@color/md_theme_outlineVariant"
+                    app:strokeWidth="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvTargetsTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/card_padding"
+                            android:fontFamily="@font/poppins"
+                            android:text="Current Targets"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTargets"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/margin_small"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvTargetsTitle" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Performance Stats Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/statsCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/targetsCard"
+                    app:strokeColor="@color/md_theme_outlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/card_padding">
+
+                        <TextView
+                            android:id="@+id/tvPerformanceOverviewTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins"
+                            android:text="Performance Overview"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <GridLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="2"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toBottomOf="@id/tvPerformanceOverviewTitle">
+
+                            <!-- Total Customers -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Total Customers"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvTotalCustomersCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="50"
+                                    android:textSize="@dimen/size_h2" />
+                            </LinearLayout>
+
+                            <!-- Claimed Deals -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Claimed Deals"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvClaimedOrOpenCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="50"
+                                    android:textSize="@dimen/size_h2" />
+                            </LinearLayout>
+
+                            <!-- Won Deals -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Deals Won"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvWonDealsCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="50"
+                                    android:textSize="@dimen/size_h2" />
+                            </LinearLayout>
+
+                            <!-- Lost Deals -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Deals Lost"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvLostDealsCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="50"
+                                    android:textSize="@dimen/size_h2" />
+                            </LinearLayout>
+                        </GridLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cvCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/statsCard"
+                    app:strokeColor="@color/md_theme_outlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/card_padding">
+
+                        <TextView
+                            android:id="@+id/customerTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins"
+                            android:text="Customer"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivCustomerType"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:backgroundTint="@color/md_theme_surfaceVariant"
+                            android:scaleType="centerCrop"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvCustomerEmail"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
+                            app:tint="@color/primary"
+                            tools:src="@drawable/ic_badge_customer" />
+
+
+                        <TextView
+                            android:id="@+id/tvCustomerName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_small"
+                            android:layout_marginTop="@dimen/margin_medium"
+                            android:fontFamily="@font/poppins"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h3"
+                            app:layout_constraintEnd_toStartOf="@+id/btnContactCustomer"
+                            app:layout_constraintStart_toEndOf="@id/ivCustomerType"
+                            app:layout_constraintTop_toBottomOf="@id/customerTitle"
+                            tools:text="John Smith" />
+
+                        <TextView
+                            android:id="@+id/tvCustomerEmail"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_small"
+                            android:fontFamily="@font/poppins"
+                            android:textColor="@color/md_theme_onSurfaceVariant"
+                            android:textSize="@dimen/size_h4"
+                            app:layout_constraintEnd_toStartOf="@+id/btnContactCustomer"
+                            app:layout_constraintStart_toEndOf="@id/ivCustomerType"
+                            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+                            tools:text="JohnDoe@work.outlook.com" />
+
+                        <ImageButton
+                            android:id="@+id/btnContactCustomer"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/call_button_ripple"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvCustomerEmail"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tvCustomerName"
+                            app:tint="@color/primary"
+                            tools:src="@drawable/ic_email_customer" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cvFinancialDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    app:cardCornerRadius="@dimen/card_corner_radius"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cvCustomer"
+                    app:strokeColor="@color/md_theme_outlineVariant"
+                    app:strokeWidth="1dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/card_padding">
+
+                        <TextView
+                            android:id="@+id/tvFinancialDetails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins"
+                            android:text="Financial Details"
+                            android:textColor="@color/primary"
+                            android:textSize="@dimen/size_h1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <GridLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="2"
+                            android:rowCount="3"
+                            app:layout_constraintTop_toBottomOf="@id/tvFinancialDetails">
+
+                            <!-- Budget Stat -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Customer Budget"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvBudget"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:fontFamily="@font/poppins"
+                                    android:textSize="@dimen/size_h2"
+                                    tools:text="$50,000" />
+                            </LinearLayout>
+
+                            <!-- Expenses Stat -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Expected Expenses"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvExpenses"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:fontFamily="@font/poppins"
+                                    android:textColor="@color/expenses"
+                                    android:textSize="@dimen/size_h2"
+                                    tools:text="$30,000" />
+                            </LinearLayout>
+
+                            <!-- Revenue Stat -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="8dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:text="Expected Revenue"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="@dimen/size_h4" />
+
+                                <TextView
+                                    android:id="@+id/tvExpectedRevenue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:fontFamily="@font/poppins"
+                                    android:textColor="@color/money"
+                                    android:textSize="@dimen/size_h2"
+
+                                    tools:text="$20,000" />
+                            </LinearLayout>
+                        </GridLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Leaderboard Card -->
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
