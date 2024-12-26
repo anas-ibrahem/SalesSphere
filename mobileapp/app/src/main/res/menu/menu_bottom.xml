@@ -9,6 +9,11 @@
         android:id="@id/dealsFragment"
         android:icon="@drawable/ic_deals"
         android:title="Deals" />
+
+    <item
+        android:id="@id/customersFragment"
+        android:icon="@drawable/ic_customers"
+        android:title="Customers" />
     <item android:id="@id/profileFragment"
         android:icon="@drawable/ic_profile"
         android:title="Profile"/>

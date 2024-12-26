@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/margin_small"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/md_theme_outlineVariant"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/card_padding_medium">
+
+        <ImageView
+            android:id="@+id/ivBadgeIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary"
+            tools:src="@drawable/ic_trophy"/>
+
+        <TextView
+            android:id="@+id/tvBadgeName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textSize="@dimen/size_h2"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"
+            app:layout_constraintStart_toEndOf="@id/ivBadgeIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/primary"
+            app:layout_constraintTop_toTopOf="@id/ivBadgeIcon"
+            tools:text="Sales Champion"/>
+
+        <TextView
+            android:id="@+id/tvBadgeDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="@dimen/size_h3"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/primary"
+            app:layout_constraintStart_toStartOf="@id/tvBadgeName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBadgeName"
+            tools:text="Achieve outstanding sales performance by closing multiple deals"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipBadgeType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_h4"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/tvBadgeName"
+            app:layout_constraintTop_toBottomOf="@id/tvBadgeDescription"
+            tools:text="5 Customers" />
+
+
+        <TextView
+            android:id="@+id/tvDateAwarded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+            android:textColor="?android:attr/textColorTertiary"
+            android:textSize="@dimen/size_h4"
+            app:layout_constraintBottom_toBottomOf="@+id/chipBadgeType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/chipBadgeType"
+            tools:text="12/12/2022" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

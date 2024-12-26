@@ -7,45 +7,63 @@
     <color name="green">#00FF00</color>
 
 
-
     <!-- App Colors -->
-    <color name="primaryColor">#0f0147</color>
-    <color name="secondaryColor">#00adef</color>
-    <color name="secondaryColor2">#1967d2</color>
-    <color name="nav_item_unselected">#818181</color>
-    <color name="moneyColor">#43A047</color>
-    <color name="dividerColor">#E0E0E0</color>
-    <color name="deadlineColor">#D32F2F</color>
-    <color name="cardBackgroundColor">#F5F5F5</color>
-    <color name="backgroundColor">#F8F7FF</color>       <!-- Slightly purple-tinted background -->
+    <color name="primary">#0f0147</color>
+    <color name="secondary">#00adef</color>
+    <color name="secondary_2">#1967d2</color>
+    <color name="money">#16A34A</color>
+    <color name="bg_money">#F0FDF4</color>
+    <color name="expenses">#D32F2F</color>
+    <color name="bg_expenses">#FEF2F2</color>
+    <color name="bg_zero_profit">#F0F2F3</color>
+    <color name="zero_profit">#9CA3AF</color>
 
+    <!-- Deal Status Colors -->
+    <color name="status_open">#1E40AF</color>
+    <color name="bg_status_open">#DBEAFE</color>
+    <color name="status_closed_lost">#D32F2F</color>
+    <color name="bg_status_closed_lost">#FEF2F2</color>
+    <color name="status_closed_won">#16A34A</color>
+    <color name="bg_status_closed_won">#F0FDF4</color>
+    <color name="status_claimed">#F59E0B</color>
+    <color name="bg_status_claimed">#FFFBEB</color>
+
+
+    <color name="bg_card">#F5F5F5</color>
+    <color name="bg">#F8F7FF</color>       <!-- Slightly purple-tinted background -->
+    <color name="divider">#E0E0E0</color>
+
+    <color name="nav_item_unselected">#818181</color>
     <color name="img_btn_unselected">#80626262</color>
     <color name="img_btn_selected">#FF626262</color>
 
 
-        <!-- Primary brand colors -->
-        <color name="md_theme_primaryContainer">#E6E4FF</color> <!-- Lighter version for containers -->
-        <color name="md_theme_surfaceVariant">#F3F1FF</color>   <!-- Light purple-grey surface variant -->
-        <color name="md_theme_onSurfaceVariant">#45425A</color> <!-- Medium purple-grey text -->
+    <!-- elablkash -->
+    <!-- Primary brand colors -->
+    <color name="md_theme_primaryContainer">#E6E4FF</color> <!-- Lighter version for containers -->
+    <color name="md_theme_surfaceVariant">#F3F1FF
+    </color>   <!-- Light purple-grey surface variant -->
+    <color name="md_theme_onSurfaceVariant">#45425A</color> <!-- Medium purple-grey text -->
     <color name="md_theme_surface">#FFFFFF</color>          <!-- Pure white surface -->
-
-
-
     <!-- Secondary colors -->
-        <color name="md_theme_secondary">#4A4760</color>        <!-- Neutral purple-grey -->
-        <color name="md_theme_secondaryContainer">#E8E5F7</color>
-        <!-- Tertiary colors -->
-        <color name="md_theme_tertiary">#2B2570</color>         <!-- Accent purple -->
-        <color name="md_theme_tertiaryContainer">#E4DFFF</color>
+    <color name="md_theme_secondary">#4A4760</color>        <!-- Neutral purple-grey -->
+    <color name="md_theme_secondaryContainer">#E8E5F7</color>
+    <!-- Tertiary colors -->
+    <color name="md_theme_tertiary">#2B2570</color>         <!-- Accent purple -->
+    <color name="md_theme_tertiaryContainer">#E4DFFF</color>
 
-        <!-- Error colors -->
-        <color name="md_theme_error">#BA1A1A</color>            <!-- Error red - kept for clear error states -->
-        <color name="md_theme_errorContainer">#FFDAD6</color>
-        <color name="md_theme_onErrorContainer">#410002</color>
+    <!-- Error colors -->
+    <color name="md_theme_error">#BA1A1A
+    </color>            <!-- Error red - kept for clear error states -->
+    <color name="md_theme_errorContainer">#FFDAD6</color>
+    <color name="md_theme_onErrorContainer">#410002</color>
 
-        <color name="md_theme_outline">#706E85</color>          <!-- Medium purple-grey for borders -->
-        <color name="md_theme_outlineVariant">#C5C3DD</color>   <!-- Light purple-grey for subtle borders -->
+    <color name="md_theme_outline">#706E85</color>          <!-- Medium purple-grey for borders -->
+    <color name="md_theme_outlineVariant">#C5C3DD
+    </color>   <!-- Light purple-grey for subtle borders -->
 
+    <color name="unread_background">#0D2196F3</color>
+    <color name="swipe_background">#4CAF50</color>
 
 
 </resources>

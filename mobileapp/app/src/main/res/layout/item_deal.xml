@@ -23,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/primaryColor"
+            android:textColor="@color/primary"
             android:textSize="@dimen/size_h1"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,11 +42,12 @@
             app:layout_constraintTop_toBottomOf="@id/dealTitleTextView">
 
             <ImageView
+                android:id="@+id/ivCustomerType"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginTop="3dp"
-                android:src="@drawable/ic_profile"
-                app:tint="@color/primaryColor" />
+                tools:src="@drawable/ic_badge_customer"
+                app:tint="@color/primary" />
 
             <TextView
                 android:id="@+id/customerNameTextView"
@@ -54,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/poppins"
-                android:textColor="@color/primaryColor"
+                android:textColor="@color/primary"
                 android:textSize="@dimen/size_h2"
                 tools:text="John Doe" />
         </LinearLayout>
@@ -79,7 +80,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Revenue"
+                    android:text="Expected Revenue"
                     android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
                     android:textColor="@color/md_theme_onSurfaceVariant"
                     android:textSize="@dimen/size_h3" />
@@ -122,12 +123,12 @@
         <!-- View Details Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/viewDetailsButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:backgroundTint="@color/md_theme_surfaceVariant"
+            android:backgroundTint="@color/primary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="4dp"
+            android:textColor="@color/white"
             android:fontFamily="@font/poppins"
             android:text="View Details"
             android:textSize="@dimen/size_h2"

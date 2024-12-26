@@ -1,12 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.SalesSphere" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.SalesSphere" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowIsTranslucent">true</item>
 
         <!-- border color of edit text & hint that goes on top & cursor color-->
-        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorPrimaryContainer">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -14,9 +14,9 @@
         <item name="elevationOverlayColor">@android:color/transparent</item>
 
         <!-- Secondary branding color. (Progress bar color)-->
-        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorSecondary">@color/primary</item>
         <item name="colorSecondaryVariant">@color/white</item>
-        <item name="colorSecondaryContainer">@color/backgroundColor</item>
+        <item name="colorSecondaryContainer">@color/bg</item>
         <item name="colorOnSecondary">@color/white</item>
 
         <!-- Background color. -->
@@ -26,7 +26,7 @@
         <item name="colorSurface">@color/white</item>
 
         <!-- color on edit text-->
-        <item name="colorOnSurface">@color/primaryColor</item>
+        <item name="colorOnSurface">@color/primary</item>
         <item name="colorOnBackground">@color/white</item>
 
         <!-- Error color. -->

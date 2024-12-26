@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/card_padding"
+        android:background="@color/white">
+
+
+        <View
+            android:id="@+id/bottomSheetHandle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="32dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bottom_sheet_handle"/>
+
+        <TextView
+            android:id="@+id/tvAddFinancialRecordTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="Add Financial Record"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/margin_big"
+            app:layout_constraintTop_toBottomOf="@id/bottomSheetHandle" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutAmount"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
+            app:cursorColor="@color/primary"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAddFinancialRecordTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Amount"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutType"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
+            app:errorEnabled="true"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
+            app:cursorColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutAmount">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropDownType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Type"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPaymentMethod"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
+            app:cursorColor="@color/primary"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutType">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropDownPaymentMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Payment Method"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutDescription"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
+            app:boxStrokeColor="@color/md_theme_outlineVariant"
+            app:cursorColor="@color/primary"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutPaymentMethod">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="5"
+            android:scrollbars="vertical"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmFinancialRecord"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Add Record"
+            android:textSize="@dimen/size_h3"
+            android:fontFamily="@font/poppins"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutDescription" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:backgroundTint="@color/md_theme_surfaceVariant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_h3"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"
+            android:layout_marginTop="@dimen/margin_small"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnConfirmFinancialRecord"
+            android:text="Cancel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

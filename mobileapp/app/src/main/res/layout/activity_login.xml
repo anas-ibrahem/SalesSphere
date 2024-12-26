@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -58,7 +58,7 @@
             app:boxCornerRadiusBottomStart="@dimen/card_corner_radius"
             app:boxCornerRadiusTopEnd="@dimen/card_corner_radius"
             app:boxCornerRadiusTopStart="@dimen/card_corner_radius"
-            app:cursorColor="@color/primaryColor"
+            app:cursorColor="@color/primary"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:boxStrokeColor="@color/md_theme_outlineVariant"
@@ -80,28 +80,27 @@
             android:id="@+id/loginBtn"
             android:layout_width="250dp"
             android:layout_height="70dp"
-            android:layout_marginTop="50dp"
             android:fontFamily="@font/poppins"
             android:text="Login"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/primaryColor"
+            app:backgroundTint="@color/primary"
+            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_input_layout_2" />
+            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout_2"
             app:layout_constraintVertical_bias="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
