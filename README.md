@@ -73,8 +73,7 @@ The mobile app is an extension of the website, designed for employees to manage 
 ---
 
 ## Deployed Preview
-Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy.tech/)
-[Admin Panel](https://sales-sphere.amrsamy.tech/admin)
+Check out the live application here: [Sales Sphere](https://sales-sphere.amrsamy.tech/), [Admin Panel](https://sales-sphere.amrsamy.tech/admin)
 
 ---
 ## Test Accounts
