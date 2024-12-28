@@ -9,51 +9,51 @@
             android:pathData="M114.28,103L251,103L251,153L114.28,153ZM114.28,103"/>
         <path
             android:pathData="M241.93,114.66L244.47,117.94L250.56,103.11L234.68,105.25L237.29,108.64C207.55,128.48 117.42,167.57 115.93,128.48C115.54,130.39 115.02,132.95 114.73,134.88C119.13,176.97 214.7,131.83 241.93,114.66"
-            android:fillColor="@color/primaryColor"
+            android:fillColor="@color/primary"
             android:fillType="nonZero"/>
     </group>
     <path
         android:pathData="M235.99,96.91L239.77,101.21L246.99,79.81L224.85,84.27L228.38,88.27C211.62,104.3 128.27,142.05 123.18,114.82C122.94,113.56 122.93,112.33 123.15,110.44C120,116.48 119.94,116.6 118.61,119.98C119.34,157.93 215.94,113.16 235.99,96.91"
-        android:fillColor="@color/secondaryColor"
+        android:fillColor="@color/secondary"
         android:fillType="nonZero"/>
     <path
         android:pathData="M205.81,92.14C210.31,89.47 215.02,86.29 218.26,83.8L220.47,86.31L224.85,73.32L211.41,76.02L213.98,78.94C201.43,91.86 138.38,120.31 132.02,104.02C130.93,101.25 132.25,98.22 132.88,96.77C131.49,98.46 129.63,100.71 128.32,102.46C122.39,126.26 171.24,112.61 205.81,92.14"
-        android:fillColor="@color/primaryColor"
+        android:fillColor="@color/primary"
         android:fillType="nonZero"/>
     <group>
         <clip-path
             android:pathData="M136,65.35L209,65.35L209,101L136,101ZM136,65.35"/>
         <path
             android:pathData="M149.8,100.5C166.94,98.06 189.1,86.29 200.15,78.63L202.97,81.83L208.52,65.39L191.5,68.81L194.64,72.38C187.09,80.48 148.03,98.45 142.6,92.04C141.25,90.45 142.64,87.43 146.05,84.54C144.17,86.05 141.66,88.07 139.84,89.68C134.61,96.31 135.5,102.53 149.8,100.5"
-            android:fillColor="@color/secondaryColor"
+            android:fillColor="@color/secondary"
             android:fillType="nonZero"/>
     </group>
     <path
         android:pathData="M152.86,87.9C162.78,85.66 174.91,78.75 181.55,74.05L183.75,76.56L187.16,66.46L176.71,68.56L178.82,70.96C173.61,76.93 147.01,90.5 146.05,84.89C146.03,84.79 146.05,84.64 146.05,84.54C142.54,89.99 151.11,88.3 152.86,87.9"
-        android:fillColor="@color/primaryColor"
+        android:fillColor="@color/primary"
         android:fillType="nonZero"/>
     <group>
         <clip-path
             android:pathData="M114.28,120L260.53,120L260.53,174L114.28,174ZM114.28,120"/>
         <path
             android:pathData="M248.9,135.42L251.87,139.64L260.71,120.64L239.82,122.48L242.8,126.72C210.75,147.38 119.08,184.51 114.32,144C114.3,143.81 114.29,143.57 114.27,143.39L114.39,145.79L114.64,148.62C114.97,150.82 115.39,153.76 115.84,155.95C128.02,197.87 222.68,152.93 248.9,135.42"
-            android:fillColor="@color/secondaryColor"
+            android:fillColor="@color/secondary"
             android:fillType="nonZero"/>
     </group>
     <path
         android:pathData="M245.79,147.83C215.98,166.57 135.17,201.55 119.33,167.3L120.96,171.03L123.23,175.43C131.16,187.39 147.7,190.78 172.39,185.48C203.34,178.85 235.95,162.13 249.56,152.72L252.52,156.54L258.6,141.71L242.72,143.86L245.79,147.83"
-        android:fillColor="@color/primaryColor"
+        android:fillColor="@color/primary"
         android:fillType="nonZero"/>
     <path
         android:pathData="M241.48,166.55C213.38,183.63 150.89,208.39 130.77,186.34C132.17,187.94 133.81,189.86 135.22,191.23C136.59,192.48 138.38,194.2 139.8,195.39C166.34,214.49 226.27,184.34 245.43,171.66L248.22,175.28L254.31,160.45L238.43,162.59L241.48,166.55"
-        android:fillColor="@color/secondaryColor"
+        android:fillColor="@color/secondary"
         android:fillType="nonZero"/>
     <path
         android:pathData="M236.3,183.38C216.03,195.43 173.27,214.45 149.57,202.21L154.22,204.68L157.62,206.21C183.25,215.32 223.24,195.53 238.09,185.7L240.13,188.34L243.63,179.82L234.5,181.05L236.3,183.38"
-        android:fillColor="@color/primaryColor"
+        android:fillColor="@color/primary"
         android:fillType="nonZero"/>
     <path
         android:pathData="M222.36,198.19C207.77,205.58 186.25,213.33 169.36,209.99C171.51,210.4 174.38,211.01 176.55,211.26C178.95,211.47 182.15,211.72 184.55,211.8C200.69,211.43 215.23,204.71 223.56,199.96L224.93,201.96L227.95,195.69L221,196.21L222.36,198.19"
-        android:fillColor="@color/secondaryColor"
+        android:fillColor="@color/secondary"
         android:fillType="nonZero"/>
 </vector>

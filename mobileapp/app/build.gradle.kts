@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.salessphere"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -73,6 +73,12 @@ dependencies {
 
     //okhttp3
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    //Glide
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    //Cloudinary
+    implementation ("com.cloudinary:cloudinary-android:2.3.1")
 
 
 }

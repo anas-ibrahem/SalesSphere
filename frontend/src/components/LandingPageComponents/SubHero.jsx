@@ -1,9 +1,11 @@
 import RevealOnScroll from "./RevealOnScroll";
 
 const SubHero = function (props) {
-
   const onDownloadBtnClick = () => {
-    window.open("https://drive.google.com/drive/folders/1iHDFMSmnipT-nwMEBIIEZ6MTPJhH5OCS", "_blank");
+    window.open(
+      "https://drive.google.com/drive/folders/14yCdZWw4KxAWoB8qqIam4yh-FkNeTcpL?usp=sharing",
+      "_blank"
+    );
   };
 
   return (
@@ -22,9 +24,10 @@ const SubHero = function (props) {
             </h1>
             <p>{props.description}</p>
             {props.button && (
-              <button 
-              onClick={onDownloadBtnClick}
-              className="bg-black text-white w-[200px] rounded-md font-medium my-6 mx-auto md:mx-0 py-3 transition duration-300 ease-in-out transform hover:bg-gray-800 hover:scale-105 active:scale-95">
+              <button
+                onClick={onDownloadBtnClick}
+                className="bg-black text-white w-[200px] rounded-md font-medium my-6 mx-auto md:mx-0 py-3 transition duration-300 ease-in-out transform hover:bg-gray-800 hover:scale-105 active:scale-95"
+              >
                 {props.buttonText}
               </button>
             )}

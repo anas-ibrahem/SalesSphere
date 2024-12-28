@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="padding_fragment">20dp</dimen>
+    <dimen name="margin_tiny">5dp</dimen>
     <dimen name="margin_small">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
-    <dimen name="margin_big">30dp</dimen>
+    <dimen name="margin_big">24dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_top_page">35dp</dimen>
+    <dimen name="margin_huge">55dp</dimen>
+    <dimen name="padding_fragment">20dp</dimen>
     <dimen name="card_elevation">5dp</dimen>
     <dimen name="card_corner_radius">15dp</dimen>
     <dimen name="card_padding">20dp</dimen>
+    <dimen name="card_padding_tiny">10dp</dimen>
     <dimen name="card_padding_small">12dp</dimen>
     <dimen name="card_padding_medium">16dp</dimen>
     <dimen name="size_h0">23sp</dimen>
@@ -14,5 +19,5 @@
     <dimen name="size_h2">17sp</dimen>
     <dimen name="size_h3">15sp</dimen>
     <dimen name="size_h4">13sp</dimen>
-    <dimen name="margin_top_page">45dp</dimen>
+    <dimen name="size_h5">11sp</dimen>
 </resources>

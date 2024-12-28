@@ -30,9 +30,9 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:tabIndicatorColor="@color/primaryColor"
-            app:tabSelectedTextColor="@color/primaryColor"
-            app:tabTextColor="@color/primaryColor">
+            app:tabIndicatorColor="@color/primary"
+            app:tabSelectedTextColor="@color/primary"
+            app:tabTextColor="@color/primary">
 
         </com.google.android.material.tabs.TabLayout>
 
@@ -47,6 +47,21 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_tiny"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/md_theme_surfaceVariant"
+            app:tint="@color/primary"
+            app:srcCompat="@drawable/ic_add" />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
